@@ -59,6 +59,22 @@
             </field>
         </record>
 
+        <!--  Order Tracking Search View -->
+        <record id="order_tacking_search_view" model="ir.ui.view">
+            <field name="name">order.tracking.search</field>
+            <field name="model">order.tacking</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id"/>
+                    <field name="order_date"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Customer Name" context="{'group_by':'partner_id'}"/>
+                        <filter string="Order Date" context="{'group_by':'order_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <!-- Order Tacking Action -->
         <record id="order_tacking_action" model="ir.actions.act_window">
             <field name="name">Order Tacking</field>
