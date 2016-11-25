@@ -1,82 +1,80 @@
 <openerp>
-	<data>
-		<!-- form view of order tacking -->
-		<record id="order_tacking_form_view" model="ir.ui.view">
-			<field name="name">order.tacking.form.view</field>
-			<field name="model">order.tacking</field>
-			<field name="arch" type="xml">
-				<form>
-					<group colspan="4" col="4" >
-						<group>
-							<field name="partner_id" required="1"/>
-							<field name="order_date" required="1"/>
-						</group>
-						<group>
-						</group>
-					</group>
-					<notebook>
-						<page string="Manikarnika" >
-							<field name="morder_tacking_line_ids" context="{'default_order_date_line': order_date}">
-								<tree string="Manikarnika Order Tacking Line" editable="bottom">
-									<field name="serial_no" />
-									<field name="product_id" />
-									<field name="qty_aval" />
-									<field name="default_order_qty" />
-									<field name="order_price" />
-									<field name="order_qty" />
-									<field name="order_date_line" />
-								</tree>
-							</field>
-						</page>
-						<page string="Gariners">
-							<field name="gorder_tacking_line_ids" context="{'default_order_date_line': order_date}">
-								<tree string="Gariners Order Tacking Line" editable="bottom">
-									<field name="serial_no" />
-									<field name="product_id" />
-									<field name="qty_aval" />
-									<field name="default_order_qty" />
-									<field name="order_price" />
-									<field name="order_qty" />
-									<field name="order_date_line" />
-								</tree>
-							</field>
-						</page>
-					</notebook>
-				</form>
-			</field>
-		</record>
+    <data>
+        <!-- form view of order tacking -->
+        <record id="order_tacking_form_view" model="ir.ui.view">
+            <field name="name">order.tacking.form.view</field>
+            <field name="model">order.tacking</field>
+            <field name="arch" type="xml">
+                <form string="Order Tracking">
+                    <sheet>
+                        <group colspan="4" col="4" >
+                            <group>
+                                <field name="partner_id" required="1"/>
+                                <field name="order_date" required="1"/>
+                            </group>
+                            <group></group>
+                        </group>
+                        <notebook>
+                            <page string="Manikarnika" >
+                                <field name="morder_tacking_line_ids" context="{'order_date': order_date}">
+                                    <tree string="Manikarnika Order Tacking Line" editable="bottom">
+                                        <field name="serial_no" readonly="1"/>
+                                        <field name="product_id" readonly="1"/>
+                                        <field name="qty_aval" readonly="1"/>
+                                        <field name="default_order_qty" readonly="1"/>
+                                        <field name="order_price" readonly="1"/>
+                                        <field name="order_qty" />
+                                        <field name="order_date_line" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Gariners">
+                                <field name="gorder_tacking_line_ids" context="{'order_date': order_date}">
+                                    <tree string="Gariners Order Tacking Line" editable="bottom">
+                                        <field name="serial_no" readonly="1"/>
+                                        <field name="product_id" readonly="1"/>
+                                        <field name="qty_aval" readonly="1"/>
+                                        <field name="default_order_qty" readonly="1"/>
+                                        <field name="order_price" readonly="1"/>
+                                        <field name="order_qty" />
+                                        <field name="order_date_line" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-		<!-- Tree view of order tacking -->
-		<record id="order_tacking_tree_view" model="ir.ui.view">
-			<field name="name">order.tacking.tree.view</field>
-			<field name="model">order.tacking</field>
-			<field name="arch" type="xml">
-				<tree>
-					<field name="partner_id" />
-					<field name="order_date" />
-				</tree>
-			</field>
-		</record>
+        <!-- Tree view of order tacking -->
+        <record id="order_tacking_tree_view" model="ir.ui.view">
+            <field name="name">order.tacking.tree.view</field>
+            <field name="model">order.tacking</field>
+            <field name="arch" type="xml">
+                <tree string="Order Tracking">
+                    <field name="partner_id" />
+                    <field name="order_date" />
+                </tree>
+            </field>
+        </record>
 
+        <!-- Order Tacking Action -->
+        <record id="order_tacking_action" model="ir.actions.act_window">
+            <field name="name">Order Tacking</field>
+            <field name="res_model">order.tacking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
-		<!-- Order Tacking Action -->
-		<record id="order_tacking_action" model="ir.actions.act_window">
-			<field name="name">Order Tacking</field>
-			<field name="res_model">order.tacking</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-		</record>
+        <!-- Menu for Order Tacking -->
+        <menuitem id="order_tacking_main_menu" name="Order Tacking" />
+        <menuitem id="order_tacking_menu" name="Order Tacking"
+                    parent="order_tacking_main_menu" />
+        <menuitem id="order_tacking_action_menu" name="Order Tacking"
+                    action="order_tacking_action" parent="order_tacking_menu" />
 
-		<!-- Menu for Order Tacking -->
-		<menuitem id="order_tacking_main_menu" name="Order Tacking" />
-		<menuitem id="order_tacking_menu" name="Order Tacking"
-			parent="order_tacking_main_menu" />
-		<menuitem id="order_tacking_action_menu" name="Order Tacking"
-			action="order_tacking_action" parent="order_tacking_menu" />
-		
-		
-		
-		<!-- Product Form-->
+        <!-- Product Form-->
         <record id="product_template_inherited" model="ir.ui.view">
             <field name="name">product template</field>
             <field name="model">product.template</field>
@@ -87,5 +85,6 @@
                 </xpath>
             </field>
         </record>
-	</data>
+        
+    </data>
 </openerp>
