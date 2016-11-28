@@ -15,6 +15,17 @@
             <field name="model">order.tacking</field>
             <field name="arch" type="xml">
                 <form string="Order Taking">
+                    <header>
+                        <button string="Confirm" name="ord_track_draft_to_confirm"
+                            type="object" states="draft" class="oe_highlight"/>
+                        <button string="Complete" name="ord_track_confirm_to_complete"
+                            type="object" states="confirm" class="oe_highlight"/>
+                        <button string="Reset to Draft" name="ord_track_confirm_to_draft"
+                            type="object" states="confirm" class="oe_highlight"/>
+                        <button string="Cancel" name="ord_track_confirm_to_cancel"
+                            type="object" states="confirm" class="oe_highlight"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <sheet>
                         <group colspan="4" col="4" >
                             <group>

@@ -22,7 +22,7 @@
 from openerp import models, fields, api
 from openerp.exceptions import Warning,ValidationError
 
-    
+
 class res_partner(models.Model):
     
     _inherit = 'res.partner'
@@ -35,7 +35,12 @@ class res_partner(models.Model):
         if self.driver:
             self.customer = False
             self.supplier = False
-            
+
+
+class res_company(models.Model):
+    
+    _inherit = 'res.company'
+    
+    comp_code = fields.Char(string='Company Code')
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-
