@@ -56,8 +56,8 @@ class order_tackinig(models.Model):
                     'price_unit': line.order_price or 0.0}))
         sale_vals.update({'order_line': sale_lines_vals_lst,
                           'company_id': company_id and company_id.id or False})
-        sale_obj.create(sale_vals)
-        return True
+        sale_ord_id = sale_obj.create(sale_vals)
+        return sale_ord_id
     
     @api.multi
     def ord_track_confirm_to_complete(self):
@@ -76,9 +76,7 @@ class order_tackinig(models.Model):
             if rec.gorder_tacking_line_ids:
                 self.create_sale_order(rec.gorder_tacking_line_ids, sale_vals)
         rec.state = 'complete'
-
-
-
+    
     @api.multi
     def ord_track_confirm_to_draft(self):
         for rec in self:
@@ -116,8 +114,8 @@ class order_tackinig(models.Model):
         comp_obj = self.env['res.company']
         prod_obj = self.env['product.product']
         if self.partner_id:
-            self.morder_tacking_line_ids = []
-            self.gorder_tacking_line_ids = []
+            self.morder_tacking_line_ids = [(6, 0, [])]
+            self.gorder_tacking_line_ids = [(6, 0, [])]
             comp_MK = comp_obj.search([('comp_code','=','MK')])
             comp_GR = comp_obj.search([('comp_code','=','GR')])
             MK_products = prod_obj.search([('company_id','in', comp_MK.ids)])
