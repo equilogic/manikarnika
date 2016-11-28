@@ -65,7 +65,7 @@ class morder_tacking_line(models.Model):
     _rec_name = 'serial_no'
     order_tacking_id = fields.Many2one('Order Tacking')
     serial_no = fields.Char('SI')
-    product_id = fields.Many2one('product.product','Product Name')
+    product_id = fields.Many2one('product.product','Product')
     qty_aval = fields.Float('Qty On Hand')
     default_order_qty = fields.Float('Default Order Qty')
     order_price = fields.Float('Order Price')
@@ -97,7 +97,7 @@ class gorder_tacking_line(models.Model):
     _rec_name = 'serial_no'
     order_tacking_id = fields.Many2one('Order Tacking')
     serial_no = fields.Char('SI')
-    product_id = fields.Many2one('product.product','Product Name')
+    product_id = fields.Many2one('product.product','Product')
     qty_aval = fields.Float('Qty On Hand')
     default_order_qty = fields.Float('Default Order Qty')
     order_price = fields.Float('Order Price')
