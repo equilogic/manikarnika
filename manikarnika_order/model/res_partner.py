@@ -19,28 +19,23 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    'name' : "Manikarnika Order",
-    'version' : "1.0",
-    'author' : "Serpent Consulting Services Pvt. Ltd.",
-    'category': 'Account',
-    'website' : "http://www.serpentcs.com",
-    'description': """
-                manage sales and purchase order related information
-    """,
-    'depends': ['sale','product','purchase', 'fleet'],
-    'demo': [],
-    'data': [
-             'security/ir.model.access.csv',
-            'views/order_taking_view.xml',
-            'views/res_partner_view.xml',
-            'views/fleet_view.xml',
-            
-    ],
-    'installable': True,
-    'application': False,
-    'auto_install': False,
-}
+from openerp import models, fields, api
+from openerp.exceptions import Warning,ValidationError
 
+    
+class res_partner(models.Model):
+    
+    _inherit = 'res.partner'
+    
+    driver = fields.Boolean('Driver')
+    location_id = fields.Many2one('location.location', string='Location')
+
+    @api.onchange('driver')
+    def onchange_driver(self):
+        if self.driver:
+            self.customer = False
+            self.supplier = False
+            
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
