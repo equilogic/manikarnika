@@ -181,6 +181,16 @@ class gorder_tacking_line(models.Model):
             self.order_price = product.lst_price or 0.0
             self.order_qty = 1
     
+    @api.onchange('order_qty')
+    def onchange_order_qty(self):
+        if self.order_qty:
+            if self.order_qty > self.qty_aval:
+                raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
+            if self.order_qty < self.default_order_qty:
+                raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
+            if (self.order_qty % self.default_order_qty) != 0.0:
+                raise ValidationError('You can take order qty in the multiples of %s.' % self.default_order_qty)
+    
 class product_template(models.Model):
     _inherit = 'product.template'
     
