@@ -40,24 +40,33 @@ class order_tackinig(models.Model):
         for rec in self:
             rec.state = 'confirm'
     
+
+
     @api.multi
     def create_sale_order(self, ord_track_lines, sale_vals):
         company_id = False
+        
         sale_lines_vals_lst = []
+
         sale_obj = self.env['sale.order']
         if ord_track_lines:
             for line in ord_track_lines:
                 prod = line.product_id or False
                 company_id = prod.company_id or False
-                sale_lines_vals_lst.append((0,0,{
-                    'product_id': prod and prod.id or False,
-                    'name': prod.name or '',
-                    'product_uom_qty': line.order_qty or 0.0,
-                    'price_unit': line.order_price or 0.0}))
-        sale_vals.update({'order_line': sale_lines_vals_lst,
+                if line.order_qty:
+                    sale_lines_vals_lst.append((0,0,{
+                        'product_id': prod and prod.id or False,
+                        'name': prod.name or '',
+                        'product_uom_qty': line.order_qty or 0.0,
+                        'price_unit': line.order_price or 0.0}))
+
+                sale_vals.update({'order_line': sale_lines_vals_lst,
                           'company_id': company_id and company_id.id or False})
-        sale_ord_id = sale_obj.create(sale_vals)
+            sale_ord_id = sale_obj.create(sale_vals)
         return sale_ord_id
+
+
+
     
     @api.multi
     def ord_track_confirm_to_complete(self):
