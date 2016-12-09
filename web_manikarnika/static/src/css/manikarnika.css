@@ -1,0 +1,9 @@
+#datepicker
+{
+    width:250px;
+    margin: 0 5px 5px 5px;
+}
+#datepicker span:hover
+{
+    cursor: pointer;
+}

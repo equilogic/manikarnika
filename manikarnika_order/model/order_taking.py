@@ -165,8 +165,8 @@ class morder_tacking_line(models.Model):
                 raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
             if self.order_qty < self.default_order_qty:
                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
-            if (self.order_qty % self.default_order_qty) != 0.0:
-                raise ValidationError('You can take order qty in the multiples of %s.' % self.default_order_qty)
+#            if (self.order_qty % self.default_order_qty) != 0.0:
+#                raise ValidationError('You can take order qty in the multiples of %s.' % self.default_order_qty)
 
 class gorder_tacking_line(models.Model):
     _name='gorder.tacking.line'

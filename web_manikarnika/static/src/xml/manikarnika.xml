@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+     <t t-name="ManikarnikaTemp">
+         <table width="100%">
+             <tr>
+                 <td width="10%">
+                     
+                 </td>
+                 <td colspan="6"><h1><center>Manikarnika </center></h1> </td>
+                 <td width="10%">
+                     
+                 </td>
+             </tr>
+         </table>
+         <table width="100%">
+             <tr>
+                 <td width="10%">
+                     
+                 </td>
+                 <td width="80%">
+                     <table width="100%" border="1">
+                        <tr>
+                            <td>
+                                
+                            </td>
+                            <t t-foreach="widget.product" t-as="prod">
+                                <td style="background-color:greenyellow;">
+                                    <h4><t t-esc="prod"></t></h4>
+                                </td>
+                            </t>
+                            <!-- <td style="background-color: darkkhaki">
+                                <h4>Total</h4>
+                            </td> -->
+                        </tr>
+                        <t t-foreach="widget.orders" t-as="order">
+                            <tr>
+                                 <td style="background-color: cornflowerblue;">
+                                     <h4><t t-esc="order"/></h4>
+                                 </td>
+                                 <t t-foreach="widget.orders[order]" t-as="column">
+                                     <td>
+                                         <input type="text" class="form-control" t-att-id="column['id']" model="morder.tacking.line" t-att-value="column['qty']"
+                                           />
+                                     </td>
+                                 </t>
+                             </tr>
+                        </t>
+                    </table>
+                 </td>
+                 <td width="10%">
+                     
+                 </td>
+             </tr>
+         </table>
+    </t>
+    <t t-name="GrainsTemp">
+         <table width="100%">
+             <tr>
+                 <td width="10%">
+                     
+                 </td>
+                 <td colspan="6"><h1><center> Grains </center></h1> </td>
+                 <td width="10%">
+                     
+                 </td>
+             </tr>
+         </table>
+         <table width="100%">
+             <tr>
+                 <td width="10%">
+                     
+                 </td>
+                 <td width="80%">
+                     <table width="100%" border="1">
+                        <tr>
+                            <td>
+                                
+                            </td>
+                            <t t-foreach="widget.product" t-as="prod">
+                                <td style="background-color:greenyellow;">
+                                    <h4><t t-esc="prod"></t></h4>
+                                </td>
+                            </t>
+                            <!-- <td style="background-color: darkkhaki">
+                                <h4>Total</h4>
+                            </td> -->
+                        </tr>
+                        <t t-foreach="widget.orders" t-as="order">
+                            <tr>
+                                 <td style="background-color: cornflowerblue;">
+                                     <h4><t t-esc="order"/></h4>
+                                 </td>
+                                 <t t-foreach="widget.orders[order]" t-as="column">
+                                     <td>
+                                         <input type="text" class="form-control" t-att-id="column['id']" model="gorder.tacking.line" t-att-value="column['qty']"
+                                           />
+                                     </td>
+                                 </t>
+                             </tr>
+                        </t>
+                    </table>
+                 </td>
+                 <td width="10%">
+                     
+                 </td>
+             </tr>
+         </table>
+    </t>
+</templates>
