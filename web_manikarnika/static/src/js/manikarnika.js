@@ -9,14 +9,21 @@ openerp.web_manikarnika = function(instance) {
     var day   = date.getDate();
     var curr_date = year +'-'+ month + '-' + day;
     var order_dic = {}
+    var item_dic = {}
+    var item_dic2 = {}
     var product_list = []
     var product_id_list = []
-    self.manik_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , curr_date]]);
+    var manik_list = []
+    self.manik_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , curr_date],
+                                                                                    ['state', 'in', ['draft','confirm']]]);
     self.manik_dataset.read_slice([], {'domain': []}).done(function(records) {
     	_.each(records, function(r){
     		self.manik_line_dataset = new instance.web.DataSetSearch(self, 'morder.tacking.line', {}, [['id','in', r.morder_tacking_line_ids]]);
     	    self.manik_line_dataset.read_slice([], {'domain': []}).done(function(line_rec) {
     	    	val_list = []
+    	    	manik_list = line_rec
+    	    	manik_qty = 0
+    	    	product_id = 0
     	    	_.each(line_rec, function(v){
     	    		product_list.push(v.product_id[1])
     				val_list.push({'id': v.id,
@@ -25,7 +32,20 @@ openerp.web_manikarnika = function(instance) {
 				  	   'product_id': v.product_id[0],
 				  	   'qty': v.order_qty,
 				  	   'custome_nm': r.partner_id[1]})
+				  	 manik_qty = manik_qty + v.order_qty
+				  	 if ( v.product_id[0] in item_dic2)
+			  		 {
+				  		 total = (item_dic2[v.product_id[0]] + v.order_qty)
+				  		 item_dic[v.product_id[1]] = [{'qty': total}]
+				  		 item_dic2[v.product_id[0]] = total
+			  		 }
+				  	 else
+				  	 {
+				  		item_dic[v.product_id[1]] = [{'qty': v.order_qty}]
+				  		item_dic2[v.product_id[0]] = v.order_qty
+				  	 }
     	    	});
+    	    	val_list.push({'manik_qty':manik_qty})
     	    	order_dic[r.partner_id[1]] = val_list
     	    });
     	});
@@ -45,6 +65,8 @@ openerp.web_manikarnika = function(instance) {
                 if($.inArray(el, product_id_list) === -1) product_id_list.push(el);
             });
             this.product = product_id_list
+            this.default_qty = manik_list
+            this.item_dic = item_dic
         },
         start: function() {
         },
@@ -60,6 +82,8 @@ openerp.web_manikarnika = function(instance) {
         },
     });
     
+//    ************ Grains **************
+    
     var grain_date = new Date()
     var grain_year  = grain_date.getFullYear();
     var grain_month = grain_date.getMonth() + 1;
@@ -68,12 +92,18 @@ openerp.web_manikarnika = function(instance) {
     var grain_order_dic = {}
     var grain_product_list = []
     var grain_product_id_list = []
-    self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , grain_curr_date]]);
+    var grain_list = []
+    var grain_item_dic = {}
+    var grain_item_dic2 = {}
+    self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , grain_curr_date],
+                                                                                    ['state', 'in', ['draft','confirm']]]);
     self.grain_dataset.read_slice([], {'domain': []}).done(function(grain_records) {
     	_.each(grain_records, function(grain_r){
     		self.grain_line_dataset = new instance.web.DataSetSearch(self, 'gorder.tacking.line', {}, [['id','in', grain_r.gorder_tacking_line_ids]]);
     	    self.grain_line_dataset.read_slice([], {'domain': []}).done(function(grain_line_rec) {
     	    	grain_val_list = []
+    	    	grain_qty = 0
+    	    	grain_list = grain_line_rec
     	    	_.each(grain_line_rec, function(grain_v){
     	    		grain_product_list.push(grain_v.product_id[1])
     				grain_val_list.push({'id': grain_v.id,
@@ -82,7 +112,20 @@ openerp.web_manikarnika = function(instance) {
 				  	   'product_id': grain_v.product_id[0],
 				  	   'qty': grain_v.order_qty,
 				  	   'custome_nm': grain_r.partner_id[1]})
+				  	 grain_qty = grain_qty + grain_v.order_qty
+				  	 if ( grain_v.product_id[0] in grain_item_dic2)
+			  		 {
+				  		 total = (grain_item_dic2[grain_v.product_id[0]] + grain_v.order_qty)
+				  		 grain_item_dic[grain_v.product_id[1]] = [{'qty': total}]
+				  		 grain_item_dic2[grain_v.product_id[0]] = total
+			  		 }
+				  	 else
+				  	 {
+				  		grain_item_dic[grain_v.product_id[1]] = [{'qty': grain_v.order_qty}]
+				  		grain_item_dic2[grain_v.product_id[0]] = grain_v.order_qty
+				  	 }
     	    	});
+    	    	grain_val_list.push({'grain_qty':grain_qty})
     	    	grain_order_dic[grain_r.partner_id[1]] = grain_val_list
     	    });
     	});
@@ -102,6 +145,8 @@ openerp.web_manikarnika = function(instance) {
                 if($.inArray(element, grain_product_id_list) === -1) grain_product_id_list.push(element);
             });
             this.grain_product = grain_product_id_list
+            this.grains_default_qty = grain_list
+            this.grain_item_dic = grain_item_dic
         },
         start: function() {
         },
