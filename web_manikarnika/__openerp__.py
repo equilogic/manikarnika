@@ -25,7 +25,7 @@
     'author': 'Serpent Consulting Services PVT. LTD.',
     'category': 'web',
     'website': 'http://www.serpentcs.com',
-    'description': 'Web',
+    'description': 'Manikarnika and Grains Delivery Schedule View.',
     'license': '',
     'summary': '',
     'depends': ['web', 'manikarnika_order'],

@@ -74,30 +74,29 @@
                      <table width="100%" border="1">
                         <tr>
                             <td>
-                                
                             </td>
-                            <t t-foreach="widget.product" t-as="prod">
+                            <t t-foreach="widget.grain_product" t-as="g_prod">
                                 <td style="background-color:greenyellow;">
-                                    <h4><t t-esc="prod"></t></h4>
+                                    <h4><t t-esc="g_prod"></t></h4>
                                 </td>
                             </t>
                             <!-- <td style="background-color: darkkhaki">
                                 <h4>Total</h4>
                             </td> -->
                         </tr>
-                        <t t-foreach="widget.orders" t-as="order">
+                        <t t-foreach="widget.grain_orders" t-as="g_order">
                             <tr>
                                  <td style="background-color: cornflowerblue;">
-                                     <h4><t t-esc="order"/></h4>
+                                     <h4><t t-esc="g_order"/></h4>
                                  </td>
-                                 <t t-foreach="widget.orders[order]" t-as="column">
+                                 <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
                                      <td>
-                                         <input type="text" class="form-control" t-att-id="column['id']" model="gorder.tacking.line" t-att-value="column['qty']"
+                                         <input type="text" class="form-control" t-att-id="g_column['id']" model="gorder.tacking.line" t-att-value="g_column['qty']"
                                            />
                                      </td>
                                  </t>
                              </tr>
-                        </t>
+                        </t> 
                     </table>
                  </td>
                  <td width="10%">
@@ -105,5 +104,5 @@
                  </td>
              </tr>
          </table>
-    </t>
+    </t> 
 </templates>
