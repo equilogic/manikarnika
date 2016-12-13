@@ -7,11 +7,17 @@
             <field name="tag">manikarnika.homepage</field> 
         </record>
         <menuitem action="manikarnika_action" id="menu_of_manikarnika_action" parent="manikarnika_order.order_tacking_menu"/>
-        
+
         <record id="grains_action" model="ir.actions.client">
             <field name="name">Grains</field>
             <field name="tag">grains.homepage</field> 
         </record>
         <menuitem action="grains_action" id="menu_of_grains_action" parent="manikarnika_order.order_tacking_menu"/>
+
+        <record id="vehicle_action" model="ir.actions.client">
+            <field name="name">Vehicle Allocation</field>
+            <field name="tag">vehicle.homepage</field> 
+        </record>
+        <menuitem action="vehicle_action" id="menu_of_vehicle_action" parent="manikarnika_order.order_tacking_menu"/>
     </data>
 </openerp>

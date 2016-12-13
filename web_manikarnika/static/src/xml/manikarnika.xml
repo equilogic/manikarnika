@@ -157,5 +157,18 @@
                  </td>
              </tr>
          </table>
-    </t> 
+    </t>
+    <t t-name="VehicleTemp">
+         <table width="100%">
+             <tr>
+                 <td width="10%">
+                     
+                 </td>
+                 <td colspan="6"><h1><center> Vehicle Allocation </center></h1> </td>
+                 <td width="10%">
+                     
+                 </td>
+             </tr>
+         </table>
+    </t>
 </templates>

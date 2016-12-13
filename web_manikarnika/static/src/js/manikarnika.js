@@ -14,6 +14,7 @@ openerp.web_manikarnika = function(instance) {
     var product_list = []
     var product_id_list = []
     var manik_list = []
+    var check = 0
     self.manik_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , curr_date],
                                                                                     ['state', 'in', ['draft','confirm']]]);
     self.manik_dataset.read_slice([], {'domain': []}).done(function(records) {
@@ -25,6 +26,7 @@ openerp.web_manikarnika = function(instance) {
     	    	manik_qty = 0
     	    	product_id = 0
     	    	_.each(line_rec, function(v){
+    	    		check = 1
     	    		product_list.push(v.product_id[1])
     				val_list.push({'id': v.id,
 					   'customer_id':r.partner_id[0],
@@ -50,7 +52,7 @@ openerp.web_manikarnika = function(instance) {
     	    });
     	});
     });
-
+    
     instance.web.client_actions.add('manikarnika.homepage', 'instance.web_manikarnika.action');
     instance.web_manikarnika.action = instance.web.Widget.extend({
     	events: {
@@ -67,6 +69,13 @@ openerp.web_manikarnika = function(instance) {
             this.product = product_id_list
             this.default_qty = manik_list
             this.item_dic = item_dic
+            if (check == 0 ){
+        		var model = new instance.web.Model("order.tacking");
+            	model.call('order_tracking_create',{context: new instance.web.CompoundContext()}).then(function(result){
+            		location.reload(true)
+            	});
+        		
+            }
         },
         start: function() {
         },
@@ -95,6 +104,7 @@ openerp.web_manikarnika = function(instance) {
     var grain_list = []
     var grain_item_dic = {}
     var grain_item_dic2 = {}
+    var grain_check = 0
     self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , grain_curr_date],
                                                                                     ['state', 'in', ['draft','confirm']]]);
     self.grain_dataset.read_slice([], {'domain': []}).done(function(grain_records) {
@@ -105,6 +115,7 @@ openerp.web_manikarnika = function(instance) {
     	    	grain_qty = 0
     	    	grain_list = grain_line_rec
     	    	_.each(grain_line_rec, function(grain_v){
+    	    		grain_check = 1
     	    		grain_product_list.push(grain_v.product_id[1])
     				grain_val_list.push({'id': grain_v.id,
 					   'customer_id':grain_r.partner_id[0],
@@ -147,6 +158,13 @@ openerp.web_manikarnika = function(instance) {
             this.grain_product = grain_product_id_list
             this.grains_default_qty = grain_list
             this.grain_item_dic = grain_item_dic
+            if (grain_check == 0 )
+            {
+        		var model = new instance.web.Model("order.tacking");
+            	model.call('order_tracking_create',{context: new instance.web.CompoundContext()}).then(function(result){
+            		location.reload(true)
+            	});
+            }
         },
         start: function() {
         },
@@ -160,5 +178,24 @@ openerp.web_manikarnika = function(instance) {
         	self.grain_master_dataset.write(id, {'order_qty': parseFloat(order_qty)})
         },
     });
+    
+//    ************************** Vehicle Allocation *****************************
+    
+    
+    
+    instance.web.client_actions.add('vehicle.homepage', 'instance.web_manikarnika.vehicle_action');
+    instance.web_manikarnika.vehicle_action = instance.web.Widget.extend({
+    	events: {
+        },
+        template: "VehicleTemp",
+        init: function(parent, name) {
+            this._super(parent);
+            var self = this
+        },
+        start: function() {
+        },
+    });
 
 };
+
+//location.reload(true)
