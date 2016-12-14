@@ -23,17 +23,24 @@ from datetime import datetime, date, timedelta
 from openerp import models, fields, api
 from openerp.exceptions import Warning,ValidationError
 
+
 class order_tackinig(models.Model):
     _name='order.tacking'
     
     _rec_name = 'partner_id'
     
     partner_id = fields.Many2one('res.partner','Customer Name')
-    order_date = fields.Date('Order Date',default=date.today().strftime('%Y-%m-%d'))
-    morder_tacking_line_ids = fields.One2many('morder.tacking.line','order_tacking_id','Manikarnika Order Tacking Line')
-    gorder_tacking_line_ids = fields.One2many('gorder.tacking.line','order_tacking_id','Gariners Order Tacking Line')
+    order_date = fields.Date('Order Date',
+                             default=date.today().strftime('%Y-%m-%d'))
+    morder_tacking_line_ids = fields.One2many('morder.tacking.line',
+                                              'order_tacking_id',
+                                              'Manikarnika Order Tacking Line')
+    gorder_tacking_line_ids = fields.One2many('gorder.tacking.line',
+                                              'order_tacking_id',
+                                              'Gariners Order Tacking Line')
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirm'),
-                              ('complete', "Complete"), ('cancel', 'Cancel')], string="State", default='draft')
+                              ('complete', "Complete"), ('cancel', 'Cancel')],
+                             string="State", default='draft')
     
     @api.multi
     def ord_track_draft_to_confirm(self):
@@ -135,10 +142,11 @@ class order_tackinig(models.Model):
             if GR_products:
                 GR_lst = self.get_order_tarcking_lines(GR_products)
                 self.gorder_tacking_line_ids = GR_lst
-    
+
+
 class morder_tacking_line(models.Model):
     _name='morder.tacking.line'
-    
+
     _rec_name = 'serial_no'
     order_tacking_id = fields.Many2one('Order Tacking')
     serial_no = fields.Char('SI')
@@ -157,7 +165,7 @@ class morder_tacking_line(models.Model):
             self.default_order_qty = product.default_qty or 0.0
             self.order_price = product.lst_price or 0.0
             self.order_qty = 1
-    
+
     @api.onchange('order_qty')
     def onchange_order_qty(self):
         if self.order_qty:
@@ -167,6 +175,7 @@ class morder_tacking_line(models.Model):
                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
 #            if (self.order_qty % self.default_order_qty) != 0.0:
 #                raise ValidationError('You can take order qty in the multiples of %s.' % self.default_order_qty)
+
 
 class gorder_tacking_line(models.Model):
     _name='gorder.tacking.line'
@@ -194,23 +203,50 @@ class gorder_tacking_line(models.Model):
     def onchange_order_qty(self):
         if self.order_qty:
             if self.order_qty > self.qty_aval:
-                raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
+                raise ValidationError('''You can not take "Order qty" more than 
+                                        "Qty On Hand" !''')
             if self.order_qty < self.default_order_qty:
-                raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
+                raise ValidationError('''You can not take "Order qty" less than 
+                                        "Default Order Qty" !''')
             if (self.order_qty % self.default_order_qty) != 0.0:
-                raise ValidationError('You can take order qty in the multiples of %s.' % self.default_order_qty)
-    
+                raise ValidationError('''You can take order qty in the 
+                                        multiples of %s.'''
+                                        % self.default_order_qty)
+
+
 class product_template(models.Model):
     _inherit = 'product.template'
     
     default_qty = fields.Float('Default Qty')
+
 
 class location_location(models.Model):
     _name = 'location.location'
     
     name = fields.Char('Name')
     code = fields.Char('Code')
-    
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
+class vehicle_allocation(models.Model):
+    _name='vehicle.allocation'
+
+    _rec_name = 'vehicle_id'
+
+    vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle Name')
+    partner_id = fields.Many2one('res.partner', 'Customer Name')
+    order_date = fields.Date('Order Date',
+                             default=date.today().strftime('%Y-%m-%d'))
+    vehicle_allocation_line_ids = fields.One2many('vehicle.allocation.line',
+                                                  'vehicle_allocation_id',
+                                                  'Vehicle allocation Line')
+
+class vehicle_allocation_line(models.Model):
+
+    _name='vehicle.allocation.line'
+
+    _rec_name = 'serial_no'
+
+    vehicle_allocation_id = fields.Many2one('vehicle.allocation','Vehicle Allocation')
+    product_id = fields.Many2one('product.product','Product')
+    order_qty = fields.Float('Order Qty')
+    serial_no = fields.Char('Serial No')

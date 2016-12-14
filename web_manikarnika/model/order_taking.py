@@ -33,8 +33,7 @@ class order_tackinig(models.Model):
         comp_obj = self.env['res.company']
         prod_obj = self.env['product.product']
         part_obj = self.env['res.partner']
-        morder_obj = self.env['morder.tacking.line']
-        partners = part_obj.search([('customer','=','TRUE')])
+        partners = part_obj.search([('customer', '=', 'True')])
         date_today = date.today().strftime('%Y-%m-%d')
         comp_MK = comp_obj.search([('comp_code','=','MK')])
         comp_GR = comp_obj.search([('comp_code','=','GR')])
@@ -48,11 +47,51 @@ class order_tackinig(models.Model):
             GR_lst = self.get_order_tarcking_lines(GR_products)
         if partners:
             for partner in partners:
-                print "::::::::partner",partner
                 o_t_id = self.create({'partner_id': partner.id,
                                       'order_date': date_today,
                                       'state': 'draft' })
                 o_t_id.morder_tacking_line_ids = MK_lst
                 o_t_id.gorder_tacking_line_ids = GR_lst
-        return {'hello':'Hello'}
+        return {}
 
+
+class vehicle_allocation(models.Model):
+
+    _inherit = 'vehicle.allocation'
+
+    @api.model
+    def vehicle_allocation_create(self):
+        part_obj = self.env['res.partner']
+        comp_obj = self.env['res.company']
+        prod_obj = self.env['product.product']
+        vehicle_obj = self.env['fleet.vehicle']
+        partners = part_obj.search([('driver','=','True')])
+        partner_id = [p.id for p in partners]
+        vehicles = vehicle_obj.search([( 'driver_id', 'in', partner_id)])
+        date_today = date.today().strftime('%Y-%m-%d')
+        comp_MK_GR = comp_obj.search([('comp_code','in',('MK','GR'))])
+        MK_GR_products = prod_obj.search([('company_id','in', comp_MK_GR.ids)])
+        MK_GR_lst = []
+        if MK_GR_products:
+            MK_GR_lst = self.get_order_tarcking_lines(MK_GR_products)
+        if vehicles:
+            for vehicle in vehicles:
+                vehicle_id = self.create({'vehicle_id': vehicle.id,
+                                        'partner_id': vehicle.driver_id.id,
+                                        'order_date': date_today})
+                print "\n\n::::vehicle_id",vehicle_id.vehicle_allocation_line_ids
+                vehicle_id.vehicle_allocation_line_ids = MK_GR_lst
+        return {}
+
+    @api.multi
+    def get_order_tarcking_lines(self, products):
+        vehicle_allocation_lines_lst = []
+        if products:
+            sr_no = 1
+            for prod in products:
+                vehicle_allocation_lines_lst.append((0, 0,
+                                                     {'serial_no': sr_no,
+                                                      'product_id': prod.id,
+                                                      'order_qty': 0.0}))
+                sr_no += 1
+        return vehicle_allocation_lines_lst

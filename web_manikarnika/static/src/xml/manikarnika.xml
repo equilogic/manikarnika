@@ -170,5 +170,75 @@
                  </td>
              </tr>
          </table>
+         <table width="100%">
+             <tr>
+                 <td width="10%">
+                     
+                 </td>
+                 <td width="80%">
+                     <table width="100%" border="1">
+                          <tr>
+                             <td rowspan="2">
+                                 
+                             </td>
+                             <t t-foreach="widget.vehicles" t-as="v">
+                                <t t-foreach="widget.vehicles[v]" t-as="v_col">
+                                    <td style="background-color:lightsalmon;text-align: center;">
+                                        <h4><t t-esc="v_col['driver_nm']"></t></h4>
+                                    </td>
+                                </t>
+                            </t>
+                            <td rowspan="2" style="background-color: darkkhaki;width: 10%;text-align: center;">
+                                <h3>Total</h3>
+                            </td>
+                         </tr>
+                        <tr>
+                            <t t-foreach="widget.vehicles" t-as="v">
+                                <t t-foreach="widget.vehicles[v]" t-as="v_col">
+                                    <td style="background-color:greenyellow;text-align: center;">
+                                        <h4><t t-esc="v_col['vehicle_nm']"></t></h4>
+                                    </td>
+                                </t>
+                            </t>
+                        </tr>
+                        <t t-foreach="widget.vehicle_products" t-as="v_pro">
+                            <tr>
+                                 <td style="background-color: cornflowerblue;width: 15%">
+                                     <h4><t t-esc="v_pro"/></h4>
+                                 </td>
+                                 <t t-foreach="widget.vehicle_products[v_pro]" t-as="v_p_col">
+                                     <t t-if="!v_p_col['total_qty']">
+                                         <td>
+                                             <input  style="text-align: right" type="text" class="form-control" t-att-id="v_p_col['id']" model="vehicle.allocation.line" t-att-value="v_p_col['qty']"
+                                                />
+                                         </td>
+                                    </t>
+                                     <t t-if="v_p_col['total_qty']">
+                                         <td style="text-align: right">
+                                             <h4><t t-esc="v_p_col['total_qty']"/></h4>
+                                         </td>
+                                     </t>
+                                 </t>
+                             </tr>
+                        </t>
+                        <tr>
+                            <td style="background-color: darkkhaki">
+                                <h4>Item Total</h4>
+                            </td>
+                            <t t-foreach="widget.vehicles" t-as="v">
+                                <t t-foreach="widget.vehicles[v]" t-as="v_col">
+                                    <td style="text-align: right;">
+                                        <h4><t t-esc="v_col['qty']"></t></h4>
+                                    </td>
+                                </t>
+                            </t>
+                        </tr>
+                    </table>
+                 </td>
+                 <td width="10%">
+                     
+                 </td>
+             </tr>
+         </table>
     </t>
 </templates>
