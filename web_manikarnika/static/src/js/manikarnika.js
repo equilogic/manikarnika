@@ -59,6 +59,7 @@ openerp.web_manikarnika = function(instance) {
     instance.web_manikarnika.action = instance.web.Widget.extend({
     	events: {
     		'keyup input': 'input_qty_keyup',
+    		'click #edit': 'input_edit_click',
         },
         template: "ManikarnikaTemp",
         init: function(parent, name) {
@@ -80,6 +81,11 @@ openerp.web_manikarnika = function(instance) {
             }
         },
         start: function() {
+        },
+        input_edit_click : function(ev)
+        {
+        	var $action = $(ev.currentTarget);
+        	$action.parent().parent().find('input').attr("readonly", false)
         },
         
         input_qty_keyup: function(ev) {
@@ -143,6 +149,7 @@ openerp.web_manikarnika = function(instance) {
     instance.web_manikarnika.grain_action = instance.web.Widget.extend({
     	events: {
     		'keyup input': 'grain_input_qty_keyup',
+    		'click #edit': 'input_edit_click',
         },
         template: "GrainsTemp",
         init: function(parent, name) {
@@ -164,6 +171,11 @@ openerp.web_manikarnika = function(instance) {
             }
         },
         start: function() {
+        },
+        input_edit_click : function(ev)
+        {
+        	var $action = $(ev.currentTarget);
+        	$action.parent().parent().find('input').attr("readonly", false)
         },
         grain_input_qty_keyup: function(ev) {
         	var self = this
@@ -228,6 +240,7 @@ openerp.web_manikarnika = function(instance) {
     instance.web_manikarnika.vehicle_action = instance.web.Widget.extend({
     	events: {
     		'keyup input': 'vehicle_input_qty_keyup',
+    		'click #edit': 'input_edit_click',
         },
         template: "VehicleTemp",
         init: function(parent, name) {
@@ -253,6 +266,11 @@ openerp.web_manikarnika = function(instance) {
         },
         start: function() {
         },
+        input_edit_click : function(ev)
+        {
+        	var $action = $(ev.currentTarget);
+        	$action.parent().parent().find('input').attr("readonly", false)
+        },
         vehicle_input_qty_keyup: function(ev) {
         	var self = this
         	var $action = $(ev.currentTarget);
@@ -263,6 +281,142 @@ openerp.web_manikarnika = function(instance) {
         	self.vehicle_master_dataset.write(id, {'order_qty': parseFloat(order_qty)})
         },
     });
+
+    //  ************************* Delivery Schedule Manikarnika *************************
+    
+    instance.web.client_actions.add('delivery.manik.homepage', 'instance.web_manikarnika.delivery_manik_action');
+    instance.web_manikarnika.delivery_manik_action = instance.web.Widget.extend({
+        template: "DeliveryManikarnikaTemp",
+        events: {
+    		'click #edit': 'input_edit_click',
+    		'keyup input': 'input_qty_keyup',
+        },
+        init: function(parent, name) {
+            this._super(parent);
+            var self = this
+            this.orders = order_dic
+            $.each(product_list, function(i, el){
+                if($.inArray(el, product_id_list) === -1) product_id_list.push(el);
+            });
+            this.product = product_id_list
+            this.default_qty = manik_list
+            this.item_dic = item_dic
+        },
+        start: function() {
+        },
+        input_edit_click : function(ev)
+        {
+        	var $action = $(ev.currentTarget);
+        	$action.parent().parent().find('input').attr("readonly", false)
+        },
+        input_qty_keyup: function(ev) {
+        	var self = this
+        	var $action = $(ev.currentTarget);
+            var id = parseInt($action.attr('id'));
+        	var model = $action.attr('model');
+        	order_qty = parseFloat(ev.target.value)
+        	self.table_master_dataset = new instance.web.DataSetSearch(self, model, {}, []);
+        	self.table_master_dataset.write(id, {'order_qty': parseFloat(order_qty)})
+        },
+    });
+    
+
+    //    ************ Delivery Schedule Grains **************
+
+    instance.web.client_actions.add('delivery.grain.homepage', 'instance.web_manikarnika.delivery_grain_action');
+    instance.web_manikarnika.delivery_grain_action = instance.web.Widget.extend({
+    	template: "DeliveryGrainsTemp",
+    	events: {
+    		'click #edit': 'input_edit_click',
+    		'keyup input': 'input_qty_keyup',
+        },
+        init: function(parent, name) {
+            this._super(parent);
+            var self = this
+            this.grain_orders = grain_order_dic
+            $.each(grain_product_list, function(j, element){
+                if($.inArray(element, grain_product_id_list) === -1) grain_product_id_list.push(element);
+            });
+            this.grain_product = grain_product_id_list
+            this.grains_default_qty = grain_list
+            this.grain_item_dic = grain_item_dic
+        },
+        start: function() {
+        },
+        input_edit_click : function(ev)
+        {
+        	var $action = $(ev.currentTarget);
+        	$action.parent().parent().find('input').attr("readonly", false)
+        },
+        input_qty_keyup: function(ev) {
+        	var self = this
+        	var $action = $(ev.currentTarget);
+            var id = parseInt($action.attr('id'));
+        	var model = $action.attr('model');
+        	order_qty = parseFloat(ev.target.value)
+        	self.table_master_dataset = new instance.web.DataSetSearch(self, model, {}, []);
+        	self.table_master_dataset.write(id, {'order_qty': parseFloat(order_qty)})
+        },
+        /*grain_button_click: function(ev) {
+        	var grain_product_id_list = []
+        	result = get_order_tacking_data('gorder.tacking.line', $("#orderdate").val())
+        	console.log("::::::result",result['o_dic'])
+        	$.each(result['p_list'], function(j, element){
+                if($.inArray(element, grain_product_id_list) === -1) grain_product_id_list.push(element);
+            });
+        	console.log(":::::::order_dic",grain_product_id_list)
+        	this.$el.append(QWeb.render('DeliveryGrainsTemp', {
+        													   grain_orders: result['o_dic'],
+        													   grain_item_dic: item_dic}));
+        },*/
+    });
+
+   /* var s_g_order_dic = {}
+    var s_g_product_list = []
+    var s_g_record_list = []
+    var s_g_item_dic = {}
+    var s_g_item_dic2 = {}
+    function get_order_tacking_data(model, date) {
+        var check = 0
+    	self.order_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , date],
+                                                                                        ['state', 'in', ['draft','confirm']]]);
+        self.order_dataset.read_slice([], {'domain': []}).done(function(order_records) {
+        	_.each(order_records, function(r){
+        		self.order_line_dataset = new instance.web.DataSetSearch(self, model, {}, [['order_tacking_id','=', r.id]]);
+        	    self.order_line_dataset.read_slice([], {'domain': []}).done(function(line_rec) {
+        	    	val_list = []
+        	    	total_qty = 0
+        	    	s_g_record_list = line_rec
+        	    	_.each(line_rec, function(v){
+        	    		check = 1
+        	    		s_g_product_list.push(v.product_id[1])
+        				val_list.push({'id': v.id,
+        							   'customer_id': r.partner_id[0],
+        							   'product_name': v.product_id[1],
+        							   'product_id': v.product_id[0],
+        							   'qty': v.order_qty,
+        							   'custome_nm': r.partner_id[1]})
+    				  	total_qty = total_qty + v.order_qty
+    				  	 if ( v.product_id[0] in s_g_item_dic2)
+    			  		 {
+    				  		 total = (s_g_item_dic2[v.product_id[0]] + v.order_qty)
+    				  		 s_g_item_dic[v.product_id[1]] = [{'qty': total}]
+    				  		s_g_item_dic2[v.product_id[0]] = total
+    			  		 }
+    				  	 else
+    				  	 {
+    				  		s_g_item_dic[v.product_id[1]] = [{'qty': v.order_qty}]
+    				  		s_g_item_dic2[v.product_id[0]] = v.order_qty
+    				  	 }
+        	    	});
+        	    	val_list.push({'total_qty': total_qty})
+        	    	s_g_order_dic[r.partner_id[1]] = val_list
+        	    });
+        	});
+        });
+        return {'o_dic': s_g_order_dic, 'p_list': s_g_product_list, 'item': s_g_item_dic,'record_list': s_g_record_list}
+    }*/
 };
+
 
 //location.reload(true)
