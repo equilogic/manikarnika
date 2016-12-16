@@ -26,9 +26,9 @@ from openerp.exceptions import Warning,ValidationError
 
 class order_tackinig(models.Model):
     _name='order.tacking'
-    
-    _rec_name = 'partner_id'
-    
+
+    name = fields.Char('Order Number', size=64, readonly=True,
+                   copy=False, index=True, default='New')
     partner_id = fields.Many2one('res.partner','Customer Name')
     order_date = fields.Date('Order Date',
                              default=date.today().strftime('%Y-%m-%d'))
@@ -41,13 +41,18 @@ class order_tackinig(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirm'),
                               ('complete', "Complete"), ('cancel', 'Cancel')],
                              string="State", default='draft')
-    
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'
+                                    ].next_by_code('order.tacking') or 'New'
+        return super(order_tackinig, self).create(vals)
+
     @api.multi
     def ord_track_draft_to_confirm(self):
         for rec in self:
             rec.state = 'confirm'
-    
-
 
     @api.multi
     def create_sale_order(self, ord_track_lines, sale_vals):

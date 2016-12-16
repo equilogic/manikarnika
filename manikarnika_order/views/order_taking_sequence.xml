@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- Sequences for Order Tacking-->
+        <record model="ir.sequence.type" id="seq_type_order_tacking">
+            <field name="name">order.tacking</field>
+            <field name="code">order.tacking</field>
+        </record>
+
+        <record model="ir.sequence" id="seq_order_tacking">
+            <field name="name">Order Tacking</field>
+            <field name="code">order.tacking</field>
+            <field name="prefix">O</field>
+            <field name="padding">5</field>
+        </record>
+
+    </data>
+</openerp>

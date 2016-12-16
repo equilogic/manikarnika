@@ -31,11 +31,11 @@
     'depends': ['sale','product','purchase', 'fleet'],
     'demo': [],
     'data': [
-             'security/ir.model.access.csv',
+            'security/ir.model.access.csv',
             'views/order_taking_view.xml',
             'views/res_partner_view.xml',
             'views/fleet_view.xml',
-            
+            'views/order_taking_sequence.xml'
     ],
     'installable': True,
     'application': False,
