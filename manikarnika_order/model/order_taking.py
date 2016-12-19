@@ -28,7 +28,7 @@ class order_tackinig(models.Model):
     _name='order.tacking'
 
     name = fields.Char('Order Number', size=64, readonly=True,
-                   copy=False, index=True, default='New')
+                   copy=False, index=True)
     partner_id = fields.Many2one('res.partner','Customer Name')
     order_date = fields.Date('Order Date',
                              default=date.today().strftime('%Y-%m-%d'))

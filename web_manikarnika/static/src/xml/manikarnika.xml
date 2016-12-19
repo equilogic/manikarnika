@@ -3,7 +3,7 @@
      <t t-name="ManikarnikaTemp">
          <table width="100%">
              <tr>
-                 <td><h1><center>Manikarnika </center></h1> </td>
+                 <td><h1><center>Manikarnika Order Tacking</center></h1> </td>
              </tr>
          </table>
          <table width="100%">
@@ -79,7 +79,7 @@
     <t t-name="GrainsTemp">
          <table width="100%">
              <tr>
-                 <td><h1><center> Grains </center></h1> </td>
+                 <td><h1><center> Grains Order Tacking</center></h1> </td>
              </tr>
          </table>
          <table width="100%">
