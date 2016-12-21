@@ -31,11 +31,12 @@
     'depends': ['sale','product','purchase', 'fleet'],
     'demo': [],
     'data': [
+             'data/order_tacking_schedular.xml',
             'security/ir.model.access.csv',
             'views/order_taking_view.xml',
             'views/res_partner_view.xml',
             'views/fleet_view.xml',
-            'views/order_taking_sequence.xml'
+            'views/order_taking_sequence.xml',
     ],
     'installable': True,
     'application': False,
