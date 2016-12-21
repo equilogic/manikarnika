@@ -30,6 +30,7 @@ class order_tackinig(models.Model):
     name = fields.Char('Order Number', size=64, readonly=True,
                    copy=False, index=True, default='New')
     partner_id = fields.Many2one('res.partner','Customer Name')
+    driver_id = fields.Many2one('res.partner','Driver Name')
     order_date = fields.Date('Order Date',
                              default=date.today().strftime('%Y-%m-%d'))
     morder_tacking_line_ids = fields.One2many('morder.tacking.line',

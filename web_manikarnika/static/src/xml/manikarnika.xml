@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-     <t t-name="ManikarnikaTemp">
+
+    <!-- **************************** Manikarnika **********************************-->
+    <t t-name="ManikarnikaTemp">
          <table width="100%">
              <tr>
                  <td><h1><center>Manikarnika </center></h1> </td>
@@ -76,6 +78,9 @@
              </tr>
          </table>
     </t>
+
+    <!-- **************************** Grains **********************************-->
+
     <t t-name="GrainsTemp">
          <table width="100%">
              <tr>
@@ -153,6 +158,9 @@
              </tr>
          </table>
     </t>
+
+    <!-- **************************** Vehicle Allocation **********************************-->
+
     <t t-name="VehicleTemp">
          <table width="100%">
              <tr>
@@ -234,13 +242,16 @@
              </tr>
          </table>
     </t>
+
+    <!-- **************************** Delivery Schedule Manikarnika  **********************************-->
+
     <t t-name="DeliveryManikarnikaTemp">
          <table width="100%">
              <tr>
                  <td colspan="3"><h1><center>Delivery Schedule Manikarnika </center></h1> </td>
              </tr>
              <tr>
-                 <td width="10%">
+                 <td width="2%">
                      
                  </td>
                  <td width="25%">
@@ -253,15 +264,7 @@
          </table>
          <table width="100%">
              <tr>
-                 <td>
-                     
-                 </td>
-                 <td>
-                     <button type="button" style="margin-top: 5px;margin-left: 20px;border: 1px solid black;visibility:hidden">Save</button>
-                 </td>
-             </tr>
-             <tr>
-                 <td width="10%">
+                 <td width="2%">
                  </td>
                  <td width="80%">
                      <table width="100%" border="1">
@@ -274,10 +277,13 @@
                                     <h4><t t-esc="qty['default_order_qty']"></t></h4>
                                 </td>
                             </t>
-                             <td rowspan="2" style="background-color: darkkhaki;width: 10%;text-align: center;">
+                            <td rowspan="2" style="width: 10%;text-align: center;">
+                                <h3>Driver</h3>
+                            </td>
+                             <td rowspan="2" style="width: 5%;text-align: center;">
                                 <h3>Shop Total</h3>
                             </td>
-                            <td rowspan="2" width="2%"></td>
+                            <td rowspan="2" colspan="2" width="1%"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.product" t-as="prod">
@@ -292,20 +298,47 @@
                                      <h4><t t-esc="order"/></h4>
                                  </td>
                                  <t t-foreach="widget.orders[order]" t-as="column">
-                                      <t t-if="!column['manik_qty']">
+                                      <t t-if="((!column['manik_qty']) and (!column['driver_list']))">
                                           <td id="ipt_td_manik">
                                               <input type="text" style="text-align: right;" class="form-control" t-att-id="column['id']" model="morder.tacking.line" t-att-value="column['qty']" readonly='readonly'></input>
                                           </td>
                                       </t>
-                                      <t t-if="column['manik_qty']">
-                                         <td style="text-align: right">
-                                             <h4><t t-esc="column['manik_qty']"/></h4>
-                                         </td>
+                                      <t t-if="(column['driver_list'])">
+                                          <td>
+                                              <select class="form-control dri" t-att-id="column['order_id']" model="order.tacking" disabled="disabled">
+                                              <option/>
+                                              <t t-foreach="column['driver_list']" t-as="driver">
+                                                  <t t-if="column.driver_id == driver.dr_id">
+                                                      <option t-att-value="driver['dr_id']" t-att-selected=" 'selected'">
+                                                        <t t-esc="driver['driver_nm']"/>
+                                                      </option>
+                                                  </t>
+                                                  <t t-if="column.driver_id != driver.dr_id">
+                                                      <option t-att-value="driver['dr_id']">
+                                                        <t t-esc="driver['driver_nm']"/>
+                                                      </option>
+                                                  </t>
+                                              </t>
+                                              <option/>
+                                              </select>
+                                          </td>
+                                     </t>
+                                     <t t-if="(column['manik_qty'] == 0)" >
+                                             <td style="text-align: right"><h4>0</h4></td>
+                                     </t>
+                                     <t t-if="column['manik_qty']">
+                                        <td style="text-align: right">
+                                            <h4><t t-esc="column['manik_qty']"/></h4>
+                                        </td>
                                      </t>
                                  </t>
                                   <td>
                                      <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
-                                 </td>  
+                                 </td>
+                                 <td>
+                                     <input type="image" id="save" style="visibility:hidden" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                 </td>
+                                  
                              </tr>
                         </t>
                         <tr>
@@ -322,32 +355,35 @@
                         </tr>
                     </table>
                  </td>
-                 <td width="10%">
+                 <td width="2%">
                      
                  </td>
              </tr>
          </table>
     </t>
+
+    <!-- **************************** Delivery Schedule Grains **********************************-->
+
     <t t-name="DeliveryGrainsTemp">
          <table width="100%">
              <tr>
                  <td colspan="3"><h1><center> Delivery Schedule Grains </center></h1> </td>
              </tr>
              <tr>
-                 <td width="10%">
+                 <td width="2%">
                      
                  </td>
                  <td width="25%">
                       <input class="form-control" style="margin-bottom: 20px;border: 1px solid black" id="orderdate" name="orderdate" placeholder="Select Date" type="date"/>
                  </td>
                  <td>
-                     <button type="button" style="margin-top: 5px;margin-left: 20px;border: 1px solid black">Search</button>
+                     <button type="button" id="search" style="margin-top: 5px;margin-left: 20px;border: 1px solid black">Search</button>
                  </td>
              </tr>
          </table>
          <table width="100%">
              <tr>
-                 <td width="10%">
+                 <td width="2%">
                      
                  </td>
                  <td width="80%">
@@ -361,10 +397,13 @@
                                     <h4><t t-esc="g_qty['default_order_qty']"></t></h4>
                                 </td>
                             </t>
-                            <td rowspan="2" style="background-color: darkkhaki;width: 10%;text-align: center;">
+                            <td rowspan="2" style="width: 10%;text-align: center;">
+                                <h3>Driver</h3>
+                            </td>
+                            <td rowspan="2" style="width: 5%;text-align: center;">
                                 <h3>Shop Total</h3>
                             </td>
-                            <td rowspan="2" width="2%"></td>
+                            <td rowspan="2" colspan="2" width="1%"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.grain_product" t-as="g_prod">
@@ -379,11 +418,34 @@
                                      <h4><t t-esc="g_order"/></h4>
                                  </td>
                                  <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
-                                     <t t-if="!g_column['grain_qty']">
+                                     <t t-if="((!g_column['grain_qty']) and (!g_column['driver_list']))">
                                          <td >
                                              <input  style="text-align: right" type="text" class="form-control" t-att-id="g_column['id']" model="gorder.tacking.line" t-att-value="g_column['qty']" readonly='readonly'
                                                 />
                                          </td>
+                                     </t>
+                                     <t t-if="(g_column['driver_list'])">
+                                          <td>
+                                              <select class="form-control dri" t-att-id="g_column['order_id']" model="order.tacking" disabled="disabled">
+                                              <option/>
+                                              <t t-foreach="g_column['driver_list']" t-as="driver">
+                                                  <t t-if="g_column.driver_id == driver.dr_id">
+                                                      <option t-att-value="driver['dr_id']" t-att-selected=" 'selected'">
+                                                        <t t-esc="driver['driver_nm']"/>
+                                                      </option>
+                                                  </t>
+                                                  <t t-if="g_column.driver_id != driver.dr_id">
+                                                      <option t-att-value="driver['dr_id']">
+                                                        <t t-esc="driver['driver_nm']"/>
+                                                      </option>
+                                                  </t>
+                                              </t>
+                                              <option/>
+                                              </select>
+                                          </td>
+                                     </t>
+                                     <t t-if="(g_column['grain_qty'] == 0)" >
+                                             <td style="text-align: right"><h4>0</h4></td>
                                      </t>
                                       <t t-if="g_column['grain_qty']">
                                          <td style="text-align: right">
@@ -393,7 +455,10 @@
                                  </t>
                                   <td>
                                      <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
-                                 </td> 
+                                 </td>
+                                 <td>
+                                     <input type="image" id="save" style="visibility:hidden" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                 </td>
                              </tr>
                         </t>
                         <tr>
@@ -410,10 +475,10 @@
                         </tr>
                     </table>
                  </td>
-                 <td width="10%">
+                 <td width="2%">
                      
                  </td>
              </tr>
          </table>
     </t>
-</templates>
+    </templates>
