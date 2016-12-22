@@ -9,7 +9,7 @@
         <menuitem id="order_tacking_configuration_menu" name="Configuration"
                     parent="order_tacking_main_menu" sequence="50" />
                             
-		<menuitem id="menu_of_vehicle_allocation" parent="order_tacking_main_menu" name="Vehicle Allocation" sequence="40"/>
+		<menuitem id="menu_of_vehicle_allocation" parent="order_tacking_main_menu" name="Vehicle Allocation" sequence="20"/>
                                             
         <!-- form view of order tacking -->
         <record id="order_tacking_form_view" model="ir.ui.view">
@@ -175,9 +175,11 @@
        		<field name="arch" type="xml">
        			<form string="Vehical Allocation">
        				<sheet>
-	       				<field name="vehicle_id"/>
-	       				<field name="order_date"/>
-	       				<field name="driver_id"/>
+       					<group colspan="4" col="4">
+		       				<field name="vehicle_id"/>
+		       				<field name="order_date"/>
+		       				<field name="driver_id"/>
+	       				</group>
                         <notebook>
                             <page string="Vehicle Allocation" >
                                 <field name="vehicle_allocation_line_ids">
@@ -214,6 +216,6 @@
         </record>   
         
         <menuitem id="vehicle_allocation_menu" name="Vehicle Allocation"
-                    action="location_action" parent="menu_of_vehicle_allocation" />                                 
+                    action="vehicle_allocation_action" parent="menu_of_vehicle_allocation" />                                 
     </data>
 </openerp>
