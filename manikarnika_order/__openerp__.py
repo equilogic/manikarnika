@@ -35,7 +35,8 @@
             'views/order_taking_view.xml',
             'views/res_partner_view.xml',
             'views/fleet_view.xml',
-            'views/order_taking_sequence.xml'
+            'views/order_taking_sequence.xml',
+            'views/route_view.xml',
     ],
     'installable': True,
     'application': False,

@@ -1,0 +1,7 @@
+ .openerp .oe_list_content td.oe_number {
+     text-align:left !important;
+}
+
+.openerp .oe_list.oe_list_editable.oe_editing .oe_form_field.oe_form_field_float input, .openerp .oe_list.oe_list_editable.oe_editing .oe_form_field.oe_form_view_integer input  {
+     text-align:left !important;
+}

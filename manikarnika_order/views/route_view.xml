@@ -1,0 +1,90 @@
+<openerp>
+    <data>
+        
+        <!-- form view of Route -->
+        <record id="route_form_view" model="ir.ui.view">
+            <field name="name">route.route.form.view</field>
+            <field name="model">route.route</field>
+            <field name="arch" type="xml">
+                <form string="Route">
+                    <sheet>
+                        <group>
+                           <field name="name" required="1"/>
+                           <field name="type"/>
+                           <field name="parent_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree view of Route -->
+        <record id="route_tree_view" model="ir.ui.view">
+            <field name="name">route.route.tree.view</field>
+            <field name="model">route.route</field>
+            <field name="arch" type="xml">
+                <tree string="Route">
+                    <field name="name" />
+                    <field name="type" />
+                    <field name="parent_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Order location Route -->
+        <record id="route_action" model="ir.actions.act_window">
+            <field name="name">Route</field>
+            <field name="res_model">route.route</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu of Route -->
+        <menuitem id="route_action_menu" name="Route"
+                    action="route_action" parent="order_tacking_menu" />
+                    
+        <!--  route vehicle mapping -->
+        <record id="route_vehicle_mapping" model="ir.ui.view">
+        	<field name="name">route.vehicle.mapping.form</field>
+        	<field name="model">route.vehicle.mapping</field>
+        	<field name="arch" type="xml">
+        		<form string="Route Vehical Mapping">
+        			<sheet>
+        				<group>
+	        				<field name="name" />
+	        				<field name="route_id"/>
+	        				<field name="fleet_id"/>
+	        				<field name="date"/>
+        				</group>
+        			</sheet>
+        		</form>
+        	</field>
+        </record>
+        
+        <!--  route vehicle mapping tree -->
+        <record id="route_vehicle_mapping_tree" model="ir.ui.view">
+        	<field name="name">route.vehicle.mapping.tree</field>
+        	<field name="model">route.vehicle.mapping</field>
+        	<field name="arch" type="xml">
+        		<tree string="Route Vehical Mapping">
+        			<field name="name" required="1"/>
+        			<field name="route_id"/>
+        			<field name="fleet_id"/>
+        			<field name="date"/>
+        		</tree>
+        	</field>
+        </record>
+        
+        <!-- Order vehicle mapping Route -->
+        <record id="route_vehicle_mapping_action" model="ir.actions.act_window">
+            <field name="name">Route Vehicle Mapping</field>
+            <field name="res_model">route.vehicle.mapping</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>    
+        
+        <!-- Menu of vehicle mapping -->
+        <menuitem id="route_vehicle_mapping_menu" name="Route Vehicle Mapping"
+                    action="route_vehicle_mapping_action" parent="order_tacking_menu" />                                
+    </data>
+</openerp>

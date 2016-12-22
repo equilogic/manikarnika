@@ -19,8 +19,26 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import order_taking
-import res_partner
-import route
+from datetime import datetime, date, timedelta
+from openerp import models, fields, api
+from openerp.exceptions import Warning,ValidationError
+
+
+class route_route(models.Model):
+    _name = 'route.route'
+    
+    name = fields.Char('Name')
+    type = fields.Selection([('main', 'Main'), ('sub_route', 'SubRoute')],
+                               string='Type', default='main')
+    parent_id = fields.Many2one('route.route', string='Main Route')
+
+class route_vehicle_mapping(models.Model):
+    _name = 'route.vehicle.mapping'
+    
+    name = fields.Char('Name')
+    route_id = fields.Many2one('route.route', 'Route')
+    fleet_id = fields.Many2one('fleet.vehicle', 'Vehicle')
+    date = fields.Date('Date')
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
