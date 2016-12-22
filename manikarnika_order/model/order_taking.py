@@ -259,6 +259,7 @@ class vehicle_allocation(models.Model):
     vehicle_allocation_line_ids = fields.One2many('vehicle.allocation.line',
                                                   'vehicle_allocation_id',
                                                   'Vehicle allocation Line')
+    
 
 class vehicle_allocation_line(models.Model):
 

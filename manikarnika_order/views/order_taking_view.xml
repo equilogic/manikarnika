@@ -7,7 +7,7 @@
                     parent="order_tacking_main_menu" sequence="1"/>
 
         <menuitem id="order_tacking_configuration_menu" name="Configuration"
-                    parent="order_tacking_main_menu" />
+                    parent="order_tacking_main_menu" sequence="50" />
                                             
         <!-- form view of order tacking -->
         <record id="order_tacking_form_view" model="ir.ui.view">

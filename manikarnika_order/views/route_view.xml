@@ -1,6 +1,9 @@
 <openerp>
     <data>
         
+        <menuitem id="order_tacking_route_and_vehicle_menu" name="Route and Vehicle"
+                    parent="order_tacking_main_menu" sequence="30" />
+                            
         <!-- form view of Route -->
         <record id="route_form_view" model="ir.ui.view">
             <field name="name">route.route.form.view</field>
@@ -41,7 +44,7 @@
 
         <!-- Menu of Route -->
         <menuitem id="route_action_menu" name="Route"
-                    action="route_action" parent="order_tacking_menu" />
+                    action="route_action" parent="order_tacking_route_and_vehicle_menu" />
                     
         <!--  route vehicle mapping -->
         <record id="route_vehicle_mapping" model="ir.ui.view">
@@ -85,6 +88,6 @@
         
         <!-- Menu of vehicle mapping -->
         <menuitem id="route_vehicle_mapping_menu" name="Route Vehicle Mapping"
-                    action="route_vehicle_mapping_action" parent="order_tacking_menu" />                                
+                    action="route_vehicle_mapping_action" parent="order_tacking_route_and_vehicle_menu" />                                
     </data>
 </openerp>
