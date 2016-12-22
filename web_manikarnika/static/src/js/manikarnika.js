@@ -468,13 +468,66 @@ openerp.web_manikarnika = function(instance) {
         });
         return {'o_dic': s_g_order_dic, 'p_list': s_g_product_list, 'item': s_g_item_dic,'record_list': s_g_record_list}
     }
+//    ************************************************Order Taking *************************************
+    
+//    ********************************* Manikarnika Order ***********************************
+    
+    manik_product_lst = []
+    manik_cust_lst = []
+    manik_order_dict = {}
+    self.manik_comp_dataset = new instance.web.DataSetSearch(self, 'res.company', {}, [['comp_code', '=' , 'MK']]);
+    self.manik_comp_dataset.read_slice([], {'domain': []}).done(function(records_com) {
+    	_.each(records_com, function(r){
+    		self.manik_product_dataset = new instance.web.DataSetSearch(self, 'product.product', {}, [['company_id', '=' , r.id]]);
+    	    self.manik_product_dataset.read_slice([], {'domain': []}).done(function(records_pro) {
+    	    	manik_product_lst = []
+    	    	_.each(records_pro, function(p){
+    	    		manik_product_lst.push({'product_nm': p.name, 'product_id': p.id, 'default_qty': p.default_qty})
+    	    	})
+    	    });
+    	})
+    });
+    
+    
+
+    self.manik_customer_dataset = new instance.web.DataSetSearch(self, 'res.partner', {}, [['customer', '=' , 'True']])
+    self.manik_customer_dataset.read_slice([], {'domain': []}).done(function(records_cus) {
+    	console.log("manik_product_lst",manik_product_lst)
+    	_.each(records_cus, function(c){
+    		manik_cust_lst = []
+    		manik_cust_lst.push({'customer_id': c.id, 'product_lst': manik_product_lst})
+    		manik_order_dict[c.name] = manik_cust_lst
+    	})
+    });
 
     instance.web.client_actions.add('manikarnika.order.homepage', 'instance.web_manikarnika.manik_order_action');
     instance.web_manikarnika.manik_order_action = instance.web.Widget.extend({
+    	events: {
+    		'click #edit': 'input_edit_click',
+    		'click #save': 'input_save_click',
+    	},
     	template: "ManikarnikaOrders",
         init: function(parent, name) {
             this._super(parent);
             var self = this;
+            this.manik_product_lst = manik_product_lst;
+            this.manik_order_dict = manik_order_dict
+        },
+        start: function() {
+        },
+        input_edit_click : function(ev)
+        {
+        	var $action = $(ev.currentTarget);
+        	$action.parent().parent().find('input').attr("readonly", false)
+        	$action.css('visibility', 'hidden')
+        	$action.parent().parent().find('#save').css('visibility', 'visible')
+        },
+        input_save_click: function(ev)
+        {
+        	var $action = $(ev.currentTarget);
+        	$action.parent().parent().find('input').attr("readonly", 'readonly')
+        	$action.css('visibility', 'hidden')
+        	$action.parent().parent().find('#edit').css('visibility', 'visible')
         },
     });
 };

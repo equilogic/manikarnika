@@ -481,10 +481,82 @@
              </tr>
          </table>
     </t>
+    
     <t t-name="ManikarnikaOrders">
          <table width="100%">
              <tr>
                  <td><h1><center>Manikarnika Orders</center></h1> </td>
+             </tr>
+         </table>
+         <table width="100%">
+             <tr>
+                 <td width="2%">
+                     
+                 </td>
+                 <td width="80%">
+                     <table width="100%" border="1">
+                         <tr>
+                             <td rowspan="2">
+                                 
+                             </td>
+                             <t t-foreach="widget.manik_product_lst" t-as="qty">
+                                 <td style="background-color:cadetblue;text-align: right;width: 8%">
+                                     <h4><t t-esc="qty['default_qty']"></t></h4>
+                                 </td>
+                             </t>
+                             <td rowspan="2" style="background-color: azure;width: 10%;text-align: center;">
+                                <h3>Shop Total</h3>
+                            </td>
+                            <td rowspan="2" colspan="2" width="2%"></td>
+                         </tr>
+                        <tr>
+                            <t t-foreach="widget.manik_product_lst" t-as="pro">
+                                <td style="background-color:azure;text-align: right;width: 8%">
+                                    <h4><t t-esc="pro['product_nm']"></t></h4>
+                                </td>
+                             </t>
+                        </tr>
+                        <t t-foreach="widget.manik_order_dict" t-as="order">
+                            <tr>
+                                <td style="background-color: cornflowerblue;width: 15%">
+                                    <h4><t t-esc="order"/></h4>
+                                </td>
+                                <t t-foreach="widget.manik_order_dict[order]" t-as="column">
+                                    <t t-if="column['product_lst']">
+                                        <t t-foreach="column['product_lst']" t-as="pro">
+                                            <td>
+                                                <input  style="text-align: right;" type="number" class="form-control" t-att-id="pro['product_id']" model="morder.tacking.line" readonly='readonly'></input>
+                                            </td>
+                                        </t>
+                                    </t>
+                                </t>
+                                <td style="text-align: right">
+                                </td>
+                                <td>
+                                    <img id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
+                                </td>
+                                 <td>
+                                     <img id="save" style="visibility:hidden" t-att-data="widget.manik_order_dict[order]" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                 </td>
+                             </tr>
+                        </t>
+                        <!-- <tr>
+                            <td style="background-color: darkkhaki">
+                                <h4>Item Total</h4>
+                            </td>
+                            <t t-foreach="widget.item_dic" t-as="val">
+                                <td style="text-align: right">
+                                    <t t-foreach="widget.item_dic[val]" t-as="column">
+                                        <h4><t t-esc="column['qty']"/></h4>
+                                    </t>
+                                </td>
+                            </t>
+                        </tr> -->
+                    </table>
+                 </td>
+                 <td width="2%">
+                     
+                 </td>
              </tr>
          </table>
     </t>
