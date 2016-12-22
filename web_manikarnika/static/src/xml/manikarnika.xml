@@ -481,4 +481,11 @@
              </tr>
          </table>
     </t>
+    <t t-name="ManikarnikaOrders">
+         <table width="100%">
+             <tr>
+                 <td><h1><center>Manikarnika Orders</center></h1> </td>
+             </tr>
+         </table>
+    </t>
     </templates>

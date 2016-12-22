@@ -253,7 +253,7 @@ class vehicle_allocation(models.Model):
     _rec_name = 'vehicle_id'
 
     vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle Name')
-    partner_id = fields.Many2one('res.partner', 'Customer Name')
+    driver_id = fields.Many2one('res.partner', 'Driver Name', domain=[('driver', '=', True)])
     order_date = fields.Date('Order Date',
                              default=date.today().strftime('%Y-%m-%d'))
     vehicle_allocation_line_ids = fields.One2many('vehicle.allocation.line',

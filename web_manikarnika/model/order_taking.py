@@ -77,8 +77,8 @@ class vehicle_allocation(models.Model):
         if vehicles:
             for vehicle in vehicles:
                 vehicle_id = self.create({'vehicle_id': vehicle.id,
-                                        'partner_id': vehicle.driver_id.id,
-                                        'order_date': date_today})
+                                          'driver_id': vehicle.driver_id.id,
+                                          'order_date': date_today})
                 print "\n\n::::vehicle_id",vehicle_id.vehicle_allocation_line_ids
                 vehicle_id.vehicle_allocation_line_ids = MK_GR_lst
         return {}
