@@ -30,6 +30,7 @@ class order_tackinig(models.Model):
     name = fields.Char('Order Number', size=64, readonly=True,
                    copy=False, index=True)
     partner_id = fields.Many2one('res.partner','Customer Name')
+    driver_id = fields.Many2one('res.partner','Driver Name')
     order_date = fields.Date('Order Date',
                              default=date.today().strftime('%Y-%m-%d'))
     morder_tacking_line_ids = fields.One2many('morder.tacking.line',
@@ -148,6 +149,20 @@ class order_tackinig(models.Model):
                 GR_lst = self.get_order_tarcking_lines(GR_products)
                 self.gorder_tacking_line_ids = GR_lst
 
+    @api.model
+    def ord_delete(self):
+        cur_date = datetime.now().strftime('%Y-%m-%d')
+        morder_line = self.env['morder.tacking.line'].search([('order_date_line','=',cur_date)])
+        gorder_line = self.env['gorder.tacking.line'].search([('order_date_line','=',cur_date)])
+        if morder_line:
+            for mline in morder_line:
+                if not mline.order_qty:
+                    mline.unlink()
+        if gorder_line:
+            for gline in gorder_line:
+                if not gline.order_qty:
+                    gline.unlink()
+        return True
 
 class morder_tacking_line(models.Model):
     _name='morder.tacking.line'

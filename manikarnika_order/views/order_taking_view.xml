@@ -32,11 +32,9 @@
                             <field name="name" class="oe_inline"/>
                         </h1>
                         <group colspan="4" col="4" >
-                            <group>
                                 <field name="partner_id" domain="[('customer','=', True)]" required="1"/>
+                                <field name="driver_id" domain="[('driver','=', True)]"/>
                                 <field name="order_date" required="1"/>
-                            </group>
-                            <group></group>
                         </group>
                         <notebook>
                             <page string="Manikarnika" >

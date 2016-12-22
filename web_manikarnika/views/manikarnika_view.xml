@@ -32,7 +32,5 @@
         </record>
         <menuitem action="vehicle_action" id="menu_of_vehicle_action" parent="manikarnika_order.order_tacking_menu" sequence="6"/>
 
-
-        
     </data>
 </openerp>
