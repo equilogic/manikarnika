@@ -235,7 +235,7 @@ openerp.web_manikarnika = function(instance) {
 				  	 }
     	    	 });
     	    	 vehicle_dic[vehicle_r.id] = [{'vehicle_nm': vehicle_r.vehicle_id[1],
-						  					  'driver_nm': vehicle_r.partner_id[1],
+						  					  'driver_nm': vehicle_r.driver_id[1],
 						  					  'qty': qty}]
     	    });
 		    
@@ -469,6 +469,14 @@ openerp.web_manikarnika = function(instance) {
         return {'o_dic': s_g_order_dic, 'p_list': s_g_product_list, 'item': s_g_item_dic,'record_list': s_g_record_list}
     }
 
+    instance.web.client_actions.add('manikarnika.order.homepage', 'instance.web_manikarnika.manik_order_action');
+    instance.web_manikarnika.manik_order_action = instance.web.Widget.extend({
+    	template: "ManikarnikaOrders",
+        init: function(parent, name) {
+            this._super(parent);
+            var self = this;
+        },
+    });
 };
 
 
