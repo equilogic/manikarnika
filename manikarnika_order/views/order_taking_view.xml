@@ -8,6 +8,8 @@
 
         <menuitem id="order_tacking_configuration_menu" name="Configuration"
                     parent="order_tacking_main_menu" sequence="50" />
+                            
+		<menuitem id="menu_of_vehicle_allocation" parent="order_tacking_main_menu" name="Vehicle Allocation" sequence="40"/>
                                             
         <!-- form view of order tacking -->
         <record id="order_tacking_form_view" model="ir.ui.view">
@@ -178,7 +180,7 @@
 	       				<field name="driver_id"/>
                         <notebook>
                             <page string="Vehicle Allocation" >
-                                <field name="Vehicle_allocation_line_ids">
+                                <field name="vehicle_allocation_line_ids">
                                     <tree string="Vehical allocation" editable="bottom">
                                         <field name="product_id" />
                                     </tree>
@@ -191,13 +193,16 @@
        </record> 
        
        <!--  vehicle allocation tree -->
-     <record id="vehicle_allocation_tree" model="ir.ui.model">
+     <record id="vehicle_allocation_tree" model="ir.ui.view">
        		<field name="name">vehicle.allocation.tree</field>
        		<field name="model">vehicle.allocation</field>
        		<field name="arch" type="xml">
-       			<field name="vehicle_id"/>
-       			<field name="order_date"/>
-       			<field name="driver_id"/>
+       			<tree string="Vehicle Allocation">
+	       			<field name="vehicle_id"/>
+	       			<field name="order_date"/>
+	       			<field name="driver_id"/>       			
+       			</tree>
+
        		</field>
        </record>      
        
@@ -209,6 +214,6 @@
         </record>   
         
         <menuitem id="vehicle_allocation_menu" name="Vehicle Allocation"
-                    action="location_action" parent="order_tacking_configuration_menu" />                                 
+                    action="location_action" parent="menu_of_vehicle_allocation" />                                 
     </data>
 </openerp>
