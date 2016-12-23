@@ -14,6 +14,19 @@
             <field name="prefix">O</field>
             <field name="padding">5</field>
         </record>
+        
+        <!-- Sequences for Vehicle allocation -->
+        <record model="ir.sequence.type" id="seq_type_vehicle_allocation">
+            <field name="name">vehicle.allocation</field>
+            <field name="code">vehicle.allocation</field>
+        </record>
+
+        <record model="ir.sequence" id="seq_vehicle_allocation">
+            <field name="name">Vehicle Allocation</field>
+            <field name="code">vehicle.allocation</field>
+            <field name="prefix">VA</field>
+            <field name="padding">5</field>
+        </record>        
 
     </data>
 </openerp>

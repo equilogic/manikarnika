@@ -250,8 +250,9 @@ class location_location(models.Model):
 class vehicle_allocation(models.Model):
     _name='vehicle.allocation'
 
-    _rec_name = 'vehicle_id'
-
+    name = fields.Char('Number', size=64, readonly=True,
+                   copy=False, index=True)
+    
     vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle Name')
     driver_id = fields.Many2one('res.partner', 'Driver Name', domain=[('driver', '=', True)])
     order_date = fields.Date('Order Date',
@@ -259,7 +260,70 @@ class vehicle_allocation(models.Model):
     vehicle_allocation_line_ids = fields.One2many('vehicle.allocation.line',
                                                   'vehicle_allocation_id',
                                                   'Vehicle allocation Line')
+    state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirm'),
+                              ('cancel', 'Cancel')],
+                              string="State", default='draft')    
+
+    def _prepare_picking(self, order, line):
+        '''
+            Prepare picking and picking line
+        '''
+        
+        picking_obj = self.env['stock.picking']
+        move_obj = self.env['stock.move']
+        picking_type = self.env['stock.picking.type'].search([('code', '=', 'internal')])
+        picking_vals = {
+                        'date': order.order_date,
+                        'origin': order.name,
+                        'move_type': 'direct',
+                        'invoce_state': 'none',
+                        'company': 1,
+                        'priority': '1',
+                        'picking_type_id': picking_type and picking_type.id or False,
+                        }
+        pick_id = picking_obj.create(picking_vals)
+        for line_id in line:
+            move_template = {
+                'name': "Internal move",
+                'product_id': line_id.product_id.id,
+                'product_uom_qty': line_id.order_qty,
+                'date': order.order_date,
+                'location_id': 12,
+                'location_dest_id': 19,
+                'picking_id': pick_id and pick_id.id or False,
+                'move_dest_id': False,
+                'state': 'draft',
+                'picking_type_id': picking_type and picking_type.id or False,
+                'procurement_id': False,
+                'origin': order.name,
+                'product_uom': 1,
+                'warehouse_id': picking_type and picking_type.warehouse_id.id,
+                'invoice_state': 'none',
+            }
+            move_obj.create(move_template)
+        return True
+     
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env['ir.sequence'
+                                    ].next_by_code('vehicle.allocation') or '/'
+        return super(vehicle_allocation, self).create(vals)
+
+    @api.multi
+    def ord_track_draft_to_confirm(self):
+        for rec in self:
+            rec._prepare_picking(rec, rec.vehicle_allocation_line_ids)
+            rec.state = 'confirm'
+
+    @api.multi
+    def ord_track_confirm_to_draft(self):
+        for rec in self:
+            rec.state = 'draft'
     
+    @api.multi
+    def ord_track_confirm_to_cancel(self):
+        for rec in self:
+            rec.state = 'cancel'    
 
 class vehicle_allocation_line(models.Model):
 
@@ -270,4 +334,7 @@ class vehicle_allocation_line(models.Model):
     vehicle_allocation_id = fields.Many2one('vehicle.allocation','Vehicle Allocation')
     product_id = fields.Many2one('product.product','Product')
     order_qty = fields.Float('Order Qty')
+    order_carton = fields.Integer('Order Cartons')
+    extra_carton = fields.Integer('Extra Cartons')
+    total_carton = fields.Integer('Total Cartons')
     serial_no = fields.Char('Serial No')
