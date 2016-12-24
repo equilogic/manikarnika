@@ -174,8 +174,18 @@
        		<field name="model">vehicle.allocation</field>
        		<field name="arch" type="xml">
        			<form string="Vehical Allocation">
+                    <header>
+                        <button string="Confirm" name="ord_track_draft_to_confirm"
+                            type="object" states="draft" class="oe_highlight"/>
+                        <button string="Reset to Draft" name="ord_track_confirm_to_draft"
+                            type="object" states="confirm" class="oe_highlight"/>
+                        <button string="Cancel" name="ord_track_confirm_to_cancel"
+                            type="object" states="confirm" class="oe_highlight"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>       			
        				<sheet>
        					<group colspan="4" col="4">
+       						<field name="name"/>
 		       				<field name="vehicle_id"/>
 		       				<field name="order_date"/>
 		       				<field name="driver_id"/>
@@ -185,7 +195,10 @@
                                 <field name="vehicle_allocation_line_ids">
                                     <tree string="Vehical allocation" editable="bottom">
                                         <field name="product_id" />
-                                        <field name="order_qty" />
+                                        <field name="order_qty"/>
+                                        <field name="order_carton"/>
+                                        <field name="extra_carton"/>
+                                        <field name="total_carton"/>
                                     </tree>
                                 </field>
                             </page>
@@ -201,6 +214,7 @@
        		<field name="model">vehicle.allocation</field>
        		<field name="arch" type="xml">
        			<tree string="Vehicle Allocation">
+       				<field name="name"/>
 	       			<field name="vehicle_id"/>
 	       			<field name="order_date"/>
 	       			<field name="driver_id"/>       			
