@@ -654,7 +654,7 @@ openerp.web_manikarnika = function(instance) {
     	    self.va_product_dataset.read_slice([], {'domain': []}).done(function(records_pro) {
     	    	_.each(records_pro, function(p){
     	    		va_pro_lst = []
-    	    		va_pro_lst.push({'product_id': c.id, 'driver_lst': va_driver_list})
+    	    		va_pro_lst.push({'product_id': p.id, 'driver_lst': va_driver_list})
     	    		va_order_dict[p.name] = va_pro_lst
     	    	})
     	    });
