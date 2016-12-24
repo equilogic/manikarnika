@@ -185,6 +185,7 @@
                                 <field name="vehicle_allocation_line_ids">
                                     <tree string="Vehical allocation" editable="bottom">
                                         <field name="product_id" />
+                                        <field name="order_qty" />
                                     </tree>
                                 </field>
                             </page>
@@ -215,7 +216,7 @@
             <field name="view_mode">tree,form</field>
         </record>   
         
-        <menuitem id="vehicle_allocation_menu" name="Vehicle Allocation"
+        <menuitem id="vehicle_allocation_menu" name="Vehicle Allocation" sequence="1"
                     action="vehicle_allocation_action" parent="menu_of_vehicle_allocation" />                                 
     </data>
 </openerp>
