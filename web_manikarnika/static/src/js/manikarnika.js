@@ -542,7 +542,9 @@ openerp.web_manikarnika = function(instance) {
         	$action.parent().parent().find('#edit').css('visibility', 'visible')
         },
     });
-//  ********************************* Vehicle Alloctaion Interface ***********************************
+
+    //  ********************************* Vehicle Alloctaion Interface ***********************************
+
     var va_driver_list = []
     var va_order_dict = {}
     self.va_customer_dataset = new instance.web.DataSetSearch(self, 'res.partner', {}, [['driver', '=' , 'True']])
@@ -551,7 +553,8 @@ openerp.web_manikarnika = function(instance) {
     		self.va_vehicle_dataset = new instance.web.DataSetSearch(self, 'fleet.vehicle', {}, [['driver_id', '=' , c.id]])
     	    self.va_vehicle_dataset.read_slice([], {'domain': []}).done(function(records_v) {
     	    	_.each(records_v, function(v){
-    	    		va_driver_list.push({'driver_nm':c.name, 'driver_id': c.id, 'vehicle_nm': v.name})
+    	    		va_driver_list.push({'driver_nm': c.name, 'driver_id': c.id, 'vehicle_nm': v.name,
+    	    							 'vehicle_id': v.id})
     	    	})
     	    });
     	})
@@ -562,20 +565,24 @@ openerp.web_manikarnika = function(instance) {
     	_.each(records_com, function(r){
     		self.va_product_dataset = new instance.web.DataSetSearch(self, 'product.product', {}, [['company_id', '=' , r.id]]);
     	    self.va_product_dataset.read_slice([], {'domain': []}).done(function(records_pro) {
+    	    	sr_n = 0
     	    	_.each(records_pro, function(p){
     	    		va_pro_lst = []
-    	    		va_pro_lst.push({'product_id': p.id, 'driver_lst': va_driver_list})
+    	    		va_pro_lst.push({'product_id': p.id,
+    	    						 'driver_lst': va_driver_list,
+    	    						 'sr_n': sr_n + 1,
+    	    						 'order_qty': 0.0})
     	    		va_order_dict[p.name] = va_pro_lst
     	    	})
     	    });
     	})
     });
 
-    /*instance.web.client_actions.add('vehicle.homepage', 'instance.web_manikarnika.vehicle_action');
+    instance.web.client_actions.add('vehicle.homepage', 'instance.web_manikarnika.vehicle_action');
     instance.web_manikarnika.vehicle_action = instance.web.Widget.extend({
     	events: {
-    		'keyup input': 'vehicle_input_qty_keyup',
     		'click #edit': 'input_edit_click',
+    		'click #save': 'input_save_click',
         },
         template: "VehicleTemp",
         init: function(parent, name) {
@@ -583,8 +590,45 @@ openerp.web_manikarnika = function(instance) {
             var self = this
             this.vehicles = va_driver_list
             this.vehicle_products = va_order_dict
-        }
-    });*/
+        },
+        start: function() {
+        },
+        input_edit_click : function(ev)
+        {
+        	var $action = $(ev.currentTarget);
+        	$action.parent().parent().find('input').attr("readonly", false)
+        	$action.css('visibility', 'hidden')
+        	$action.parent().parent().find('#save').css('visibility', 'visible')
+        },
+        input_save_click: function(ev)
+        {
+        	
+        	ev.preventDefault();
+        	var $action = $(ev.currentTarget);
+        	view = {}
+        	list_pro = []
+        	$action.parent().parent().find('td').each(function(){
+        		if($(this).find("input")){
+        			if($(this).find("input").attr('id')){
+        				list_pro.push({'vehicle_id':$(this).find("input").data('v_id'),
+        							   'driver_id': $(this).find("input").attr('id'),
+        							   'order_qty':$(this).find("input").val(),
+        							   'sr_n': $action.data('sr')})
+        			}
+				}
+        	})
+        	view[$action.data('dic')] = list_pro
+        	if(view){
+        		var model = new instance.web.Model("vehicle.allocation");
+            	model.call('vehicle_allocation_create',{context: view}).then(function(result){
+            		
+            	});
+        	}
+        	$action.parent().parent().find('input').attr("readonly", 'readonly')
+        	$action.css('visibility', 'hidden')
+        	$action.parent().parent().find('#edit').css('visibility', 'visible')
+        },
+    });
 };
 
 
@@ -633,53 +677,5 @@ self.vehicle_dataset.read_slice([], {'domain': []}).done(function(vehicle_record
 	    
 	});
 });*/
-
-/*var flag = 0
-instance.web.client_actions.add('vehicle.homepage', 'instance.web_manikarnika.vehicle_action');
-instance.web_manikarnika.vehicle_action = instance.web.Widget.extend({
-	events: {
-		'keyup input': 'vehicle_input_qty_keyup',
-		'click #edit': 'input_edit_click',
-    },
-    template: "VehicleTemp",
-    init: function(parent, name) {
-        this._super(parent);
-        var self = this
-        this.vehicles = vehicle_dic
-        if ( vehicle_check == 0 )
-        {
-    		var model = new instance.web.Model("vehicle.allocation");
-        	model.call('vehicle_allocation_create',{context: new instance.web.CompoundContext()}).then(function(result){
-        		location.reload(true)
-        	});
-        }
-        if(flag == 0){
-        	flag = 1
-        	var keys = $.map( vehicle_product_total, function( value, key ) {
-        	var lst = vehicle_product_id_dic[key]
-        	lst.push(value)
-        	vehicle_product_id_dic[key] = lst
-            });
-        }
-        this.vehicle_products = vehicle_product_id_dic
-    },
-    start: function() {
-    },
-    input_edit_click : function(ev)
-    {
-    	var $action = $(ev.currentTarget);
-    	$action.parent().parent().find('input').attr("readonly", false)
-    },
-    vehicle_input_qty_keyup: function(ev) {
-    	var self = this
-    	var $action = $(ev.currentTarget);
-        var id = parseInt($action.attr('id'));
-    	var model = $action.attr('model');
-    	order_qty = parseFloat(ev.target.value)
-    	self.vehicle_master_dataset = new instance.web.DataSetSearch(self, model, {}, []);
-    	self.vehicle_master_dataset.write(id, {'order_qty': parseFloat(order_qty)})
-    },
-});
-*/
 
 //location.reload(true)

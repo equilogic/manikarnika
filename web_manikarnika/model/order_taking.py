@@ -48,12 +48,12 @@ class order_tackinig(models.Model):
                             for mnk_lst in order.morder_tacking_line_ids:
                                 for p in valu_dic[0].values()[0]:
                                     if (int(mnk_lst.product_id.id) == int(p['product_id'])):
-                                        if int(p['order_qty']) > 0:
-                                            if int(p['order_qty']) < mnk_lst.default_order_qty:
+                                        if float(p['order_qty']) > 0:
+                                            if float(p['order_qty']) < mnk_lst.default_order_qty:
                                                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
-                                            if int(p['order_qty']) > mnk_lst.qty_aval:
+                                            if float(p['order_qty']) > mnk_lst.qty_aval:
                                                 raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
-                                            if (int(p['order_qty']) % mnk_lst.default_order_qty) != 0.0:
+                                            if (float(p['order_qty']) % mnk_lst.default_order_qty) != 0.0:
                                                 raise ValidationError('You can take order qty in the multiples of %s.' % mnk_lst.default_order_qty)
                                         mnk_lst.write({'order_qty': p['order_qty']})
                             return order.id
@@ -66,12 +66,12 @@ class order_tackinig(models.Model):
                             for grn_lst in order.gorder_tacking_line_ids:
                                 for p in valu_dic[0].values()[0]:
                                     if (int(grn_lst.product_id.id) == int(p['product_id'])):
-                                        if int(p['order_qty']) > 0:
-                                            if int(p['order_qty']) < grn_lst.default_order_qty:
+                                        if float(p['order_qty']) > 0:
+                                            if float(p['order_qty']) < grn_lst.default_order_qty:
                                                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
-                                            if int(p['order_qty']) > grn_lst.qty_aval:
+                                            if float(p['order_qty']) > grn_lst.qty_aval:
                                                 raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
-                                            if (int(p['order_qty']) % grn_lst.default_order_qty) != 0.0:
+                                            if (float(p['order_qty']) % grn_lst.default_order_qty) != 0.0:
                                                 raise ValidationError('You can take order qty in the multiples of %s.' % grn_lst.default_order_qty)
                                         grn_lst.write({'order_qty': p['order_qty']})
                             return order.id
@@ -109,12 +109,12 @@ class order_tackinig(models.Model):
             for product in products:
                 prod = prod_obj.search([('id','=',
                                                 product['product_id'])])
-                if int(product['order_qty']) > 0:
-                    if int(product['order_qty']) < prod.default_qty:
+                if float(product['order_qty']) > 0:
+                    if float(product['order_qty']) < prod.default_qty:
                         raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
-                    if int(product['order_qty']) > prod.qty_available:
+                    if float(product['order_qty']) > prod.qty_available:
                         raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
-                    if (int(product['order_qty']) % prod.default_qty) != 0.0:
+                    if (float(product['order_qty']) % prod.default_qty) != 0.0:
                         raise ValidationError('You can take order qty in the multiples of %s.' % prod.default_qty)
                 order_track_lines_lst.append((0,0,{'serial_no': sr_no,
                            'product_id': prod.id,
@@ -133,36 +133,37 @@ class vehicle_allocation(models.Model):
 
     @api.model
     def vehicle_allocation_create(self):
-        part_obj = self.env['res.partner']
-        comp_obj = self.env['res.company']
-        prod_obj = self.env['product.product']
-        vehicle_obj = self.env['fleet.vehicle']
-        partners = part_obj.search([('driver','=','True')])
-        partner_id = [p.id for p in partners]
-        vehicles = vehicle_obj.search([( 'driver_id', 'in', partner_id)])
-        date_today = date.today().strftime('%Y-%m-%d')
-        comp_MK_GR = comp_obj.search([('comp_code','in',('MK','GR'))])
-        MK_GR_products = prod_obj.search([('company_id','in', comp_MK_GR.ids)])
-        MK_GR_lst = []
-        if MK_GR_products:
-            MK_GR_lst = self.get_order_tarcking_lines(MK_GR_products)
-        if vehicles:
-            for vehicle in vehicles:
-                vehicle_id = self.create({'vehicle_id': vehicle.id,
-                                          'driver_id': vehicle.driver_id.id,
-                                          'order_date': date_today})
-                vehicle_id.vehicle_allocation_line_ids = MK_GR_lst
-        return {}
-
-    @api.multi
-    def get_order_tarcking_lines(self, products):
-        vehicle_allocation_lines_lst = []
-        if products:
-            sr_no = 1
-            for prod in products:
-                vehicle_allocation_lines_lst.append((0, 0,
-                                                     {'serial_no': sr_no,
-                                                      'product_id': prod.id,
-                                                      'order_qty': 0.0}))
-                sr_no += 1
-        return vehicle_allocation_lines_lst
+        if self._context is None:
+            self._context = {}
+        if self._context:
+            prod_obj = self.env['product.product']
+            date_today = date.today().strftime('%Y-%m-%d')
+            if self._context.values():
+                for v in self._context.values()[0]:
+                    if float(v['order_qty']) > 0:
+                        vehicles = self.search([('driver_id', '=', int(v['driver_id'])),
+                                                ('order_date','=', date_today)])
+                        if vehicles:
+                            for vehicle_id in vehicles:
+                                if vehicle_id.vehicle_allocation_line_ids:
+                                    for line in vehicle_id.vehicle_allocation_line_ids:
+                                        if line.product_id.id == int(self._context.keys()[0]):
+                                            line.write({'order_qty': v['order_qty']})
+                                        else:
+                                            vehicle_id.vehicle_allocation_line_ids = [(0, 0,
+                                                                              {'serial_no': v['sr_n'],
+                                                                               'product_id': int(self._context.keys()[0]),
+                                                                               'order_qty': v['order_qty']})]
+                                else:
+                                    vehicle_id.vehicle_allocation_line_ids = [(0, 0,
+                                                                      {'serial_no': v['sr_n'],
+                                                                       'product_id': int(self._context.keys()[0]),
+                                                                       'order_qty': v['order_qty']})]
+                        else:
+                            vehicle_id = self.create({'vehicle_id': int(v['vehicle_id']),
+                                                      'driver_id': int(v['driver_id'])})
+                            vehicle_id.vehicle_allocation_line_ids = [(0, 0,
+                                                                      {'serial_no': v['sr_n'],
+                                                                       'product_id': int(self._context.keys()[0]),
+                                                                       'order_qty': v['order_qty']})]
+                return vehicle_id.id

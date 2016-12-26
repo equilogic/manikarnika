@@ -1,89 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <!-- **************************** Grains **********************************-->
-
-    <t t-name="GrainsTemp">
-         <table width="100%">
-             <tr>
-                 <td><h1><center> Grains Order Tacking</center></h1> </td>
-             </tr>
-         </table>
-         <table width="100%">
-             <tr>
-                 <td width="10%">
-                     
-                 </td>
-                 <td width="80%">
-                     <table width="100%" border="1">
-                          <tr>
-                             <td rowspan="2">
-                                 
-                             </td>
-                             <t t-foreach="widget.grains_default_qty" t-as="g_qty">
-                                <td style="background-color:lightsalmon;text-align: right;width: 8%">
-                                    <h4><t t-esc="g_qty['default_order_qty']"></t></h4>
-                                </td>
-                            </t>
-                            <td rowspan="2" style="background-color: darkkhaki;width: 10%;text-align: center;">
-                                <h3>Shop Total</h3>
-                            </td>
-                            <td rowspan="2" width="2%"></td>
-                         </tr>
-                        <tr>
-                            <t t-foreach="widget.grain_product" t-as="g_prod">
-                                <td style="background-color:greenyellow;">
-                                    <h4><t t-esc="g_prod"></t></h4>
-                                </td>
-                            </t>
-                        </tr>
-                        <t t-foreach="widget.grain_orders" t-as="g_order">
-                            <tr>
-                                 <td style="background-color: cornflowerblue;width: 15%">
-                                     <h4><t t-esc="g_order"/></h4>
-                                 </td>
-                                 <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
-                                     <t t-if="!g_column['grain_qty']">
-                                         <td >
-                                             <input  style="text-align: right" type="text" class="form-control" t-att-id="g_column['id']" model="gorder.tacking.line" t-att-value="g_column['qty']" readonly='readonly'
-                                               />
-                                         </td>
-                                     </t>
-                                      <t t-if="g_column['grain_qty']">
-                                         <td style="text-align: right">
-                                             <h4><t t-esc="g_column['grain_qty']"/></h4>
-                                         </td>
-                                     </t>
-                                 </t>
-                                  <td>
-                                     <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
-                                 </td> 
-                             </tr>
-                        </t>
-                        <tr>
-                            <td style="background-color: darkkhaki">
-                                <h4>Item Total</h4>
-                            </td>
-                            <t t-foreach="widget.grain_item_dic" t-as="val">
-                                <td style="text-align: right">
-                                    <t t-foreach="widget.grain_item_dic[val]" t-as="column">
-                                        <h4><t t-esc="column['qty']"/></h4>
-                                    </t>
-                                </td>
-                            </t>
-                        </tr>
-                    </table>
-                 </td>
-                 <td width="10%">
-                     
-                 </td>
-             </tr>
-         </table>
-    </t>
-
     <!-- **************************** Vehicle Allocation **********************************-->
 
-    <!-- <t t-name="VehicleTemp">
+     <t t-name="VehicleTemp">
          <table width="100%">
              <tr>
                  <td><h1><center> Vehicle Allocation </center></h1> </td>
@@ -100,61 +20,77 @@
                              <td rowspan="2">
                                  
                              </td>
-                             <t t-foreach="widget.vehicles" t-as="v">
-                                <t t-foreach="widget.vehicles[v]" t-as="v_col">
-                                    <td style="background-color:lightsalmon;text-align: center;">
-                                        <h4><t t-esc="v_col['driver_nm']"></t></h4>
-                                    </td>
-                                </t>
-                            </t>
-                            <td rowspan="2" style="background-color: darkkhaki;width: 10%;text-align: center;">
+                             <t t-foreach="widget.vehicles" t-as="va">
+                                 <td style="background-color:cadetblue;text-align: right;width: 10%">
+                                     <h4><t t-esc="va['driver_nm']"></t></h4>
+                                 </td>
+                             </t>
+                            <td rowspan="2" style="background-color: azure;width: 10%;text-align: center;">
                                 <h3>Total</h3>
                             </td>
                             <td rowspan="2" width="2%"></td>
                          </tr>
                         <tr>
-                            <t t-foreach="widget.vehicles" t-as="v">
-                                <t t-foreach="widget.vehicles[v]" t-as="v_col">
-                                    <td style="background-color:greenyellow;text-align: center;">
-                                        <h4><t t-esc="v_col['vehicle_nm']"></t></h4>
-                                    </td>
-                                </t>
-                            </t>
+                            <t t-foreach="widget.vehicles" t-as="va">
+                                 <td style="background-color:azure;text-align: right;width: 10%">
+                                     <h4><t t-esc="va['vehicle_nm']"></t></h4>
+                                 </td>
+                             </t>
                         </tr>
                         <t t-foreach="widget.vehicle_products" t-as="v_pro">
                             <tr>
                                  <td style="background-color: cornflowerblue;width: 15%">
                                      <h4><t t-esc="v_pro"/></h4>
                                  </td>
-                                 <t t-foreach="widget.vehicle_products[v_pro]" t-as="v_p_col">
-                                     <t t-if="!v_p_col['total_qty']">
-                                         <td>
-                                             <input  style="text-align: right" type="text" class="form-control" t-att-id="v_p_col['id']" model="vehicle.allocation.line" t-att-value="v_p_col['qty']" readonly='readonly'
-                                                />
-                                         </td>
+                                 <t t-foreach="widget.vehicle_products[v_pro]" t-as="column">
+                                    <t t-if="column['driver_lst']">
+                                        <t t-foreach="column['driver_lst']" t-as="pro">
+                                            <td>
+                                                <input step="0.00" style="text-align: right;" type="number" class="form-control" t-att-id="pro['driver_id']" t-att-data-v_id="pro['vehicle_id']" t-att-value="column['order_qty']" readonly='readonly'></input>
+                                            </td>
+                                        </t>
                                     </t>
-                                     <t t-if="v_p_col['total_qty']">
-                                         <td style="text-align: right">
-                                             <h4><t t-esc="v_p_col['total_qty']"/></h4>
-                                         </td>
+                                   <!--  <t t-if="column['gr_qty']">
+                                        <td >
+                                            <t t-esc="column['gr_qty']"/>
+                                        </td>
+                                    </t>
+                                    <t t-if="!column['gr_qty']">
+                                        <td style="text-align: right">
+                                        </td>
+                                    </t>-->
+                                    <td>
+                                        <img id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
+                                    </td>
+                                    <t t-if="column['product_id']">
+                                        <td>
+                                            <img id="save" style="visibility:hidden" t-att-data-sr="column['sr_n']" t-att-data-dic="column['product_id']" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                        </td>
+                                    </t>
+                                     <!-- <t t-if="column['gr_qty']">
+                                        <td>
+                                            <img id="created" style="height: 16px; width: 16px;" src="/..//manikarnika/web_manikarnika/static/img/validate.png"/>
+                                        </td>
                                      </t>
+                                     <t t-if="!column['gr_qty']">
+                                        <td style="text-align: right">
+                                            <img id="notcreated" style="height: 16px; width: 16px;" src="/..//manikarnika/web_manikarnika/static/img/redcross.png"/>
+                                        </td>
+                                    </t>  -->
                                  </t>
-                                  <td>
-                                     <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
-                                 </td> 
                              </tr>
                         </t>
                         <tr>
                             <td style="background-color: darkkhaki">
                                 <h4>Item Total</h4>
                             </td>
-                            <t t-foreach="widget.vehicles" t-as="v">
+                            <!-- <t t-foreach="widget.vehicles" t-as="v">
                                 <t t-foreach="widget.vehicles[v]" t-as="v_col">
                                     <td style="text-align: right;">
                                         <h4><t t-esc="v_col['qty']"></t></h4>
                                     </td>
                                 </t>
-                            </t>
+                            </t> -->
                         </tr>
                     </table>
                  </td>
@@ -163,7 +99,7 @@
                  </td>
              </tr>
          </table>
-    </t> -->
+    </t> 
 
     <!-- **************************** Delivery Schedule Manikarnika  **********************************-->
 
