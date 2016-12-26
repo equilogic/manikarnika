@@ -22,7 +22,7 @@
 
 from openerp import models, api
 from datetime import datetime, date, timedelta
-
+from openerp.exceptions import Warning,ValidationError
 
 class order_tackinig(models.Model):
 
@@ -48,6 +48,11 @@ class order_tackinig(models.Model):
                             for mnk_lst in order.morder_tacking_line_ids:
                                 for p in valu_dic[0].values()[0]:
                                     if (int(mnk_lst.product_id.id) == int(p['product_id'])):
+                                        if int(p['order_qty']) > 0:
+                                            if int(p['order_qty']) < mnk_lst.default_order_qty:
+                                                raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
+                                            if int(p['order_qty']) > mnk_lst.qty_aval:
+                                                raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
                                         mnk_lst.write({'order_qty': p['order_qty']})
                             return order.id
                         for products in valu_dic[0].values():
@@ -59,6 +64,11 @@ class order_tackinig(models.Model):
                             for grn_lst in order.gorder_tacking_line_ids:
                                 for p in valu_dic[0].values()[0]:
                                     if (int(grn_lst.product_id.id) == int(p['product_id'])):
+                                        if int(p['order_qty']) > 0:
+                                            if int(p['order_qty']) < grn_lst.default_order_qty:
+                                                raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
+                                            if int(p['order_qty']) > grn_lst.qty_aval:
+                                                raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
                                         grn_lst.write({'order_qty': p['order_qty']})
                             return order.id
                         for products in valu_dic[0].values():
@@ -95,6 +105,11 @@ class order_tackinig(models.Model):
             for product in products:
                 prod = prod_obj.search([('id','=',
                                                 product['product_id'])])
+                if int(product['order_qty']) > 0:
+                    if int(product['order_qty']) < prod.default_qty:
+                        raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
+                    if int(product['order_qty']) > prod.qty_available:
+                        raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
                 order_track_lines_lst.append((0,0,{'serial_no': sr_no,
                            'product_id': prod.id,
                            'qty_aval': prod.qty_available or 0.0,
