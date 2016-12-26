@@ -53,6 +53,8 @@ class order_tackinig(models.Model):
                                                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
                                             if int(p['order_qty']) > mnk_lst.qty_aval:
                                                 raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
+                                            if (int(p['order_qty']) % mnk_lst.default_order_qty) != 0.0:
+                                                raise ValidationError('You can take order qty in the multiples of %s.' % mnk_lst.default_order_qty)
                                         mnk_lst.write({'order_qty': p['order_qty']})
                             return order.id
                         for products in valu_dic[0].values():
@@ -69,6 +71,8 @@ class order_tackinig(models.Model):
                                                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
                                             if int(p['order_qty']) > grn_lst.qty_aval:
                                                 raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
+                                            if (int(p['order_qty']) % grn_lst.default_order_qty) != 0.0:
+                                                raise ValidationError('You can take order qty in the multiples of %s.' % grn_lst.default_order_qty)
                                         grn_lst.write({'order_qty': p['order_qty']})
                             return order.id
                         for products in valu_dic[0].values():
@@ -110,6 +114,8 @@ class order_tackinig(models.Model):
                         raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
                     if int(product['order_qty']) > prod.qty_available:
                         raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
+                    if (int(product['order_qty']) % prod.default_qty) != 0.0:
+                        raise ValidationError('You can take order qty in the multiples of %s.' % prod.default_qty)
                 order_track_lines_lst.append((0,0,{'serial_no': sr_no,
                            'product_id': prod.id,
                            'qty_aval': prod.qty_available or 0.0,

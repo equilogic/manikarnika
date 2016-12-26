@@ -83,7 +83,7 @@
 
     <!-- **************************** Vehicle Allocation **********************************-->
 
-    <t t-name="VehicleTemp">
+    <!-- <t t-name="VehicleTemp">
          <table width="100%">
              <tr>
                  <td><h1><center> Vehicle Allocation </center></h1> </td>
@@ -163,7 +163,7 @@
                  </td>
              </tr>
          </table>
-    </t>
+    </t> -->
 
     <!-- **************************** Delivery Schedule Manikarnika  **********************************-->
 

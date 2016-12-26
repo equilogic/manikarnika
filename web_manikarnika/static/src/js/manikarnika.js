@@ -113,98 +113,6 @@ openerp.web_manikarnika = function(instance) {
     	});
     });
     
-//    ************************** Vehicle Allocation *****************************
-    
-    var vehicle_dic = {}
-    var vehicle_product_id_dic = {}
-    var vehicle_product_id_dic2 = {}
-    var vehicle_product_total = {}
-    var vehicle_check = 0
-    var vehicle_qty = 0
-    self.vehicle_dataset = new instance.web.DataSetSearch(self, 'vehicle.allocation', {}, [['order_date', '=' , curr_date]]);
-    self.vehicle_dataset.read_slice([], {'domain': []}).done(function(vehicle_records) {
-    	_.each(vehicle_records, function(vehicle_r){
-    		vehicle_check = 1
-    		self.vehicle_line_dataset = new instance.web.DataSetSearch(self, 'vehicle.allocation.line', {}, [['vehicle_allocation_id','=', vehicle_r.id]]);
-    		self.vehicle_line_dataset.read_slice([], {}).done(function(vehicle_line_rec) {
-		    	qty = 0
-    	    	 _.each(vehicle_line_rec, function(vehicle_v){
-    	    		 var vehicle_val_list = []
-    	    		 qty = qty + vehicle_v.order_qty
-					 if (vehicle_v.product_id[1] in vehicle_product_id_dic2)
-			  		 {
-						 total = (vehicle_product_id_dic2[vehicle_v.product_id[1]] + vehicle_v.order_qty)
-						 vehicle_val_list = vehicle_product_id_dic[vehicle_v.product_id[1]]
-						 vehicle_val_list.push({'id': vehicle_v.id,
-							 					'qty': vehicle_v.order_qty,
-							 					'product_name': vehicle_v.product_id[1]})
-						 vehicle_product_id_dic[vehicle_v.product_id[1]] = vehicle_val_list
-						 vehicle_product_id_dic2[vehicle_v.product_id[1]] = total
-						 vehicle_product_total[vehicle_v.product_id[1]] = {'total_qty': total}
-			  		 }
-				  	 else
-				  	 {
-				  		vehicle_product_id_dic[vehicle_v.product_id[1]] = [{'id': vehicle_v.id,
-				  															'qty': vehicle_v.order_qty,
-				  															'product_name': vehicle_v.product_id[1]}]
-				  		vehicle_product_id_dic2[vehicle_v.product_id[1]] = vehicle_v.order_qty
-				  		vehicle_product_total[vehicle_v.product_id[1]] = {'total_qty': vehicle_v.order_qty}
-				  	 }
-    	    	 });
-    	    	 vehicle_dic[vehicle_r.id] = [{'vehicle_nm': vehicle_r.vehicle_id[1],
-						  					  'driver_nm': vehicle_r.driver_id[1],
-						  					  'qty': qty}]
-    	    });
-		    
-    	});
-    });
-    
-    var flag = 0
-    instance.web.client_actions.add('vehicle.homepage', 'instance.web_manikarnika.vehicle_action');
-    instance.web_manikarnika.vehicle_action = instance.web.Widget.extend({
-    	events: {
-    		'keyup input': 'vehicle_input_qty_keyup',
-    		'click #edit': 'input_edit_click',
-        },
-        template: "VehicleTemp",
-        init: function(parent, name) {
-            this._super(parent);
-            var self = this
-            this.vehicles = vehicle_dic
-            /*if ( vehicle_check == 0 )
-            {
-        		var model = new instance.web.Model("vehicle.allocation");
-            	model.call('vehicle_allocation_create',{context: new instance.web.CompoundContext()}).then(function(result){
-            		location.reload(true)
-            	});
-            }*/
-            if(flag == 0){
-            	flag = 1
-            	var keys = $.map( vehicle_product_total, function( value, key ) {
-            	var lst = vehicle_product_id_dic[key]
-            	lst.push(value)
-            	vehicle_product_id_dic[key] = lst
-                });
-            }
-            this.vehicle_products = vehicle_product_id_dic
-        },
-        start: function() {
-        },
-        input_edit_click : function(ev)
-        {
-        	var $action = $(ev.currentTarget);
-        	$action.parent().parent().find('input').attr("readonly", false)
-        },
-        vehicle_input_qty_keyup: function(ev) {
-        	var self = this
-        	var $action = $(ev.currentTarget);
-            var id = parseInt($action.attr('id'));
-        	var model = $action.attr('model');
-        	order_qty = parseFloat(ev.target.value)
-        	self.vehicle_master_dataset = new instance.web.DataSetSearch(self, model, {}, []);
-        	self.vehicle_master_dataset.write(id, {'order_qty': parseFloat(order_qty)})
-        },
-    });
 
     //  ************************* Delivery Schedule Manikarnika *************************
     
@@ -265,8 +173,6 @@ openerp.web_manikarnika = function(instance) {
         	self.ord_dataset.write(id, {'driver_id': dri_id})
         }
     });
-    
-
     //    ************ Delivery Schedule Grains **************
     instance.web_manikarnika.delivery_grain_action = instance.web.Widget.extend({
     	template: "DeliveryGrainsTemp",
@@ -665,8 +571,115 @@ openerp.web_manikarnika = function(instance) {
     	})
     });
 
-    
+    /*instance.web.client_actions.add('vehicle.homepage', 'instance.web_manikarnika.vehicle_action');
+    instance.web_manikarnika.vehicle_action = instance.web.Widget.extend({
+    	events: {
+    		'keyup input': 'vehicle_input_qty_keyup',
+    		'click #edit': 'input_edit_click',
+        },
+        template: "VehicleTemp",
+        init: function(parent, name) {
+            this._super(parent);
+            var self = this
+            this.vehicles = va_driver_list
+            this.vehicle_products = va_order_dict
+        }
+    });*/
 };
 
+
+//************************** Vehicle Allocation *****************************
+
+/*var vehicle_dic = {}
+var vehicle_product_id_dic = {}
+var vehicle_product_id_dic2 = {}
+var vehicle_product_total = {}
+var vehicle_check = 0
+var vehicle_qty = 0
+self.vehicle_dataset = new instance.web.DataSetSearch(self, 'vehicle.allocation', {}, [['order_date', '=' , curr_date]]);
+self.vehicle_dataset.read_slice([], {'domain': []}).done(function(vehicle_records) {
+	_.each(vehicle_records, function(vehicle_r){
+		vehicle_check = 1
+		self.vehicle_line_dataset = new instance.web.DataSetSearch(self, 'vehicle.allocation.line', {}, [['vehicle_allocation_id','=', vehicle_r.id]]);
+		self.vehicle_line_dataset.read_slice([], {}).done(function(vehicle_line_rec) {
+	    	qty = 0
+	    	 _.each(vehicle_line_rec, function(vehicle_v){
+	    		 var vehicle_val_list = []
+	    		 qty = qty + vehicle_v.order_qty
+				 if (vehicle_v.product_id[1] in vehicle_product_id_dic2)
+		  		 {
+					 total = (vehicle_product_id_dic2[vehicle_v.product_id[1]] + vehicle_v.order_qty)
+					 vehicle_val_list = vehicle_product_id_dic[vehicle_v.product_id[1]]
+					 vehicle_val_list.push({'id': vehicle_v.id,
+						 					'qty': vehicle_v.order_qty,
+						 					'product_name': vehicle_v.product_id[1]})
+					 vehicle_product_id_dic[vehicle_v.product_id[1]] = vehicle_val_list
+					 vehicle_product_id_dic2[vehicle_v.product_id[1]] = total
+					 vehicle_product_total[vehicle_v.product_id[1]] = {'total_qty': total}
+		  		 }
+			  	 else
+			  	 {
+			  		vehicle_product_id_dic[vehicle_v.product_id[1]] = [{'id': vehicle_v.id,
+			  															'qty': vehicle_v.order_qty,
+			  															'product_name': vehicle_v.product_id[1]}]
+			  		vehicle_product_id_dic2[vehicle_v.product_id[1]] = vehicle_v.order_qty
+			  		vehicle_product_total[vehicle_v.product_id[1]] = {'total_qty': vehicle_v.order_qty}
+			  	 }
+	    	 });
+	    	 vehicle_dic[vehicle_r.id] = [{'vehicle_nm': vehicle_r.vehicle_id[1],
+					  					  'driver_nm': vehicle_r.driver_id[1],
+					  					  'qty': qty}]
+	    });
+	    
+	});
+});*/
+
+/*var flag = 0
+instance.web.client_actions.add('vehicle.homepage', 'instance.web_manikarnika.vehicle_action');
+instance.web_manikarnika.vehicle_action = instance.web.Widget.extend({
+	events: {
+		'keyup input': 'vehicle_input_qty_keyup',
+		'click #edit': 'input_edit_click',
+    },
+    template: "VehicleTemp",
+    init: function(parent, name) {
+        this._super(parent);
+        var self = this
+        this.vehicles = vehicle_dic
+        if ( vehicle_check == 0 )
+        {
+    		var model = new instance.web.Model("vehicle.allocation");
+        	model.call('vehicle_allocation_create',{context: new instance.web.CompoundContext()}).then(function(result){
+        		location.reload(true)
+        	});
+        }
+        if(flag == 0){
+        	flag = 1
+        	var keys = $.map( vehicle_product_total, function( value, key ) {
+        	var lst = vehicle_product_id_dic[key]
+        	lst.push(value)
+        	vehicle_product_id_dic[key] = lst
+            });
+        }
+        this.vehicle_products = vehicle_product_id_dic
+    },
+    start: function() {
+    },
+    input_edit_click : function(ev)
+    {
+    	var $action = $(ev.currentTarget);
+    	$action.parent().parent().find('input').attr("readonly", false)
+    },
+    vehicle_input_qty_keyup: function(ev) {
+    	var self = this
+    	var $action = $(ev.currentTarget);
+        var id = parseInt($action.attr('id'));
+    	var model = $action.attr('model');
+    	order_qty = parseFloat(ev.target.value)
+    	self.vehicle_master_dataset = new instance.web.DataSetSearch(self, model, {}, []);
+    	self.vehicle_master_dataset.write(id, {'order_qty': parseFloat(order_qty)})
+    },
+});
+*/
 
 //location.reload(true)
