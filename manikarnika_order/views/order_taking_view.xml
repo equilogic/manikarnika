@@ -247,13 +247,6 @@
             </field>
         </record>
         
-        <!-- Menu for Vehicle -->
-        <menuitem action="fleet.fleet_vehicle_act" parent="order_tacking_route_and_vehicle_menu" id="fleet_vehicle_side_menu"/>
-        
-        <!-- Menu for Driver -->
-        <menuitem action="action_driver_form" parent="order_tacking_route_and_vehicle_menu" id="fleet_vehicle_driver_side_menu"/>
-        
-        
         <!-- Inherited form view of res.user -->
         <record id="inherited_form_view_res_users" model="ir.ui.view">
             <field name="name">inherited.form.view.res.users</field>

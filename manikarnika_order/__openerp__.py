@@ -38,6 +38,7 @@
                 'views/fleet_view.xml',
                 'views/order_taking_sequence.xml',
                 'views/route_view.xml',
+                'views/received_remaining_qty_view.xml',
     ],
     'installable': True,
     'application': False,

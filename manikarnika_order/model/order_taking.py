@@ -387,3 +387,8 @@ class res_users(models.Model):
         if vals.get('is_driver',False):
             res.partner_id.write({'driver':True})
         return res
+
+
+
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

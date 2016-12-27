@@ -3,7 +3,14 @@
         
         <menuitem id="order_tacking_route_and_vehicle_menu" name="Route and Vehicle"
                     parent="order_tacking_main_menu" sequence="30" />
-                            
+		
+		<!-- Menu for Vehicle -->
+        <menuitem action="fleet.fleet_vehicle_act" parent="order_tacking_route_and_vehicle_menu" id="fleet_vehicle_side_menu"/>
+        
+        <!-- Menu for Driver -->
+        <menuitem action="action_driver_form" parent="order_tacking_route_and_vehicle_menu" id="fleet_vehicle_driver_side_menu"/>
+		
+		
         <!-- form view of Route -->
         <record id="route_form_view" model="ir.ui.view">
             <field name="name">route.route.form.view</field>

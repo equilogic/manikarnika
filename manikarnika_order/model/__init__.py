@@ -22,5 +22,11 @@
 import order_taking
 import res_partner
 import route
+import received_remain_qty
+
+
+
+
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
