@@ -2,3 +2,10 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_order_tacking,order.tacking user,model_order_tacking,base.group_user,1,1,1,1
 access_morder_tacking_line,morder.tacking.line user,model_morder_tacking_line,base.group_user,1,1,1,1
 access_morder_gorder_tacking_line,gorder.tacking.line user,model_gorder_tacking_line,base.group_user,1,1,1,1
+
+
+access_location_location,location.location user,model_location_location,base.group_user,1,1,1,1
+access_vehicle_allocation,vehicle.allocation user,model_vehicle_allocation,base.group_user,1,1,1,1
+access_vehicle_allocation_line,vehicle.allocation.line user,model_vehicle_allocation_line,base.group_user,1,1,1,1
+access_route_route,route.route user,model_route_route,base.group_user,1,1,1,1
+access_route_vehicle_mapping,route_vehicle_mapping user,model_route_vehicle_mapping,base.group_user,1,1,1,1
