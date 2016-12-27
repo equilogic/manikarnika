@@ -195,6 +195,7 @@
                                 <field name="vehicle_allocation_line_ids">
                                     <tree string="Vehical allocation" editable="bottom">
                                         <field name="product_id" />
+                                        <field name="units"/>
                                         <field name="order_qty"/>
                                         <field name="order_carton"/>
                                         <field name="extra_carton"/>
@@ -231,6 +232,42 @@
         </record>   
         
         <menuitem id="vehicle_allocation_menu" name="Vehicle Allocation"
-                    action="vehicle_allocation_action" parent="menu_of_vehicle_allocation" />                                 
+                    action="vehicle_allocation_action" parent="menu_of_vehicle_allocation" />
+                    
+
+		<!-- Inherited form view of stock.location -->
+		 <record id="inherited_form_view_stock_location" model="ir.ui.view">
+            <field name="name">inherited.form.view.stock.location</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="vehicle_id" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- Menu for Vehicle -->
+        <menuitem action="fleet.fleet_vehicle_act" parent="order_tacking_route_and_vehicle_menu" id="fleet_vehicle_side_menu"/>
+        
+        <!-- Menu for Driver -->
+        <menuitem action="action_driver_form" parent="order_tacking_route_and_vehicle_menu" id="fleet_vehicle_driver_side_menu"/>
+        
+        
+        <!-- Inherited form view of res.user -->
+        <record id="inherited_form_view_res_users" model="ir.ui.view">
+            <field name="name">inherited.form.view.res.users</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="is_driver" />
+                </xpath>
+                <xpath expr="//label[@for='login']" position="attributes">
+                    <attribute name="string">Login</attribute>
+                </xpath>
+            </field>
+        </record>
+        
     </data>
 </openerp>
