@@ -3,23 +3,16 @@
 <openerp>
     <data>
         <record id="manikarnika_order_action" model="ir.actions.client">
-            <field name="name">Manikarnika Order Taking</field>
+            <field name="name">Manikarnika Order Interface</field>
             <field name="tag">manikarnika.order.homepage</field> 
         </record>
         <menuitem action="manikarnika_order_action" id="menu_of_manikarnika_order_action" parent="manikarnika_order.order_tacking_menu" sequence="2"/>
-        
-        
-        <!-- <record id="manikarnika_action" model="ir.actions.client">
-            <field name="name">Order Taking Manikarnika</field>
-            <field name="tag">manikarnika.homepage</field> 
+
+        <record id="grains_ord_action" model="ir.actions.client">
+            <field name="name">Grains Order Interface</field>
+            <field name="tag">grains.order.homepage</field> 
         </record>
-        <menuitem action="manikarnika_action" id="menu_of_manikarnika_action" parent="manikarnika_order.order_tacking_menu" sequence="2"/>
- -->
-        <record id="grains_action" model="ir.actions.client">
-            <field name="name">Order Taking Grains</field>
-            <field name="tag">grains.homepage</field> 
-        </record>
-        <menuitem action="grains_action" id="menu_of_grains_action" parent="manikarnika_order.order_tacking_menu" sequence="3"/>
+        <menuitem action="grains_ord_action" id="menu_of_grains_ord_action" parent="manikarnika_order.order_tacking_menu" sequence="3"/>
 
         <menuitem id="menu_of_delivery_schedule" parent="manikarnika_order.order_tacking_main_menu" name="Delivery Schedule"/>
 
@@ -36,10 +29,10 @@
         <menuitem action="delivery_grain_action" id="menu_of_delivery_grain_action" parent="menu_of_delivery_schedule"/>
 
         <record id="vehicle_action" model="ir.actions.client">
-            <field name="name">Vehicle Allocation</field>
+            <field name="name">Vehicle Allocation Interface</field>
             <field name="tag">vehicle.homepage</field> 
         </record>
-        <menuitem action="vehicle_action" id="menu_of_vehicle_action" parent="manikarnika_order.order_tacking_menu" sequence="6"/>
+        <menuitem action="vehicle_action" id="menu_of_vehicle_action" parent="manikarnika_order.menu_of_vehicle_allocation" sequence="2"/>
 
     </data>
 </openerp>
