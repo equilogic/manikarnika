@@ -264,14 +264,21 @@ class vehicle_allocation(models.Model):
                               ('cancel', 'Cancel')],
                               string="State", default='draft')    
 
+    @api.multi
     def _prepare_picking(self, order, line):
         '''
             Prepare picking and picking line
         '''
-        
+        cr,uid,context = self.env.args
+        comp = self.env['res.users'].browse(uid).company_id
+        location_obj = self.env['stock.location']
+        loc_id = location_obj.search([('location_id', '!=', False), ('location_id.name', 'ilike', 'WH'),
+                    ('company_id.id', '=', comp.id), ('usage', '=', 'internal')])
+        loc_dest_id = location_obj.search([('vehicle_id','=',self.vehicle_id.id)])
         picking_obj = self.env['stock.picking']
         move_obj = self.env['stock.move']
-        picking_type = self.env['stock.picking.type'].search([('code', '=', 'internal')])
+        picking_type = self.env['stock.picking.type'].search([('code', '=', 'internal'),
+                                                              ('default_location_src_id', '=', loc_id.id)])
         picking_vals = {
                         'date': order.order_date,
                         'origin': order.name,
@@ -288,8 +295,8 @@ class vehicle_allocation(models.Model):
                 'product_id': line_id.product_id.id,
                 'product_uom_qty': line_id.order_qty,
                 'date': order.order_date,
-                'location_id': 12,
-                'location_dest_id': 19,
+                'location_id': loc_id.id or '',
+                'location_dest_id': loc_dest_id.id,
                 'picking_id': pick_id and pick_id.id or False,
                 'move_dest_id': False,
                 'state': 'draft',
@@ -328,14 +335,57 @@ class vehicle_allocation(models.Model):
 class vehicle_allocation_line(models.Model):
 
     _name='vehicle.allocation.line'
-
     _rec_name = 'serial_no'
 
     vehicle_allocation_id = fields.Many2one('vehicle.allocation','Vehicle Allocation')
     product_id = fields.Many2one('product.product','Product')
+    units = fields.Many2one('product.uom', 'Units') 
     order_qty = fields.Float('Order Qty')
     order_carton = fields.Integer('Order Cartons')
     extra_carton = fields.Integer('Extra Cartons')
     total_carton = fields.Integer('Total Cartons')
     serial_no = fields.Char('Serial No')
     order_date = fields.Date('Order Date', default=date.today().strftime('%Y-%m-%d'))
+    
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        if self.product_id:
+            self.units = self.product_id.uom_id.id
+
+class fleet_vehicle(models.Model):
+    _inherit='fleet.vehicle'
+    
+    @api.model
+    def create(self,vals):
+        loc_obj = self.env['stock.location']
+        parent_id = loc_obj.search([('name','ilike','Virtual Locations')])
+        res = super(fleet_vehicle,self).create(vals)
+        if vals.get('model_id',False):
+            model = self.env['fleet.vehicle.model'].browse(vals.get('model_id'))
+            loc_vals={
+                      'name':model.name,
+                      'location_id':parent_id.id,
+                      'usage':'transit',
+                      'vehicle_id':res.id,
+                      }
+            loc_dest_id = loc_obj.create(loc_vals)
+        return res
+
+class stock_location(models.Model):
+    _inherit = 'stock.location'
+    
+    vehicle_id = fields.Many2one('fleet.vehicle','Vehicle')
+    
+    
+class res_users(models.Model):
+    _inherit = 'res.users'
+    
+    is_driver = fields.Boolean('Is Driver')
+    
+    @api.model
+    def create(self,vals):
+        res = super(res_users,self).create(vals)
+        if vals.get('is_driver',False):
+            res.partner_id.write({'driver':True})
+        return res
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

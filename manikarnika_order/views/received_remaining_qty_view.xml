@@ -1,0 +1,98 @@
+<openerp>
+    <data>
+		<!-- form view of Received Remain Qty -->
+        <record id="received_remain_qty_form_view" model="ir.ui.view">
+            <field name="name">received.remain.qty.form.view</field>
+            <field name="model">received.remain.qty</field>
+            <field name="arch" type="xml">
+                <form string="Received Remain Qty">
+                    <header>
+                       <button string="Confirm" name="remain_qty_draft_to_confirm"
+                            type="object" states="draft" class="oe_highlight"/>
+                        <button string="Reset to Draft" name="remain_qty_confirm_to_draft"
+                            type="object" states="confirm" class="oe_highlight"/>
+                        <button string="Cancel" name="remain_qty_confirm_to_cancel"
+                            type="object" states="confirm" class="oe_highlight"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+       					<group colspan="4" col="4">
+       						<field name="number"/>
+		       				<field name="vehicle_id"/>
+		       				<field name="delivery_date"/>
+		       				<field name="driver_id"/>
+	       				</group>
+                        <notebook>
+                            <page string="Products" >
+                                <field name="received_remain_qty_line_ids">
+                                    <tree string="Products" editable="bottom">
+                                        <field name="product_id" />
+                                        <field name="total_carton"/>
+                                        <field name="deliver_carton"/>
+                                        <field name="remain_carton"/>
+                                        <field name="return_carton"/>
+                                        <field name="damaged_carton"/>
+                                        <field name="loss_carton"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+       				</sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree view of Received Remain Qty -->
+		<record id="received_remain_qty_tree_view" model="ir.ui.view">
+			<field name="name">received.remain.qty.tree.view</field>
+			<field name="model">received.remain.qty</field>
+			<field name="arch" type="xml">
+				<tree string="Received Remain Qty">
+					<field name="number"/>
+					<field name="vehicle_id"/>
+					<field name="delivery_date"/>
+					<field name="driver_id"/>
+				</tree>
+			</field>
+		</record>
+		
+        <!--  Received Remain Qty Search View -->
+        <record id="received_remain_qty_search_view" model="ir.ui.view">
+            <field name="name">received.remain.qty.search.view</field>
+            <field name="model">received.remain.qty</field>
+            <field name="arch" type="xml">
+				<search>
+					<field name="number"/>
+					<field name="vehicle_id"/>
+					<field name="delivery_date"/>
+					<field name="driver_id"/>
+					<group expand="0" string="Group By">
+                        <filter string="Vehicle" context="{'group_by':'vehicle_id'}"/>
+                        <filter string="Driver" context="{'group_by':'driver_id'}"/>
+                    </group>
+				</search>
+            </field>
+        </record>
+
+        <!-- Received Remain Qty Action -->
+        <record id="received_remain_qty_action" model="ir.actions.act_window">
+            <field name="name">Received Remain Qty</field>
+            <field name="res_model">received.remain.qty</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Received Remain Qty Menu -->
+        <menuitem id="received_remain_qty_menu" name="Received Remain Qty"
+                    action="received_remain_qty_action" parent="menu_of_vehicle_allocation" />
+	</data>
+</openerp>
+
+
+
+
+
+
+
+
+

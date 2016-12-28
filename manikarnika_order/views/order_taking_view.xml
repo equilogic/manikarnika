@@ -195,6 +195,7 @@
                                 <field name="vehicle_allocation_line_ids">
                                     <tree string="Vehical allocation" editable="bottom">
                                         <field name="product_id" />
+                                        <field name="units"/>
                                         <field name="order_qty"/>
                                         <field name="order_carton"/>
                                         <field name="extra_carton"/>
@@ -249,7 +250,35 @@
             <field name="context">{"search_default_today_allocation":1}</field>
         </record>   
         
-        <menuitem id="vehicle_allocation_menu" name="Vehicle Allocation" sequence="1"
-                    action="vehicle_allocation_action" parent="menu_of_vehicle_allocation" />                                 
+        <menuitem id="vehicle_allocation_menu" name="Vehicle Allocation"
+                    action="vehicle_allocation_action" parent="menu_of_vehicle_allocation" />
+                    
+
+		<!-- Inherited form view of stock.location -->
+		 <record id="inherited_form_view_stock_location" model="ir.ui.view">
+            <field name="name">inherited.form.view.stock.location</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="vehicle_id" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- Inherited form view of res.user -->
+        <record id="inherited_form_view_res_users" model="ir.ui.view">
+            <field name="name">inherited.form.view.res.users</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="is_driver" />
+                </xpath>
+                <xpath expr="//label[@for='login']" position="attributes">
+                    <attribute name="string">Login</attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </openerp>
