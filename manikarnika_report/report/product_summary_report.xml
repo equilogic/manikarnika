@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<openerp>
+<data>
+
+
+	<record model="ir.ui.view" id="report_product_summary_tree">
+		<field name="name">product.summary.report.tree</field>
+		<field name="model">product.summary.report</field>
+		<field name="arch" type="xml">
+			<tree string="Product Summary" create="false">
+				<field name="product_name"/>
+				<field name="taken_qty"/>
+				<field name="sold_qty"/>
+				<field name="returned_qty" />
+				<field name="wastage_qty"/>
+				<field name="uom"/>
+			</tree>
+		</field>
+	</record>
+
+	<record model="ir.actions.act_window"  id="action_product_summary">
+		<field name="name">Product Summary</field>
+		<field name="res_model">product.summary.report</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help">Product Summary</field>
+	</record>
+
+        
+</data>
+</openerp>

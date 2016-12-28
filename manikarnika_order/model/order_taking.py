@@ -346,6 +346,7 @@ class vehicle_allocation_line(models.Model):
     extra_carton = fields.Integer('Extra Cartons')
     total_carton = fields.Integer('Total Cartons')
     serial_no = fields.Char('Serial No')
+    order_date = fields.Date('Order Date', default=date.today().strftime('%Y-%m-%d'))
     
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -388,8 +389,4 @@ class res_users(models.Model):
         if vals.get('is_driver',False):
             res.partner_id.write({'driver':True})
         return res
-
-
-
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
