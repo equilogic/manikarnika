@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--   Vehicle product summary report wizard -->
+
+        <record id="view_report_vehicle_product_wizard" model="ir.ui.view">
+            <field name="name">vehicle.product.summary.wiz.form</field>
+            <field name="model">vehicle.product.summary.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Vehicle Product Summary">
+                    <group  col="4" string="Select Drive">
+                        <field name="driver_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}' domain="[('driver','=',True)]"/>
+                        <field name="vehicle_id" domain="[('driver_id','=',driver_id)]"/>
+                    </group>
+                    <footer>
+                        <button name="print_report" type="object" string="Print Report" class="oe_highlight"  invisible="1"/>
+                        <button string="Cancel" class="oe_link" special="cancel" />
+			            or
+			            <button name="view_report" type="object" string="View Report" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<!-- action of Vehicle product summary report wizard -->
+		
+        <record id="action_report_vehicle_product_wizard" model="ir.actions.act_window">
+            <field name="name">Vehicle Product Summary</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vehicle.product.summary.wiz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
+        <!-- Menu of Vehicle product summary report wizard -->
+        <menuitem id="action_report_vehicle_product_wizard_id" 
+                    action="action_report_vehicle_product_wizard" parent="menu_of_report" />
+                    
+    </data>
+</openerp>

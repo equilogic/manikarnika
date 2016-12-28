@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<openerp>
+<data>
+
+
+	<record model="ir.ui.view" id="report_order_summary_tree">
+		<field name="name">report.order.summary.tree</field>
+		<field name="model">report.order.summary</field>
+		<field name="arch" type="xml">
+			<tree string="Customer Order Summary" create="false">
+				<field name="shop_name"/>
+				<field name="product_name"/>
+				<field name="qty"/>
+				<field name="uom"/>
+				<field name="unit_price"/>
+				<field name="amt_ut" />
+				<field name="tax" invisible="1"/>
+				<field name="amt_tot"/>
+			</tree>
+		</field>
+	</record>
+
+	<record model="ir.actions.act_window"  id="action_order_summary">
+		<field name="name">Customer Order Summary</field>
+		<field name="res_model">report.order.summary</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help">Display the Customer Order Summary</field>
+	</record>
+
+
+        
+        
+</data>
+</openerp>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<menuitem id="menu_of_report" parent="manikarnika_order.order_tacking_main_menu" name="Reports" sequence="25"/>
+		
+		<!--   Order summary report wizard form view -->
+		
+        <record id="view_report_cos_wizard" model="ir.ui.view">
+            <field name="name">customer.order.summary.wiz.form</field>
+            <field name="model">customer.order.summary.wiz</field>
+            <field name="arch" type="xml">
+                <form string="report_cos_wizard">
+                    <group col="4" string="Dates">
+                        
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                    </group>
+                    <group  col="4" string="Select Customer">
+                        <field name="shop_name" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}' domain="[('customer','=',True)]"/>
+                    </group>
+                    <footer>
+                        <button name="print_report" type="object" string="Print Report" class="oe_highlight"  invisible="1"/>
+                        <!--or-->
+                        <button string="Cancel" class="oe_link" special="cancel" />
+			            or
+			            <button name="view_report" type="object" string="View Report" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+		<!--   Order summary report wizard action -->
+		
+        <record id="action_report_report_cos_wizard" model="ir.actions.act_window">
+            <field name="name">Customer Order Summary</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">customer.order.summary.wiz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
+        <!-- Menu of Order summary report wizard -->
+        
+        <menuitem id="action_report_report_cos_wizard_id" 
+                    action="action_report_report_cos_wizard" parent="menu_of_report" />
+                    
+    </data>
+</openerp>
