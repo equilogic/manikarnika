@@ -1,0 +1,35 @@
+@charset "UTF-8";
+.scr{
+	overflow: auto;
+    width: 1500px;
+    margin: 10px;
+}
+.pro_qty
+{
+	background-color:darkseagreen !important;
+	text-align: right !important;
+	width: 100px;
+}
+
+.pro_nm
+{
+	background-color:azure;
+	text-align: center !important;
+	width: 100px;
+}
+
+.customer_lst
+{
+	background-color: cornflowerblue !important;
+	width: 200px;
+}
+
+.item_tot
+{
+	background-color: darkkhaki !important;
+}
+
+.right_side
+{
+	text-align: right !important;
+}

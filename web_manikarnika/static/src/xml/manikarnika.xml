@@ -15,31 +15,31 @@
                      
                  </td>
                  <td width="80%">
-                     <table width="100%" border="1">
+                     <table class="scr" width="100%" border="1">
                           <tr>
                              <td rowspan="2">
                                  
                              </td>
                              <t t-foreach="widget.vehicles" t-as="va">
-                                 <td style="background-color:cadetblue;text-align: right;width: 10%">
+                                 <td class="pro_qty">
                                      <h4><t t-esc="va['driver_nm']"></t></h4>
                                  </td>
                              </t>
-                            <td rowspan="2" style="background-color: azure;width: 10%;text-align: center;">
+                            <td class="pro_nm" rowspan="2">
                                 <h3>Total</h3>
                             </td>
                             <td rowspan="2" colspan="2" width="2%"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.vehicles" t-as="va">
-                                 <td style="background-color:azure;text-align: right;width: 10%">
+                                 <td class="pro_nm">
                                      <h4><t t-esc="va['vehicle_nm']"></t></h4>
                                  </td>
                              </t>
                         </tr>
                         <t t-foreach="widget.vehicle_products" t-as="v_pro">
                             <tr>
-                                 <td style="background-color: cornflowerblue;width: 15%">
+                                 <td class="customer_lst">
                                      <h4><t t-esc="v_pro"/></h4>
                                  </td>
                                  <t t-foreach="widget.vehicle_products[v_pro]" t-as="column">
@@ -52,7 +52,7 @@
                                     </t>
                                     <t t-foreach="widget.vehicle_pro_qty" t-as="val">
                                         <t t-if="(v_pro == val)">
-                                            <td style="text-align: right">
+                                            <td class="right_side">
                                                 <h4><t t-esc="widget.vehicle_pro_qty[val]"/></h4>
                                             </td>
                                         </t>
@@ -69,13 +69,13 @@
                              </tr>
                         </t>
                         <tr>
-                            <td style="background-color: darkkhaki">
+                            <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
                              <t t-foreach="widget.vehicles" t-as="va">
                                 <t t-foreach="widget.vehicle_total_qty" t-as="val">
                                     <t t-if="(va['driver_nm'] == val)">
-                                        <td style="text-align: right">
+                                        <td class="right_side">
                                             <h4><t t-esc="widget.vehicle_total_qty[val]"/></h4>
                                         </td>
                                     </t>
@@ -94,7 +94,7 @@
     <!-- **************************** Delivery Schedule Manikarnika  **********************************-->
 
     <t t-name="DeliveryManikarnikaTemp">
-         <table width="100%">
+         <table width="100%" style="overflow: scroll;">
              <tr>
                  <td colspan="3"><h1><center>Delivery Schedule Manikarnika </center></h1> </td>
              </tr>
@@ -115,34 +115,34 @@
                  <td width="2%">
                  </td>
                  <td width="80%">
-                     <table width="100%" border="1">
+                     <table class="scr" width="100%" border="1">
                          <tr>
                              <td rowspan="2">
                                  
                              </td>
-                             <t t-foreach="widget.default_qty" t-as="qty">
-                                <td style="background-color:lightsalmon;text-align: right;width: 8%">
-                                    <h4><t t-esc="qty['default_order_qty']"></t></h4>
+                            <t t-foreach="widget.product" t-as="val">
+                                <td class="pro_qty">
+                                    <h4><t t-esc="widget.product[val]"/></h4>
                                 </td>
                             </t>
-                            <td rowspan="2" style="width: 10%;text-align: center;">
+                            <td rowspan="2" class="pro_nm">
                                 <h3>Driver</h3>
                             </td>
-                             <td rowspan="2" style="width: 5%;text-align: center;">
+                             <td rowspan="2" class="pro_nm">
                                 <h3>Shop Total</h3>
                             </td>
                             <td rowspan="2" colspan="2" width="1%"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.product" t-as="prod">
-                                <td style="background-color:greenyellow;width: 10%">
+                                <td class="pro_nm">
                                     <h4><t t-esc="prod"></t></h4>
                                 </td>
                             </t>
                         </tr>
                         <t t-foreach="widget.orders" t-as="order">
                             <tr>
-                                 <td style="background-color: cornflowerblue;width: 15%">
+                                 <td class="customer_lst">
                                      <h4><t t-esc="order"/></h4>
                                  </td>
                                  <t t-foreach="widget.orders[order]" t-as="column">
@@ -171,11 +171,9 @@
                                               </select>
                                           </td>
                                      </t>
-                                     <t t-if="(column['manik_qty'] == 0)" >
-                                             <td style="text-align: right"><h4>0</h4></td>
-                                     </t>
+                                     <t t-if="(column['manik_qty'] == 0)" ><td style="text-align: right"><h4>0</h4></td></t>
                                      <t t-if="column['manik_qty']">
-                                        <td style="text-align: right">
+                                        <td class="right_side">
                                             <h4><t t-esc="column['manik_qty']"/></h4>
                                         </td>
                                      </t>
@@ -190,14 +188,12 @@
                              </tr>
                         </t>
                         <tr>
-                            <td style="background-color: darkkhaki">
+                            <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
                             <t t-foreach="widget.item_dic" t-as="val">
-                                <td style="text-align: right">
-                                    <t t-foreach="widget.item_dic[val]" t-as="column">
-                                        <h4><t t-esc="column['qty']"/></h4>
-                                    </t>
+                                <td class="right_side">
+                                    <h4><t t-esc="widget.item_dic[val]"/></h4>
                                 </td>
                             </t>
                         </tr>
@@ -235,34 +231,34 @@
                      
                  </td>
                  <td width="80%">
-                     <table width="100%" border="1">
+                     <table class="scr" width="100%" border="1">
                           <tr>
                              <td rowspan="2">
                                  
                              </td>
-                             <t t-foreach="widget.grains_default_qty" t-as="g_qty">
-                                <td style="background-color:lightsalmon;text-align: right;width: 8%">
-                                    <h4><t t-esc="g_qty['default_order_qty']"></t></h4>
+                              <t t-foreach="widget.grain_product" t-as="val">
+                                <td class="right_side">
+                                    <h4><t t-esc="widget.grain_product[val]"/></h4>
                                 </td>
-                            </t>
-                            <td rowspan="2" style="width: 10%;text-align: center;">
+                             </t>
+                            <td rowspan="2" class="pro_nm">
                                 <h3>Driver</h3>
                             </td>
-                            <td rowspan="2" style="width: 5%;text-align: center;">
+                            <td rowspan="2" class="pro_nm">
                                 <h3>Shop Total</h3>
                             </td>
                             <td rowspan="2" colspan="2" width="1%"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.grain_product" t-as="g_prod">
-                                <td style="background-color:greenyellow;">
+                                <td class="pro_nm">
                                     <h4><t t-esc="g_prod"></t></h4>
                                 </td>
                             </t>
                         </tr>
                         <t t-foreach="widget.grain_orders" t-as="g_order">
                             <tr>
-                                 <td style="background-color: cornflowerblue;width: 15%">
+                                 <td class="customer_lst">
                                      <h4><t t-esc="g_order"/></h4>
                                  </td>
                                  <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
@@ -292,11 +288,9 @@
                                               </select>
                                           </td>
                                      </t>
-                                     <t t-if="(g_column['grain_qty'] == 0)" >
-                                             <td style="text-align: right"><h4>0</h4></td>
-                                     </t>
-                                      <t t-if="g_column['grain_qty']">
-                                         <td style="text-align: right">
+                                     <t t-if="(!g_column['grain_qty'] == 0)" ><td class="right_side"><h4>0</h4></td></t>
+                                     <t t-if="g_column['grain_qty']">
+                                         <td class="right_side">
                                              <h4><t t-esc="g_column['grain_qty']"/></h4>
                                          </td>
                                      </t>
@@ -310,11 +304,11 @@
                              </tr>
                         </t>
                         <tr>
-                            <td style="background-color: darkkhaki">
+                            <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
                             <t t-foreach="widget.grain_item_dic" t-as="val">
-                                <td style="text-align: right">
+                                <td class="right_side">
                                     <t t-foreach="widget.grain_item_dic[val]" t-as="column">
                                         <h4><t t-esc="column['qty']"/></h4>
                                     </t>
@@ -342,31 +336,31 @@
                      
                  </td>
                  <td>
-                     <table border="1">
+                     <table class="scr" width="100%" border="1">
                          <tr>
                              <td rowspan="2">
                                  
                              </td>
                              <t t-foreach="widget.manik_product_lst" t-as="qty">
-                                 <td style="background-color:cadetblue;text-align: right;width: 10%">
+                                 <td class="pro_qty">
                                      <h4><t t-esc="qty['default_qty']"></t></h4>
                                  </td>
                              </t>
-                             <td rowspan="2" style="background-color: azure;width: 13%;text-align: center;">
+                             <td rowspan="2" class="pro_nm">
                                 <h3>Shop Total</h3>
                             </td>
                             <td rowspan="2" colspan="3" width="2%"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.manik_product_lst" t-as="pro">
-                                <td style="background-color:azure;text-align: center;width: 8%">
+                                <td class="pro_nm">
                                     <h4><t t-esc="pro['product_nm']"></t></h4>
                                 </td>
                              </t>
                         </tr>
                         <t t-foreach="widget.manik_order_dict" t-as="order">
                             <tr>
-                                <td style="background-color: cornflowerblue;width: 15%">
+                                <td class="customer_lst">
                                     <h4><t t-esc="order"/></h4>
                                 </td>
                                 <t t-foreach="widget.manik_order_dict[order]" t-as="column">
@@ -378,12 +372,12 @@
                                         </t>
                                     </t>
                                     <t t-if="column['manik_qty']">
-                                        <td >
+                                        <td class="right_side">
                                             <t t-esc="column['manik_qty']"/>
                                         </td>
                                     </t>
                                     <t t-if="!column['manik_qty']">
-                                        <td style="text-align: right">
+                                        <td>
                                         </td>
                                     </t>
                                     <td>
@@ -408,11 +402,11 @@
                              </tr>
                         </t>
                         <tr>
-                            <td style="background-color: darkkhaki">
+                            <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
                             <t t-foreach="widget.item_total" t-as="val">
-                                <td style="text-align: right">
+                                <td class="right_side">
                                     <t t-foreach="widget.item_total[val]" t-as="column">
                                         <h4><t t-esc="column['qty']"/></h4>
                                     </t>
@@ -428,42 +422,42 @@
          </table>
     </t>
     <t t-name="GriansOrders">
-         <table width="100%">
+         <table width="100%" >
              <tr>
                  <td><h1><center>Grians Order Interface</center></h1> </td>
              </tr>
          </table>
-         <table>
+         <table >
              <tr>
                  <td width="2%">
                      
                  </td>
                  <td>
-                     <table border="1">
+                     <table border="1" class="scr" width="100%">
                          <tr>
                              <td rowspan="2">
                                  
                              </td>
                              <t t-foreach="widget.gr_product_lst" t-as="qty">
-                                 <td style="background-color:cadetblue;text-align: right;width: 10%">
+                                 <td class="pro_qty" width="10%">
                                      <h4><t t-esc="qty['default_qty']"></t></h4>
                                  </td>
                              </t>
-                             <td rowspan="2" style="background-color: azure;width: 13%;text-align: center;">
+                             <td rowspan="2" class="pro_nm">
                                 <h3>Shop Total</h3>
                             </td>
                             <td rowspan="2" colspan="3" width="2%"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.gr_product_lst" t-as="pro">
-                                <td style="background-color:azure;text-align: center;width: 10%">
+                                <td class="pro_nm">
                                     <h4><t t-esc="pro['product_nm']"></t></h4>
                                 </td>
                              </t>
                         </tr>
                         <t t-foreach="widget.gr_order_dict" t-as="order">
                             <tr>
-                                <td style="background-color: cornflowerblue;width: 15%">
+                                <td class="customer_lst">
                                     <h4><t t-esc="order"/></h4>
                                 </td>
                                 <t t-foreach="widget.gr_order_dict[order]" t-as="column">
@@ -475,12 +469,12 @@
                                         </t>
                                     </t>
                                     <t t-if="column['gr_qty']">
-                                        <td >
+                                        <td class="right_side">
                                             <t t-esc="column['gr_qty']"/>
                                         </td>
                                     </t>
                                     <t t-if="!column['gr_qty']">
-                                        <td style="text-align: right">
+                                        <td>
                                         </td>
                                     </t>
                                     <td>
@@ -497,7 +491,7 @@
                                         </td>
                                      </t>
                                      <t t-if="!column['gr_qty']">
-                                        <td style="text-align: right">
+                                        <td>
                                             <img id="notcreated" style="height: 16px; width: 16px;" src="/..//manikarnika/web_manikarnika/static/img/redcross.png"/>
                                         </td>
                                     </t>
@@ -505,11 +499,11 @@
                              </tr>
                         </t>
                         <tr>
-                            <td style="background-color: darkkhaki">
+                            <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
                             <t t-foreach="widget.gr_item_total" t-as="val">
-                                <td style="text-align: right">
+                                <td class="right_side">
                                     <t t-foreach="widget.gr_item_total[val]" t-as="column">
                                         <h4><t t-esc="column['qty']"/></h4>
                                     </t>
