@@ -109,7 +109,7 @@ class order_tackinig(models.Model):
             for product in products:
                 prod = prod_obj.search([('id','=',
                                                 product['product_id'])])
-                if float(product['order_qty']) > 0:
+                if float(str(product['order_qty'])) > 0:
                     if float(product['order_qty']) < prod.default_qty:
                         raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
                     if float(product['order_qty']) > prod.qty_available:
@@ -166,4 +166,4 @@ class vehicle_allocation(models.Model):
                                                                       {'serial_no': v['sr_n'],
                                                                        'product_id': int(self._context.keys()[0]),
                                                                        'order_qty': v['order_qty']})]
-                return vehicle_id.id
+                return {}

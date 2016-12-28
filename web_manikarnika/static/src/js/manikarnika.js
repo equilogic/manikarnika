@@ -547,6 +547,8 @@ openerp.web_manikarnika = function(instance) {
 
     var va_driver_list = []
     var va_order_dict = {}
+    var vehicle_driver_id_dic = {}
+    var vehicle_pro_id_dic = {}
     self.va_customer_dataset = new instance.web.DataSetSearch(self, 'res.partner', {}, [['driver', '=' , 'True']])
     self.va_customer_dataset.read_slice([], {'domain': []}).done(function(records_cus) {
     	_.each(records_cus, function(c){
@@ -554,7 +556,7 @@ openerp.web_manikarnika = function(instance) {
     	    self.va_vehicle_dataset.read_slice([], {'domain': []}).done(function(records_v) {
     	    	_.each(records_v, function(v){
     	    		va_driver_list.push({'driver_nm': c.name, 'driver_id': c.id, 'vehicle_nm': v.name,
-    	    							 'vehicle_id': v.id})
+    	    							 'vehicle_id': v.id, 'order_qty': 0.0 ,'total_qty': 0.0})
     	    	})
     	    });
     	})
@@ -567,16 +569,56 @@ openerp.web_manikarnika = function(instance) {
     	    self.va_product_dataset.read_slice([], {'domain': []}).done(function(records_pro) {
     	    	sr_n = 0
     	    	_.each(records_pro, function(p){
+    	    		drv_lst = []
+    				vehicle_pro_id_dic[p.name] = 0.0
+    	    		_.each(va_driver_list, function(drv){
+    	    			drv_lst.push({'driver_nm': drv['driver_nm'], 'driver_id': drv['driver_id'], 'vehicle_nm': drv['vehicle_nm'],
+							 		  'vehicle_id': drv['vehicle_id'], 'order_qty': drv['order_qty'], 'total_qty': drv['total_qty']})
+    	    		});
+    	    		_.each(drv_lst, function(dv){
+						self.vehicle_dataset = new instance.web.DataSetSearch(self, 'vehicle.allocation', {}, [['driver_id', '=' , dv['driver_id']], ['order_date', '=' , curr_date]]);
+	        	    	self.vehicle_dataset.read_slice([], {'domain': []}).done(function(vehicle_records) {
+	        	    		if( vehicle_records.length > 0){
+	        	    			_.each(vehicle_records, function(vehicle_r){
+	        	    				self.vehicle_line_dataset = new instance.web.DataSetSearch(self, 'vehicle.allocation.line', {}, [['vehicle_allocation_id','=', vehicle_r.id],['order_date', '=' , curr_date],['product_id','=', p.id]]);
+	        		    			self.vehicle_line_dataset.read_slice([], {}).done(function(vehicle_line_rec) {
+	        		    				if( vehicle_line_rec.length > 0){
+	        		    					_.each(vehicle_line_rec, function(vehicle_v){
+	        		    						if(vehicle_v.product_id[0] == p.id){
+	        		    							dv['order_qty'] = vehicle_v.order_qty
+	        		    							if (dv['driver_nm'] in vehicle_driver_id_dic){
+	        		    	    	    				total = (vehicle_driver_id_dic[dv['driver_nm']] + dv['order_qty'])
+	        		    	    	    				vehicle_driver_id_dic[dv['driver_nm']] = total
+	        		    	    	    			}
+	        		    	    	    			else{
+	        		    	    	    				vehicle_driver_id_dic[dv['driver_nm']] = dv['order_qty']
+	        		    	    	    			}
+	        		    						}
+	        		    						if (p.name in vehicle_pro_id_dic){
+	    		    	    	    				total = (vehicle_pro_id_dic[p.name] + vehicle_v.order_qty)
+	    		    	    	    				vehicle_pro_id_dic[p.name] = total
+	    		    	    	    			}
+	    		    	    	    			
+    		        	    				});
+	        		    				}
+	        		    			})
+	        	    			})
+	        	    		}
+	        	    	});
+    	    		});
     	    		va_pro_lst = []
-    	    		va_pro_lst.push({'product_id': p.id,
-    	    						 'driver_lst': va_driver_list,
-    	    						 'sr_n': sr_n + 1,
-    	    						 'order_qty': 0.0})
-    	    		va_order_dict[p.name] = va_pro_lst
-    	    	})
+		    		va_pro_lst.push({'product_id': p.id,
+		    						 'driver_lst': drv_lst,
+		    						 'sr_n': sr_n})
+		    		va_order_dict[p.name] = va_pro_lst
+		    		drv_lst = []
+        	    	sr_n = sr_n + 1
+        	    	tot_qty = 0.0
+    	    	});
     	    });
-    	})
+    	});
     });
+    
 
     instance.web.client_actions.add('vehicle.homepage', 'instance.web_manikarnika.vehicle_action');
     instance.web_manikarnika.vehicle_action = instance.web.Widget.extend({
@@ -590,6 +632,8 @@ openerp.web_manikarnika = function(instance) {
             var self = this
             this.vehicles = va_driver_list
             this.vehicle_products = va_order_dict
+            this.vehicle_total_qty = vehicle_driver_id_dic
+            this.vehicle_pro_qty = vehicle_pro_id_dic
         },
         start: function() {
         },

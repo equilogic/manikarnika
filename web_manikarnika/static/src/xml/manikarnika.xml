@@ -28,7 +28,7 @@
                             <td rowspan="2" style="background-color: azure;width: 10%;text-align: center;">
                                 <h3>Total</h3>
                             </td>
-                            <td rowspan="2" width="2%"></td>
+                            <td rowspan="2" colspan="2" width="2%"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.vehicles" t-as="va">
@@ -46,19 +46,17 @@
                                     <t t-if="column['driver_lst']">
                                         <t t-foreach="column['driver_lst']" t-as="pro">
                                             <td>
-                                                <input step="0.00" style="text-align: right;" type="number" class="form-control" t-att-id="pro['driver_id']" t-att-data-v_id="pro['vehicle_id']" t-att-value="column['order_qty']" readonly='readonly'></input>
+                                                <input step="0.00" min="0" style="text-align: right;" type="number" class="form-control" t-att-id="pro['driver_id']" t-att-data-v_id="pro['vehicle_id']" t-att-value="pro['order_qty']" readonly='readonly'></input>
                                             </td>
                                         </t>
                                     </t>
-                                   <!--  <t t-if="column['gr_qty']">
-                                        <td >
-                                            <t t-esc="column['gr_qty']"/>
-                                        </td>
+                                    <t t-foreach="widget.vehicle_pro_qty" t-as="val">
+                                        <t t-if="(v_pro == val)">
+                                            <td style="text-align: right">
+                                                <h4><t t-esc="widget.vehicle_pro_qty[val]"/></h4>
+                                            </td>
+                                        </t>
                                     </t>
-                                    <t t-if="!column['gr_qty']">
-                                        <td style="text-align: right">
-                                        </td>
-                                    </t>-->
                                     <td>
                                         <img id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
                                     </td>
@@ -67,16 +65,6 @@
                                             <img id="save" style="visibility:hidden" t-att-data-sr="column['sr_n']" t-att-data-dic="column['product_id']" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
                                         </td>
                                     </t>
-                                     <!-- <t t-if="column['gr_qty']">
-                                        <td>
-                                            <img id="created" style="height: 16px; width: 16px;" src="/..//manikarnika/web_manikarnika/static/img/validate.png"/>
-                                        </td>
-                                     </t>
-                                     <t t-if="!column['gr_qty']">
-                                        <td style="text-align: right">
-                                            <img id="notcreated" style="height: 16px; width: 16px;" src="/..//manikarnika/web_manikarnika/static/img/redcross.png"/>
-                                        </td>
-                                    </t>  -->
                                  </t>
                              </tr>
                         </t>
@@ -84,13 +72,15 @@
                             <td style="background-color: darkkhaki">
                                 <h4>Item Total</h4>
                             </td>
-                            <!-- <t t-foreach="widget.vehicles" t-as="v">
-                                <t t-foreach="widget.vehicles[v]" t-as="v_col">
-                                    <td style="text-align: right;">
-                                        <h4><t t-esc="v_col['qty']"></t></h4>
-                                    </td>
+                             <t t-foreach="widget.vehicles" t-as="va">
+                                <t t-foreach="widget.vehicle_total_qty" t-as="val">
+                                    <t t-if="(va['driver_nm'] == val)">
+                                        <td style="text-align: right">
+                                            <h4><t t-esc="widget.vehicle_total_qty[val]"/></h4>
+                                        </td>
+                                    </t>
                                 </t>
-                            </t> -->
+                            </t>
                         </tr>
                     </table>
                  </td>
@@ -158,7 +148,7 @@
                                  <t t-foreach="widget.orders[order]" t-as="column">
                                       <t t-if="((!column['manik_qty']) and (!column['driver_list']))">
                                           <td id="ipt_td_manik">
-                                              <input type="text" style="text-align: right;" class="form-control" t-att-id="column['id']" model="morder.tacking.line" t-att-value="column['qty']" readonly='readonly'></input>
+                                              <input type="number" min="0" style="text-align: right;" class="form-control" t-att-id="column['id']" model="morder.tacking.line" t-att-value="column['qty']" readonly='readonly'></input>
                                           </td>
                                       </t>
                                       <t t-if="(column['driver_list'])">
@@ -278,7 +268,7 @@
                                  <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
                                      <t t-if="((!g_column['grain_qty']) and (!g_column['driver_list']))">
                                          <td >
-                                             <input  style="text-align: right" type="text" class="form-control" t-att-id="g_column['id']" model="gorder.tacking.line" t-att-value="g_column['qty']" readonly='readonly'
+                                             <input min="0" style="text-align: right" type="number" class="form-control" t-att-id="g_column['id']" model="gorder.tacking.line" t-att-value="g_column['qty']" readonly='readonly'
                                                 />
                                          </td>
                                      </t>
@@ -383,7 +373,7 @@
                                     <t t-if="column['product_lst']">
                                         <t t-foreach="column['product_lst']" t-as="pro">
                                             <td>
-                                                <input step="0.00" style="text-align: right;" type="number" class="form-control" t-att-id="pro['product_id']" model="morder.tacking.line" t-att-value="pro['order_qty']" readonly='readonly'></input>
+                                                <input step="0.00" min="0" style="text-align: right;" type="number" class="form-control" t-att-id="pro['product_id']" model="morder.tacking.line" t-att-value="pro['order_qty']" readonly='readonly'></input>
                                             </td>
                                         </t>
                                     </t>
@@ -480,7 +470,7 @@
                                     <t t-if="column['product_lst']">
                                         <t t-foreach="column['product_lst']" t-as="pro">
                                             <td>
-                                                <input step="0.00" style="text-align: right;" type="number" class="form-control" t-att-id="pro['product_id']" t-att-value="pro['order_qty']" readonly='readonly'></input>
+                                                <input step="0.00" min="0" style="text-align: right;" type="number" class="form-control" t-att-id="pro['product_id']" t-att-value="pro['order_qty']" readonly='readonly'></input>
                                             </td>
                                         </t>
                                     </t>

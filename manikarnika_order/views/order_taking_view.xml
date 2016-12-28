@@ -223,11 +223,30 @@
        		</field>
        </record>      
        
+        <!--  Vehicle Allocation Search View -->
+        <record id="vehicle_allocation_view" model="ir.ui.view">
+            <field name="name">vehicle.allocation.search</field>
+            <field name="model">vehicle.allocation</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="driver_id"/>
+                    <field name="vehicle_id"/>
+                    <field name="order_date"/>
+                    <filter string="Today Allocation" name="today_allocation" domain="[('order_date','=', datetime.datetime.now())]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Customer" context="{'group_by':'driver_id'}"/>
+                        <filter string="Order Date" context="{'group_by':'order_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <record id="vehicle_allocation_action" model="ir.actions.act_window">
             <field name="name">Vehicle Allocation</field>
             <field name="res_model">vehicle.allocation</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_today_allocation":1}</field>
         </record>   
         
         <menuitem id="vehicle_allocation_menu" name="Vehicle Allocation" sequence="1"
