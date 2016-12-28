@@ -275,6 +275,7 @@ class vehicle_allocation(models.Model):
         loc_id = location_obj.search([('location_id', '!=', False), ('location_id.name', 'ilike', 'WH'),
                     ('company_id.id', '=', comp.id), ('usage', '=', 'internal')])
         loc_dest_id = location_obj.search([('vehicle_id','=',self.vehicle_id.id)])
+        print "\n loc_dest_id :::::::::::: ",loc_dest_id
         picking_obj = self.env['stock.picking']
         move_obj = self.env['stock.move']
         picking_type = self.env['stock.picking.type'].search([('code', '=', 'internal'),

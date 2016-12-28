@@ -21,7 +21,6 @@
 ##############################################################################
 from datetime import datetime, date, timedelta
 from openerp import models, fields, api
-from openerp.exceptions import Warning,ValidationError
 
 class received_remaining_qty(models.Model):
     _name='received.remain.qty'
@@ -37,10 +36,70 @@ class received_remaining_qty(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirm'),
                               ('cancel', 'Cancel')],
                              string="State", default='draft')
+    picking_id = fields.Many2one('stock.picking','View Picking')
+    
+    @api.multi
+    def prepare_picking(self,line):
+        
+        cr,uid,context = self.env.args
+        loc_obj = self.env['stock.location']
+        picking_obj = self.env['stock.picking']
+        move_obj = self.env['stock.move']
+        
+        comp = self.env['res.users'].browse(uid).company_id
+        srap_loc_id = loc_obj.search([('scrap_location','=',True)])
+        loc_id = loc_obj.search([('location_id', '!=', False), ('location_id.name', 'ilike', 'WH'),
+                    ('company_id.id', '=', comp.id), ('usage', '=', 'internal')])
+        loc_dest_id = loc_obj.search([('vehicle_id','=',self.vehicle_id.id)])
+        picking_type = self.env['stock.picking.type'].search([('code', '=', 'internal'),
+                                                              ('default_location_src_id', '=', loc_id.id)])
+        picking_vals = {
+                        'date': self.delivery_date,
+                        'origin': self.number,
+                        'move_type': 'direct',
+                        'invoce_state': 'none',
+                        'company': comp.id,
+                        'priority': '1',
+                        'picking_type_id': picking_type and picking_type.id or False,
+                        }
+        pick_id = picking_obj.create(picking_vals)
+        for line_id in line:
+            move_template = {
+                'name': "Internal move",
+                'product_id': line_id.product_id.id,
+                'product_uom_qty': line_id.return_carton,
+                'date': self.delivery_date,
+                'location_id': loc_dest_id.id or '',
+                'location_dest_id':  loc_id.id,
+                'picking_id': pick_id and pick_id.id or False,
+                'move_dest_id': False,
+                'state': 'draft',
+                'picking_type_id': picking_type and picking_type.id or False,
+                'procurement_id': False,
+                'origin': self.number,
+                'product_uom': line_id.product_id.uom_id.id,
+                'warehouse_id': picking_type and picking_type.warehouse_id.id,
+                'invoice_state': 'none',
+            }
+            move_obj.create(move_template)
+            qty=0
+            if line_id.damaged_carton or line_id.loss_carton:
+                if line_id.damaged_carton:
+                    qty = line_id.damaged_carton
+                if line_id.loss_carton:
+                    qty += line_id.loss_carton
+                move_template.update({
+                        'product_uom_qty':qty,
+                        'location_id': loc_id.id or '',
+                        'location_dest_id':  srap_loc_id.id,
+                         })
+                move_obj.create(move_template)
+        self.picking_id = pick_id.id
     
     @api.multi
     def remain_qty_draft_to_confirm(self):
         for rec in self:
+            rec.prepare_picking(rec.received_remain_qty_line_ids)
             rec.state = 'confirm'
             
     @api.multi

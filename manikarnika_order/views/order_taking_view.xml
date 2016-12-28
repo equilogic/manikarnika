@@ -185,14 +185,14 @@
                     </header>       			
        				<sheet>
        					<group colspan="4" col="4">
-       						<field name="name"/>
-		       				<field name="vehicle_id"/>
-		       				<field name="order_date"/>
-		       				<field name="driver_id"/>
+       						<field name="name" />
+		       				<field name="vehicle_id" required="1" attrs="{'readonly': [('state','not in','draft')]}"/>
+		       				<field name="order_date" required="1" attrs="{'readonly': [('state','not in','draft')]}"/>
+		       				<field name="driver_id" domain="[('driver','=',True)]" attrs="{'readonly': [('state','not in','draft')]}"/>
 	       				</group>
                         <notebook>
                             <page string="Vehicle Allocation" >
-                                <field name="vehicle_allocation_line_ids">
+                                <field name="vehicle_allocation_line_ids" attrs="{'readonly': [('state','not in','draft')]}">
                                     <tree string="Vehical allocation" editable="bottom">
                                         <field name="product_id" />
                                         <field name="units"/>

@@ -9,22 +9,21 @@
                     <header>
                        <button string="Confirm" name="remain_qty_draft_to_confirm"
                             type="object" states="draft" class="oe_highlight"/>
-                        <button string="Reset to Draft" name="remain_qty_confirm_to_draft"
-                            type="object" states="confirm" class="oe_highlight"/>
                         <button string="Cancel" name="remain_qty_confirm_to_cancel"
                             type="object" states="confirm" class="oe_highlight"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
        					<group colspan="4" col="4">
-       						<field name="number"/>
-		       				<field name="vehicle_id"/>
-		       				<field name="delivery_date"/>
-		       				<field name="driver_id"/>
+       						<field name="number" readonly="1"/>
+		       				<field name="vehicle_id" attrs="{'readonly': [('state','not in','draft')]}" required="1"/>
+		       				<field name="delivery_date" attrs="{'readonly': [('state','not in','draft')]}" required="1"/>
+		       				<field name="driver_id" domain="[('driver','=',True)]" attrs="{'readonly': [('state','not in','draft')]}" />
+		       				<field name="picking_id" readonly="1" />
 	       				</group>
                         <notebook>
                             <page string="Products" >
-                                <field name="received_remain_qty_line_ids">
+                                <field name="received_remain_qty_line_ids" attrs="{'readonly': [('state','not in','draft')]}">
                                     <tree string="Products" editable="bottom">
                                         <field name="product_id" />
                                         <field name="total_carton"/>
