@@ -97,6 +97,13 @@ class received_remaining_qty(models.Model):
         self.picking_id = pick_id.id
     
     @api.multi
+    @api.onchange('vehicle_id')
+    def onchange_vehicle_id(self):
+        if self.vehicle_id and self.vehicle_id.driver_id:
+            self.driver_id = self.vehicle_id.driver_id.id
+            
+    
+    @api.multi
     def remain_qty_draft_to_confirm(self):
         for rec in self:
             rec.prepare_picking(rec.received_remain_qty_line_ids)

@@ -43,6 +43,7 @@ class vehicle_product_summary_wiz(models.TransientModel):
          @param self: The object pointer.
          @return : retrun report
         """
+        domain=[]
         res = self.read(['driver_id', 'vehicle_id',])
         res = res and res[0] or {}
         
@@ -55,14 +56,16 @@ class vehicle_product_summary_wiz(models.TransientModel):
         driver_id = res.get('driver_id',False)
         vehicle_id = res.get('vehicle_id',False)
         params =(driver_id,vehicle_id)
-
+        
         drop_view_if_exists(cr, 'report_order_summary')
 #        query = """
 #            create or replace view product_summary_report as (
 #            )
 #        """
 #        cr.execute(query,params)
-
+        if self.vehicle_id and self.driver_id:
+            domain = [('driver_id','=',self.driver_id.id),('vehicle_id','=',self.vehicle_id.id)]
+      
         return {
        'type': 'ir.actions.act_window',
        'name': 'Vehicle Product summary',
@@ -72,6 +75,7 @@ class vehicle_product_summary_wiz(models.TransientModel):
        'view_mode': 'tree',
        'target': 'current',
        'context': context,
+       'domain':domain,
        }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

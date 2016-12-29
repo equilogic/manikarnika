@@ -14,6 +14,8 @@
 				<field name="returned_qty" />
 				<field name="wastage_qty"/>
 				<field name="uom"/>
+				<field name="driver_id" invisible="1"/>
+				<field name="vehicle_id" invisible="1"/>
 			</tree>
 		</field>
 	</record>
