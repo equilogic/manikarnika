@@ -20,9 +20,10 @@ openerp.web_manikarnika = function(instance) {
     var order_dic = {}
     var item_dic = {}
     var product_list = {}
-    function get_order_taking_data(model, data){
+    function get_order_taking_data(model, date){
+    	console.log("CCC",date)
     	self.manik_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , date],
-    	                                                                                    ['state', 'in', ['draft','confirm']]]);
+    	                                                                               ['state', 'in', ['draft','confirm']]]);
 	    self.manik_dataset.read_slice([], {'domain': []}).done(function(records) {
 	    	_.each(records, function(r){
     			self.manik_line_dataset = new instance.web.DataSetSearch(self, model, {}, [['id','in', r.morder_tacking_line_ids]]);
@@ -51,6 +52,7 @@ openerp.web_manikarnika = function(instance) {
 	        	    	});
 	        	    	val_list.push({'customer_id':r.partner_id[0],'manik_qty': manik_qty, 'driver_list': driver_list, 'driver_id': r.driver_id[0], 'order_id': r.id})
 	        	    	order_dic[r.partner_id[1]] = val_list
+	        	    	console.log("::::::::::record",order_dic)
 	    	    	}
 	    	    });
 	    	});
@@ -64,8 +66,8 @@ openerp.web_manikarnika = function(instance) {
         events: {
     		'click #edit': 'input_edit_click',
     		'click #save': 'input_save_click',
-//    		'keyup input': 'input_qty_keyup',
     		'change .dri': 'change_driver',
+    		'click #search': 'manik_button_click',
         },
         init: function(parent, name) {
             this._super(parent);
@@ -75,7 +77,9 @@ openerp.web_manikarnika = function(instance) {
         start: function() {
         },
         render: function(date){
+        	console.log(":::::::::date",date)
 		  	details = get_order_taking_data('morder.tacking.line', date)
+		  	console.log(":::::::::::details",details)
 		  	this.orders = details['order_dic']
 		  	this.product = details['product_list'],
 		  	this.item_dic = details['item_dic']
@@ -109,15 +113,6 @@ openerp.web_manikarnika = function(instance) {
         	$action.css('visibility', 'hidden')
         	$action.parent().parent().find('#edit').css('visibility', 'visible')
         },
-        /*input_qty_keyup: function(ev) {
-        	var self = this
-        	var $action = $(ev.currentTarget);
-            var id = parseInt($action.attr('id'));
-        	var model = $action.attr('model');
-        	order_qty = parseFloat(ev.target.value)
-        	self.table_master_dataset = new instance.web.DataSetSearch(self, model, {}, []);
-        	self.table_master_dataset.write(id, {'order_qty': parseFloat(order_qty)})
-        },*/
         change_driver: function(ev){
         	var self = this
         	var $action = $(ev.currentTarget);
@@ -126,7 +121,17 @@ openerp.web_manikarnika = function(instance) {
         	dri_id = parseInt(ev.target.value)
         	self.ord_dataset = new instance.web.DataSetSearch(self, model, {}, []);
         	self.ord_dataset.write(id, {'driver_id': dri_id})
-        }
+        },
+        manik_button_click: function(ev) {
+        	console.log("LLLLLLLL")
+        	if($("#orderdate").val()){
+        		this.render($("#orderdate").val())
+        	}
+        	else{
+        		alert("Please select the order date!")
+        	}
+        		
+        },
     });
 
     //    **************************************** Delivery Schedule Grains *******************************************
@@ -187,6 +192,7 @@ openerp.web_manikarnika = function(instance) {
         },
         render: function(date){
         	details = get_order_gorder_data('gorder.tacking.line', date)
+        	console.log(":::::grains::::::details",details)
         	this.grain_orders = details['grain_order_dic']
         	this.grain_product = details['grain_product_list'],
         	this.grain_item_dic = details['grain_item_dic']
@@ -230,6 +236,7 @@ openerp.web_manikarnika = function(instance) {
         	self.ord_dataset.write(id, {'driver_id': dri_id})
         },
         grain_button_click: function(ev) {
+        	console.log(":::::::in button")
         	this.render($("#orderdate").val())
         },
     });
