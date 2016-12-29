@@ -208,7 +208,7 @@
 
     <!-- **************************** Delivery Schedule Grains **********************************-->
 
-    <t t-name="DeliveryGrainsTemp">
+    <t t-name="DeliveryGrainsTemp" id="DeliveryGrainsTemp">
          <table width="100%">
              <tr>
                  <td colspan="3"><h1><center> Delivery Schedule Grains </center></h1> </td>
@@ -264,7 +264,7 @@
                                  <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
                                      <t t-if="((!g_column['grain_qty']) and (!g_column['driver_list']))">
                                          <td >
-                                             <input min="0" style="text-align: right" type="number" class="form-control" t-att-id="g_column['id']" model="gorder.tacking.line" t-att-value="g_column['qty']" readonly='readonly'
+                                             <input min="0" style="text-align: right" type="number" class="form-control" t-att-id="g_column['id']"  t-att-value="g_column['qty']" readonly='readonly'
                                                 />
                                          </td>
                                      </t>
@@ -288,19 +288,21 @@
                                               </select>
                                           </td>
                                      </t>
-                                     <t t-if="(!g_column['grain_qty'] == 0)" ><td class="right_side"><h4>0</h4></td></t>
+                                    <!--  <t t-if="(!g_column['grain_qty'] == 0)" ><td class="right_side"><h4>0</h4></td></t> -->
                                      <t t-if="g_column['grain_qty']">
                                          <td class="right_side">
                                              <h4><t t-esc="g_column['grain_qty']"/></h4>
                                          </td>
                                      </t>
+                                      <t t-if="g_column['customer_id']">
+                                        <td>
+                                           <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
+                                        </td>
+                                        <td>
+                                            <input type="image" id="save" style="visibility:hidden" t-att-data-dic="g_column['customer_id']"  src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                        </td>
+                                     </t>
                                  </t>
-                                  <td>
-                                     <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
-                                 </td>
-                                 <td>
-                                     <input type="image" id="save" style="visibility:hidden" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
-                                 </td>
                              </tr>
                         </t>
                         <tr>
@@ -309,9 +311,7 @@
                             </td>
                             <t t-foreach="widget.grain_item_dic" t-as="val">
                                 <td class="right_side">
-                                    <t t-foreach="widget.grain_item_dic[val]" t-as="column">
-                                        <h4><t t-esc="column['qty']"/></h4>
-                                    </t>
+                                    <h4><t t-esc="widget.grain_item_dic[val]"/></h4>
                                 </td>
                             </t>
                         </tr>
