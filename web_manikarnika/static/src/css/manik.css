@@ -1,14 +1,12 @@
 @charset "UTF-8";
 .scr{
-	overflow: auto;
-    width: 1500px;
-    margin: 10px;
+    overflow-x: scroll;
 }
 .pro_qty
 {
 	background-color:darkseagreen !important;
 	text-align: right !important;
-	width: 100px;
+	min-width: 100px;
 }
 
 .pro_nm
@@ -32,4 +30,13 @@
 .right_side
 {
 	text-align: right !important;
+}
+.orddate{
+	margin-bottom: 20px;
+	border: 1px solid black !important;
+	width: 165px !important;
+}
+.searchbtn{
+	margin-top: 5px !important;
+	border: 1px solid black !important;
 }

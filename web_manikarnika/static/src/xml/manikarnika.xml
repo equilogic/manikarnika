@@ -11,10 +11,10 @@
          </table>
          <table width="100%">
              <tr>
-                 <td width="10%">
+                 <td width="2%">
                      
                  </td>
-                 <td width="80%">
+                 <td width="96%">
                      <table class="scr" width="100%" border="1">
                           <tr>
                              <td rowspan="2">
@@ -84,7 +84,7 @@
                         </tr>
                     </table>
                  </td>
-                 <td width="10%">
+                 <td width="2%">
                      
                  </td>
              </tr>
@@ -94,19 +94,19 @@
     <!-- **************************** Delivery Schedule Manikarnika  **********************************-->
 
     <t t-name="DeliveryManikarnikaTemp">
-         <table width="100%" style="overflow: scroll;">
+         <table width="100%">
              <tr>
                  <td colspan="3"><h1><center>Delivery Schedule Manikarnika </center></h1> </td>
              </tr>
              <tr>
-                 <td width="2%">
+                 <td width="10%">
                      
                  </td>
-                 <td width="25%">
-                      <input class="form-control" style="margin-bottom: 20px;border: 1px solid black" id="orderdate" name="orderdate" placeholder="Select Date" type="date"/>
+                 <td width="15%">
+                      <input class="form-control orddate" id="orderdate" name="orderdate" placeholder="Select Date" type="date"/>
                  </td>
                  <td>
-                     <button type="button" style="margin-top: 5px;margin-left: 20px;border: 1px solid black">Search</button>
+                      <button type="button" class="searchbtn" id="search">Search</button>
                  </td>
              </tr>
          </table>
@@ -114,7 +114,7 @@
              <tr>
                  <td width="2%">
                  </td>
-                 <td width="80%">
+                 <td width="96%" >
                      <table class="scr" width="100%" border="1">
                          <tr>
                              <td rowspan="2">
@@ -208,20 +208,20 @@
 
     <!-- **************************** Delivery Schedule Grains **********************************-->
 
-    <t t-name="DeliveryGrainsTemp">
+    <t t-name="DeliveryGrainsTemp" id="DeliveryGrainsTemp">
          <table width="100%">
              <tr>
                  <td colspan="3"><h1><center> Delivery Schedule Grains </center></h1> </td>
              </tr>
              <tr>
-                 <td width="2%">
+                 <td width="10%">
                      
                  </td>
-                 <td width="25%">
-                      <input class="form-control" style="margin-bottom: 20px;border: 1px solid black" id="orderdate" name="orderdate" placeholder="Select Date" type="date"/>
+                 <td width="15%">
+                      <input class="form-control orddate" id="orderdate" name="orderdate" placeholder="Select Date" type="date"/>
                  </td>
                  <td>
-                     <button type="button" id="search" style="margin-top: 5px;margin-left: 20px;border: 1px solid black">Search</button>
+                     <button type="button" id="search" class="searchbtn">Search</button>
                  </td>
              </tr>
          </table>
@@ -230,14 +230,14 @@
                  <td width="2%">
                      
                  </td>
-                 <td width="80%">
+                 <td width="96%">
                      <table class="scr" width="100%" border="1">
                           <tr>
                              <td rowspan="2">
                                  
                              </td>
                               <t t-foreach="widget.grain_product" t-as="val">
-                                <td class="right_side">
+                                <td class="pro_qty">
                                     <h4><t t-esc="widget.grain_product[val]"/></h4>
                                 </td>
                              </t>
@@ -264,7 +264,7 @@
                                  <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
                                      <t t-if="((!g_column['grain_qty']) and (!g_column['driver_list']))">
                                          <td >
-                                             <input min="0" style="text-align: right" type="number" class="form-control" t-att-id="g_column['id']" model="gorder.tacking.line" t-att-value="g_column['qty']" readonly='readonly'
+                                             <input min="0" style="text-align: right" type="number" class="form-control" t-att-id="g_column['id']"  t-att-value="g_column['qty']" readonly='readonly'
                                                 />
                                          </td>
                                      </t>
@@ -288,19 +288,21 @@
                                               </select>
                                           </td>
                                      </t>
-                                     <t t-if="(!g_column['grain_qty'] == 0)" ><td class="right_side"><h4>0</h4></td></t>
+                                    <!--  <t t-if="(!g_column['grain_qty'] == 0)" ><td class="right_side"><h4>0</h4></td></t> -->
                                      <t t-if="g_column['grain_qty']">
                                          <td class="right_side">
                                              <h4><t t-esc="g_column['grain_qty']"/></h4>
                                          </td>
                                      </t>
+                                      <t t-if="g_column['customer_id']">
+                                        <td>
+                                           <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
+                                        </td>
+                                        <td>
+                                            <input type="image" id="save" style="visibility:hidden" t-att-data-dic="g_column['customer_id']"  src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                        </td>
+                                     </t>
                                  </t>
-                                  <td>
-                                     <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
-                                 </td>
-                                 <td>
-                                     <input type="image" id="save" style="visibility:hidden" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
-                                 </td>
                              </tr>
                         </t>
                         <tr>
@@ -309,9 +311,7 @@
                             </td>
                             <t t-foreach="widget.grain_item_dic" t-as="val">
                                 <td class="right_side">
-                                    <t t-foreach="widget.grain_item_dic[val]" t-as="column">
-                                        <h4><t t-esc="column['qty']"/></h4>
-                                    </t>
+                                    <h4><t t-esc="widget.grain_item_dic[val]"/></h4>
                                 </td>
                             </t>
                         </tr>
@@ -330,12 +330,12 @@
                  <td><h1><center>Manikarnika Order Interface</center></h1> </td>
              </tr>
          </table>
-         <table>
+         <table width="100%">
              <tr>
                  <td width="2%">
                      
                  </td>
-                 <td>
+                 <td width="96%">
                      <table class="scr" width="100%" border="1">
                          <tr>
                              <td rowspan="2">
@@ -427,19 +427,19 @@
                  <td><h1><center>Grians Order Interface</center></h1> </td>
              </tr>
          </table>
-         <table >
+         <table width="100%">
              <tr>
                  <td width="2%">
                      
                  </td>
-                 <td>
+                 <td width="96%">
                      <table border="1" class="scr" width="100%">
                          <tr>
                              <td rowspan="2">
                                  
                              </td>
                              <t t-foreach="widget.gr_product_lst" t-as="qty">
-                                 <td class="pro_qty" width="10%">
+                                 <td class="pro_qty">
                                      <h4><t t-esc="qty['default_qty']"></t></h4>
                                  </td>
                              </t>
