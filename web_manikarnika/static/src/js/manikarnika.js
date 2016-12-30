@@ -21,7 +21,6 @@ openerp.web_manikarnika = function(instance) {
     var item_dic = {}
     var product_list = {}
     function get_order_taking_data(model, date){
-    	console.log("CCC",date)
     	self.manik_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , date],
     	                                                                               ['state', 'in', ['draft','confirm']]]);
 	    self.manik_dataset.read_slice([], {'domain': []}).done(function(records) {
@@ -52,7 +51,6 @@ openerp.web_manikarnika = function(instance) {
 	        	    	});
 	        	    	val_list.push({'customer_id':r.partner_id[0],'manik_qty': manik_qty, 'driver_list': driver_list, 'driver_id': r.driver_id[0], 'order_id': r.id})
 	        	    	order_dic[r.partner_id[1]] = val_list
-	        	    	console.log("::::::::::record",order_dic)
 	    	    	}
 	    	    });
 	    	});
@@ -62,7 +60,6 @@ openerp.web_manikarnika = function(instance) {
 
     instance.web.client_actions.add('delivery.manik.homepage', 'instance.web_manikarnika.delivery_manik_action');
     instance.web_manikarnika.delivery_manik_action = instance.web.Widget.extend({
-        template: "DeliveryManikarnikaTemp",
         events: {
     		'click #edit': 'input_edit_click',
     		'click #save': 'input_save_click',
@@ -72,20 +69,19 @@ openerp.web_manikarnika = function(instance) {
         init: function(parent, name) {
             this._super(parent);
             var self = this
-            this.render(curr_date)
     	},
         start: function() {
+        	this.render(curr_date);
         },
         render: function(date){
-        	console.log(":::::::::date",date)
 		  	details = get_order_taking_data('morder.tacking.line', date)
-		  	console.log(":::::::::::details",details)
-		  	this.orders = details['order_dic']
-		  	this.product = details['product_list'],
-		  	this.item_dic = details['item_dic']
-		  	order_dic = {}
-	        item_dic = {}
-	        product_list = {}
+		  	this.$el.html(QWeb.render('DeliveryManikarnikaTemp', {orders: details['order_dic'],
+					 									  product: details['product_list'],
+						                                  item_dic: details['item_dic']}))
+			order_dic = {}
+		  	item_dic = {}
+		  	product_list = {}
+		  	date = '' 
 		},
         input_edit_click : function(ev)
         {
@@ -123,14 +119,9 @@ openerp.web_manikarnika = function(instance) {
         	self.ord_dataset.write(id, {'driver_id': dri_id})
         },
         manik_button_click: function(ev) {
-        	console.log("LLLLLLLL")
         	if($("#orderdate").val()){
         		this.render($("#orderdate").val())
         	}
-        	else{
-        		alert("Please select the order date!")
-        	}
-        		
         },
     });
 
@@ -139,7 +130,7 @@ openerp.web_manikarnika = function(instance) {
 	var grain_product_list = {}
 	var grain_item_dic = {}
     function get_order_gorder_data(model, data){
-    	self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , curr_date],
+    	self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , date],
                                                                           ['state', 'in', ['draft','confirm']]]);
     	self.grain_dataset.read_slice([], {'domain': []}).done(function(grain_records) {
     		_.each(grain_records, function(grain_r){
@@ -176,7 +167,6 @@ openerp.web_manikarnika = function(instance) {
     }
     
     instance.web_manikarnika.delivery_grain_action = instance.web.Widget.extend({
-    	template: "DeliveryGrainsTemp",
     	events: {
     		'click #edit': 'input_edit_click',
     		'click #save': 'input_save_click',
@@ -186,19 +176,19 @@ openerp.web_manikarnika = function(instance) {
         init: function(parent, name) {
             this._super(parent);
             var self = this
-            this.render(curr_date)
         },
-        start: function() {
+        start: function(){
+        	this.render(curr_date);
         },
         render: function(date){
         	details = get_order_gorder_data('gorder.tacking.line', date)
-        	console.log(":::::grains::::::details",details)
-        	this.grain_orders = details['grain_order_dic']
-        	this.grain_product = details['grain_product_list'],
-        	this.grain_item_dic = details['grain_item_dic']
-        	grain_order_dic = {}
-        	grain_product_list = {}
+        	this.$el.html(QWeb.render('DeliveryGrainsTemp',{grain_orders: details['grain_order_dic'],
+												          	grain_product: details['grain_product_list'],
+												          	grain_item_dic: details['grain_item_dic'],}))
+			grain_orders = {}
+        	grain_product = {}
         	grain_item_dic = {}
+        	date = ''
         },
         input_edit_click : function(ev)
         {
@@ -236,8 +226,9 @@ openerp.web_manikarnika = function(instance) {
         	self.ord_dataset.write(id, {'driver_id': dri_id})
         },
         grain_button_click: function(ev) {
-        	console.log(":::::::in button")
-        	this.render($("#orderdate").val())
+        	if($("#grain_orderdate").val()){
+        		this.render($("#grain_orderdate").val())
+        	}
         },
     });
     instance.web.client_actions.add('delivery.grain.homepage', 'instance.web_manikarnika.delivery_grain_action');
@@ -628,41 +619,3 @@ openerp.web_manikarnika = function(instance) {
 };
 
 //location.reload(true)
-/*var grain_order_dic = {}
-var grain_product_list = {}
-var grain_list = []
-var grain_item_dic = {}
-self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , curr_date],
-                                                                                ['state', 'in', ['draft','confirm']]]);
-self.grain_dataset.read_slice([], {'domain': []}).done(function(grain_records) {
-	_.each(grain_records, function(grain_r){
-		self.grain_line_dataset = new instance.web.DataSetSearch(self, 'gorder.tacking.line', {}, [['id','in', grain_r.gorder_tacking_line_ids]]);
-	    self.grain_line_dataset.read_slice([], {'domain': []}).done(function(grain_line_rec) {
-	    	if(grain_line_rec.length > 0){
-	    		grain_val_list = []
-    	    	grain_qty = 0
-    	    	_.each(grain_line_rec, function(grain_v){
-    	    		grain_product_list[grain_v.product_id[1]] = grain_v.default_order_qty
-    				grain_val_list.push({'id': grain_v.id,
-					   'customer_id':grain_r.partner_id[0],
-				  	   'product_name':  grain_v.product_id[1],
-				  	   'product_id': grain_v.product_id[0],
-				  	   'qty': grain_v.order_qty,
-				  	   'custome_nm': grain_r.partner_id[1]})
-				  	 grain_qty = grain_qty + grain_v.order_qty
-				  	 if ( grain_v.product_id[0] in grain_item_dic)
-			  		 {
-				  		 total = (grain_item_dic2[grain_v.product_id[1]] + grain_v.order_qty)
-				  		 grain_item_dic[grain_v.product_id[1]] = total
-			  		 }
-				  	 else
-				  	 {
-				  		grain_item_dic[grain_v.product_id[1]] = grain_v.order_qty
-				  	 }
-    	    	});
-    	    	grain_val_list.push({'grain_qty':grain_qty, 'driver_list': driver_list, 'driver_id': grain_r.driver_id[0], 'order_id': grain_r.id})
-    	    	grain_order_dic[grain_r.partner_id[1]] = grain_val_list
-	    	}
-	    });
-	});
-});*/
