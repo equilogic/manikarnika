@@ -9,8 +9,11 @@
             <field name="arch" type="xml">
                 <form string="Vehicle Product Summary">
                     <group  col="4" string="Select Drive">
-                        <field name="driver_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}' domain="[('driver','=',True)]"/>
+                        <field name="driver_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'
+                         domain="[('driver','=',True)]" required="1"/>
                         <field name="vehicle_id" domain="[('driver_id','=',driver_id)]"/>
+                        <field name="start_date" required="1" />
+                        <field name="end_date" required="1" />
                     </group>
                     <footer>
                         <button name="print_report" type="object" string="Print Report" class="oe_highlight"  invisible="1"/>

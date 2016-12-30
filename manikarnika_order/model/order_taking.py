@@ -176,7 +176,15 @@ class morder_tacking_line(models.Model):
     order_price = fields.Float('Order Price')
     order_qty = fields.Float('Order Qty')
     order_date_line = fields.Date('Order Date')
+    company_id = fields.Many2one('res.company','Company')
 
+    @api.model
+    def default_get(self, fields_list):
+        res = super(morder_tacking_line,self).default_get(fields_list)
+        comp = self.env['res.company'].search([('comp_code','=','MK')])
+        res.update({'company_id':comp.id})
+        return res
+    
     @api.onchange('product_id')
     def onchange_product_id(self):
         if self.product_id:
@@ -209,6 +217,14 @@ class gorder_tacking_line(models.Model):
     order_price = fields.Float('Order Price')
     order_qty = fields.Float('Order Qty')
     order_date_line = fields.Date('Order Date')
+    company_id = fields.Many2one('res.company','Company')
+    
+    @api.model
+    def default_get(self, fields_list):
+        res = super(gorder_tacking_line,self).default_get(fields_list)
+        comp = self.env['res.company'].search([('comp_code','=','GR')])
+        res.update({'company_id':comp.id})
+        return res
     
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -263,6 +279,12 @@ class vehicle_allocation(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirm'),
                               ('cancel', 'Cancel')],
                               string="State", default='draft')    
+
+    @api.multi
+    @api.onchange('vehicle_id')
+    def onchange_vehicle_id(self):
+        if self.vehicle_id and self.vehicle_id.driver_id:
+            self.driver_id = self.vehicle_id.driver_id.id
 
     @api.multi
     def _prepare_picking(self, order, line):

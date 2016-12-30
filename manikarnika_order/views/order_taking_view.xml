@@ -49,6 +49,7 @@
                                         <field name="order_price" readonly="1"/>
                                         <field name="order_qty" />
                                         <field name="order_date_line" />
+                                        <field name="company_id" invisible="1"/>
                                     </tree>
                                 </field>
                             </page>
@@ -62,6 +63,7 @@
                                         <field name="order_price" readonly="1"/>
                                         <field name="order_qty" />
                                         <field name="order_date_line" />
+                                        <field name="company_id" invisible="1"/>
                                     </tree>
                                 </field>
                             </page>

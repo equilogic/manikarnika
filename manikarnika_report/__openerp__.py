@@ -35,6 +35,8 @@
              'wizard/vehicle_product_summary_report.xml',
              'report/report_order_summary.xml',
              'report/product_summary_report.xml',
+             'report/manikarnika_order_report_view.xml',
+             'report/report_view.xml',
             
     ],
     'installable': True,

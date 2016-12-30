@@ -34,7 +34,15 @@ class vehicle_product_summary_wiz(models.TransientModel):
     
     driver_id = fields.Many2one('res.partner', 'Driver', required=True, readonly=False)
     vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle')
-        
+    start_date = fields.Date('Start Date')
+    end_date = fields.Date('End Date')
+
+    @api.multi
+    @api.onchange('driver_id')
+    def onchange_driver_id(self):
+        if self.driver_id:
+            vehicle_id = self.env['fleet.vehicle'].search([('driver_id','=',self.driver_id.id)])
+            self.vehicle_id = vehicle_id
 
     @api.multi
     def view_report(self):
@@ -57,14 +65,12 @@ class vehicle_product_summary_wiz(models.TransientModel):
         vehicle_id = res.get('vehicle_id',False)
         params =(driver_id,vehicle_id)
         
-        drop_view_if_exists(cr, 'report_order_summary')
-#        query = """
-#            create or replace view product_summary_report as (
-#            )
-#        """
-#        cr.execute(query,params)
+
         if self.vehicle_id and self.driver_id:
-            domain = [('driver_id','=',self.driver_id.id),('vehicle_id','=',self.vehicle_id.id)]
+            domain = [('driver_id','=',self.driver_id.id),
+                      ('vehicle_id','=',self.vehicle_id.id),
+                      ('date','>=',self.start_date),
+                      ('date','<=',self.end_date)]
       
         return {
        'type': 'ir.actions.act_window',

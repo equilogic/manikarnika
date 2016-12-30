@@ -16,6 +16,7 @@
 				<field name="uom"/>
 				<field name="driver_id" invisible="1"/>
 				<field name="vehicle_id" invisible="1"/>
+				<field name="date" invisible="1"/>
 			</tree>
 		</field>
 	</record>

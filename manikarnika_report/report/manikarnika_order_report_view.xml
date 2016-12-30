@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<!-- Template for Headre and Footer -->
+		<template id="external_layout_manikarnika_order_report">
+			<!-- Multicompany -->
+			<t t-if="o and 'company_id' in o">
+				<t t-set="company" t-value="o.company_id"></t>
+			</t>
+			<t t-if="not o or not 'company_id' in o">
+				<t t-set="company" t-value="res_company"></t>
+			</t>
+
+			<t
+				t-call="manikarnika_report.external_layout_header_manikarnika_order_report" />
+			<t t-raw="0" />
+			<t
+				t-call="manikarnika_report.external_layout_footer_manikarnika_order_report" />
+		</template>
+
+		<!-- Report Header -->
+		<template id="external_layout_header_manikarnika_order_report">
+			<div class="header">
+				<div class="col-xs-3">
+					<span t-if="get_company() and get_company().logo">
+						<img t-att-src="'data:image/png;base64,%s' % get_company().logo"
+							style="max-height: 65px;" />
+					</span>
+				</div>
+				<div class="col-xs-8 col-xs-offset-1 text-right">
+					<div t-if="get_company()" style="font-size:12px">
+						<div>
+							<h5>
+								<b>
+									<span t-field="get_company().name"></span>
+								</b>
+							</h5>
+						</div>
+						<div>
+							<t t-if="get_company().street">
+								<span t-field="get_company().street" />,
+							</t>
+							<t t-if="get_company().city">
+								<span t-field="get_company().city" />,
+							</t>
+							<span t-field="get_company().country_id" />
+							<span t-field="get_company().zip" />
+						</div>
+						<div>
+							<span>Tel :</span>
+							<span t-field="get_company().phone" />
+
+							<span> Fax :</span>
+							<span t-field="get_company().fax" />
+						</div>
+						<div>
+							<span>CO. REG. NO. </span>
+							<span t-field="get_company().company_registry" />
+						</div>
+						<div>
+							<span class="text-right">GST REG NO. </span>
+							<t t-if="get_company().gst_no">
+								<span t-field="get_company().gst_no" />
+							</t>
+						</div>
+					</div>
+				</div>
+			</div>
+		</template>
+		<template id="external_layout_footer_manikarnika_order_report">
+			<div class="footer">
+
+			</div>
+		</template>
+
+		<!-- Reports Template -->
+		<template id="manikarnika_order_report_template">
+			<style type="text/css">
+				td.line , span.line ,th.line {
+				font-family:Helvetica;
+				font-size:12px;
+				}
+
+			</style>
+			<t t-call="report.html_container">
+				<t t-call="manikarnika_report.external_layout_manikarnika_order_report">
+					<div class="page" style="font-family:Helvetica;font-size:12px">
+						<div class="oe_structure" />
+						<div>
+							<h3>Manikarnika Order Report</h3>
+						</div>
+						<div>
+							<table width="100%">
+								<tr>
+									<td width="70%">
+										<div>
+											<b>Order No :</b>
+											<span t-field="o.name" />
+										</div>
+										<div>
+											<b>Partner Name :</b>
+											<span t-field="o.partner_id" />
+											<span t-field="o.partner_id"
+												t-field-options='{"widget": "contact", "fields": ["address", "name"]}' />
+										</div>
+									</td>
+									<td width="30%">
+										<div>
+											<b>Date:</b>
+											<span t-field="o.order_date" />
+										</div>
+										<div>
+											<b>Page:</b>
+											<span class="page" />
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<br />
+						<table width="100%">
+							<thead>
+								<tr
+									style="border-top: 1px solid black;border-bottom: 1px solid black;">
+									<th width="25%" class="text-left line">Product</th>
+									<th width="15%" class="text-left line">Qty On Hand</th>
+									<th width="20%" class="text-left line">Default Order Qty</th>
+									<th width="20%" class="text-left line">Order Price</th>
+									<th width="10%" class="text-left line">Order Qty</th>
+									<th width="10%" class="text-left line">Order Date</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="o.morder_tacking_line_ids" t-as="line">
+									<td width="25%" class="text-left line">
+										<span t-field="line.product_id" />
+									</td>
+									<td width="15%" class="text-left line">
+										<span t-esc="get_aval_qty(line.qty_aval)" />
+									</td>
+									<td width="20%" class="text-left line">
+										<span t-esc="get_default_qty(line.default_order_qty)" />
+									</td>
+									<td width="20%" class="text-left line">
+										<span t-field="line.order_price" />
+									</td>
+									<td width="10%" class="text-left line">
+										<span t-esc="get_order_qty(line.order_qty)" />
+									</td>
+									<td width="10%" class="text-left line">
+										<span t-field="line.order_date_line" />
+									</td>
+								</tr>
+
+								<tfoot>
+									<tr
+										style="border-top: 1px solid black;border-bottom: 1px solid black;">
+										<th width="25%" class="text-left line">
+											<span>Total</span>
+										</th>
+										<th width="15%" class="text-left line">
+											<span t-esc="get_total(o.morder_tacking_line_ids)['qty_aval']" />
+										</th>
+										<th width="20%" class="text-left line">
+											<span
+												t-esc="get_total(o.morder_tacking_line_ids)['default_order_qty']" />
+										</th>
+										<th width="20%" class="text-left line">
+											<span t-esc="get_total(o.morder_tacking_line_ids)['order_price']" />
+										</th>
+										<th width="10%" class="text-left line">
+											<span t-esc="get_total(o.morder_tacking_line_ids)['order_qty']" />
+										</th>
+										<th width="10%" class="text-left line">
+										</th>
+									</tr>
+								</tfoot>
+							</tbody>
+						</table>
+					</div>
+				</t>
+			</t>
+		</template>
+
+		<template id="manikarnika_order_report_main_template">
+			<t t-call="report.html_container">
+				<t t-foreach="doc_ids" t-as="doc_id">
+					<t
+						t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'manikarnika_report.manikarnika_order_report_template')" />
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
