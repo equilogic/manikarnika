@@ -1,6 +1,6 @@
 <openerp>
 	<data>
-		<!-- Tax Invoice Qweb Report -->
+		<!-- Manikarnika Order Report Qweb Report -->
 		<report 
 			id="morder_tacking_report" 
 			model="order.tacking" 
@@ -8,6 +8,15 @@
 			report_type="qweb-pdf" 
 			name="manikarnika_report.manikarnika_order_report_main_template"
 			file="manikarnika_report.manikarnika_order_report_main_template" />
+		
+		<!--  Vehicle Allocation Qweb Report -->
+		<report 
+			id="vehicle_allocation_report_new" 
+			model="vehicle.allocation" 
+			string="Vehicle Allocation Report"
+			report_type="qweb-pdf" 
+			name="manikarnika_report.vehicle_allocation_report_main_template"
+			file="manikarnika_report.vehicle_allocation_report_main_template" />
 			
 		<record id="paperformat_euro_low_margin_manikarnika_order" model="report.paperformat">
 			<field name="name">European A4 low margin Manikarnika Order</field>
@@ -15,14 +24,16 @@
 			<field name="format">A4</field>
 			<field name="orientation">Portrait</field>
 			<field name="margin_top">55</field>
-			<field name="margin_bottom">68</field>
+			<field name="margin_bottom">20</field>
 			<field name="margin_left">10</field>
 			<field name="margin_right">10</field>
 			<field name="header_line" eval="False" />
 			<field name="header_spacing">40</field>
 			<field name="dpi">100</field>
 			<field name="report_ids"
-				eval="[(4, ref('manikarnika_report.morder_tacking_report'))]" /> 
+				eval="[(4, ref('manikarnika_report.morder_tacking_report')),
+					   (4, ref('manikarnika_report.vehicle_allocation_report_new'))
+						]" /> 	
 		</record>
 		
 	</data>

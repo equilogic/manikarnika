@@ -326,7 +326,7 @@ class vehicle_allocation(models.Model):
                 'picking_type_id': picking_type and picking_type.id or False,
                 'procurement_id': False,
                 'origin': order.name,
-                'product_uom': 1,
+                'product_uom': line_id.units.id,
                 'warehouse_id': picking_type and picking_type.warehouse_id.id,
                 'invoice_state': 'none',
             }

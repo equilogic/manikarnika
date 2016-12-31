@@ -29,13 +29,42 @@ class res_partner(models.Model):
     
     driver = fields.Boolean('Driver')
     location_id = fields.Many2one('location.location', string='Location')
+    
+    @api.model
+    def create(self,vals):
+        if vals:
+            res=super(res_partner,self).create(vals)
+            user_vals={
+                   'name':res.name,
+                   'login':res.name,
+                   'is_driver':True,
+                   'partner_id':res.id
+                   }
+            if res.driver:
+                user= self.env['res.users'].create(user_vals)
+        return res
+        
 
     @api.onchange('driver')
     def onchange_driver(self):
         if self.driver:
             self.customer = False
             self.supplier = False
-
+    
+    @api.multi
+    def write(self,vals):
+        res = super(res_partner,self).write(vals)
+        if vals.get('driver'):
+            user_vals={
+               'name':self.name,
+               'login':self.name,
+               'is_driver':True,
+               'partner_id':self.id
+               }
+            user_id = self.env['res.users'].search([('partner_id','=',self.id)])
+            if not user_id:
+                user= self.env['res.users'].create(user_vals)
+        return res
 
 class res_company(models.Model):
     

@@ -42,7 +42,7 @@ class vehicle_product_summary_wiz(models.TransientModel):
     def onchange_driver_id(self):
         if self.driver_id:
             vehicle_id = self.env['fleet.vehicle'].search([('driver_id','=',self.driver_id.id)])
-            self.vehicle_id = vehicle_id
+            self.vehicle_id = vehicle_id.ids
 
     @api.multi
     def view_report(self):
