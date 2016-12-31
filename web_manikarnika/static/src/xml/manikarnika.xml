@@ -120,9 +120,9 @@
                              <td rowspan="2">
                                  
                              </td>
-                            <t t-foreach="widget.product" t-as="val">
+                            <t t-foreach="product" t-as="val">
                                 <td class="pro_qty">
-                                    <h4><t t-esc="widget.product[val]"/></h4>
+                                    <h4><t t-esc="product[val]"/></h4>
                                 </td>
                             </t>
                             <td rowspan="2" class="pro_nm">
@@ -134,18 +134,18 @@
                             <td rowspan="2" colspan="2" width="1%"></td>
                          </tr>
                         <tr>
-                            <t t-foreach="widget.product" t-as="prod">
+                            <t t-foreach="product" t-as="prod">
                                 <td class="pro_nm">
                                     <h4><t t-esc="prod"></t></h4>
                                 </td>
                             </t>
                         </tr>
-                        <t t-foreach="widget.orders" t-as="order">
+                        <t t-foreach="orders" t-as="order">
                             <tr>
                                  <td class="customer_lst">
                                      <h4><t t-esc="order"/></h4>
                                  </td>
-                                 <t t-foreach="widget.orders[order]" t-as="column">
+                                 <t t-foreach="orders[order]" t-as="column">
                                       <t t-if="((!column['manik_qty']) and (!column['driver_list']))">
                                           <td id="ipt_td_manik">
                                               <input type="number" min="0" style="text-align: right;" class="form-control" t-att-id="column['id']" model="morder.tacking.line" t-att-value="column['qty']" readonly='readonly'></input>
@@ -191,9 +191,9 @@
                             <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
-                            <t t-foreach="widget.item_dic" t-as="val">
+                            <t t-foreach="item_dic" t-as="val">
                                 <td class="right_side">
-                                    <h4><t t-esc="widget.item_dic[val]"/></h4>
+                                    <h4><t t-esc="item_dic[val]"/></h4>
                                 </td>
                             </t>
                         </tr>
@@ -208,7 +208,7 @@
 
     <!-- **************************** Delivery Schedule Grains **********************************-->
 
-    <t t-name="DeliveryGrainsTemp" id="DeliveryGrainsTemp">
+    <t t-name="DeliveryGrainsTemp">
          <table width="100%">
              <tr>
                  <td colspan="3"><h1><center> Delivery Schedule Grains </center></h1> </td>
@@ -218,7 +218,7 @@
                      
                  </td>
                  <td width="15%">
-                      <input class="form-control orddate" id="orderdate" name="orderdate" placeholder="Select Date" type="date"/>
+                      <input class="form-control orddate" id="grain_orderdate" name="orderdate" placeholder="Select Date" type="date"/>
                  </td>
                  <td>
                      <button type="button" id="search" class="searchbtn">Search</button>
@@ -236,9 +236,9 @@
                              <td rowspan="2">
                                  
                              </td>
-                              <t t-foreach="widget.grain_product" t-as="val">
+                              <t t-foreach="grain_product" t-as="val">
                                 <td class="pro_qty">
-                                    <h4><t t-esc="widget.grain_product[val]"/></h4>
+                                    <h4><t t-esc="grain_product[val]"/></h4>
                                 </td>
                              </t>
                             <td rowspan="2" class="pro_nm">
@@ -250,18 +250,18 @@
                             <td rowspan="2" colspan="2" width="1%"></td>
                          </tr>
                         <tr>
-                            <t t-foreach="widget.grain_product" t-as="g_prod">
+                            <t t-foreach="grain_product" t-as="g_prod">
                                 <td class="pro_nm">
                                     <h4><t t-esc="g_prod"></t></h4>
                                 </td>
                             </t>
                         </tr>
-                        <t t-foreach="widget.grain_orders" t-as="g_order">
+                        <t t-foreach="grain_orders" t-as="g_order">
                             <tr>
                                  <td class="customer_lst">
                                      <h4><t t-esc="g_order"/></h4>
                                  </td>
-                                 <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
+                                 <t t-foreach="grain_orders[g_order]" t-as="g_column">
                                      <t t-if="((!g_column['grain_qty']) and (!g_column['driver_list']))">
                                          <td >
                                              <input min="0" style="text-align: right" type="number" class="form-control" t-att-id="g_column['id']"  t-att-value="g_column['qty']" readonly='readonly'
@@ -309,9 +309,9 @@
                             <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
-                            <t t-foreach="widget.grain_item_dic" t-as="val">
+                            <t t-foreach="grain_item_dic" t-as="val">
                                 <td class="right_side">
-                                    <h4><t t-esc="widget.grain_item_dic[val]"/></h4>
+                                    <h4><t t-esc="grain_item_dic[val]"/></h4>
                                 </td>
                             </t>
                         </tr>
