@@ -44,10 +44,12 @@ class order_tackinig(models.Model):
             if orders:
                 for order in orders:
                     if self._context.keys()[0] == 'manik':
+                        print "::::::::::::</t>"
                         if order.morder_tacking_line_ids:
                             for mnk_lst in order.morder_tacking_line_ids:
                                 for p in valu_dic[0].values()[0]:
                                     if (int(mnk_lst.product_id.id) == int(p['product_id'])):
+                                        print ":::::::::::::::in if"
                                         if float(p['order_qty']) > 0:
                                             if float(p['order_qty']) < mnk_lst.default_order_qty:
                                                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')

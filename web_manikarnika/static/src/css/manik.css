@@ -1,25 +1,25 @@
 @charset "UTF-8";
 .scr{
     overflow-x: scroll;
+    margin: 10px;
 }
 .pro_qty
 {
 	background-color:darkseagreen !important;
 	text-align: right !important;
-	min-width: 100px;
 }
 
 .pro_nm
 {
 	background-color:azure;
 	text-align: center !important;
-	width: 100px;
+	min-width: 80px;
 }
 
 .customer_lst
 {
 	background-color: cornflowerblue !important;
-	width: 200px;
+	min-width: 200px;
 }
 
 .item_tot
@@ -30,6 +30,7 @@
 .right_side
 {
 	text-align: right !important;
+	font-size: large;
 }
 .orddate{
 	margin-bottom: 20px;

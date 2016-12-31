@@ -93,7 +93,7 @@ openerp.web_manikarnika = function(instance) {
         },
         input_save_click: function(ev)
         {
-        	ev.preventDefault();
+//        	ev.preventDefault();
         	var $action = $(ev.currentTarget);
         	self.table_master_dataset = new instance.web.DataSetSearch(self, 'morder.tacking.line', {}, []);
         	$action.parent().parent().find('td').each(function(){
@@ -178,7 +178,7 @@ openerp.web_manikarnika = function(instance) {
             var self = this
         },
         start: function(){
-        	this.render(curr_date);
+        	this.render(curr_date)
         },
         render: function(date){
         	details = get_order_gorder_data('gorder.tacking.line', date)
@@ -200,7 +200,7 @@ openerp.web_manikarnika = function(instance) {
         },
         input_save_click: function(ev)
         {
-        	ev.preventDefault();
+//        	ev.preventDefault();
         	var $action = $(ev.currentTarget);
         	self.table_master_dataset = new instance.web.DataSetSearch(self, 'gorder.tacking.line', {}, []);
         	$action.parent().parent().find('td').each(function(){
@@ -226,8 +226,9 @@ openerp.web_manikarnika = function(instance) {
         	self.ord_dataset.write(id, {'driver_id': dri_id})
         },
         grain_button_click: function(ev) {
-        	if($("#grain_orderdate").val()){
-        		this.render($("#grain_orderdate").val())
+        	console.log("date:::",$("#orderdate").val())
+        	if($("#orderdate").val()){
+        		this.render($("#orderdate").val())
         	}
         },
     });
@@ -239,92 +240,110 @@ openerp.web_manikarnika = function(instance) {
 //    ********************************* Manikarnika Order ***********************************
 
     var manik_product_lst = []
-    var manik_cust_lst = []
     var manik_order_dict = {}
-    var item_total_dic = {}
-    var item_total_dic2 = {}
-    self.manik_comp_dataset = new instance.web.DataSetSearch(self, 'res.company', {}, [['comp_code', '=' , 'MK']]);
-    self.manik_comp_dataset.read_slice([], {'domain': []}).done(function(records_com) {
-    	_.each(records_com, function(r){
-    		self.manik_product_dataset = new instance.web.DataSetSearch(self, 'product.product', {}, [['company_id', '=' , r.id]]);
-    	    self.manik_product_dataset.read_slice([], {'domain': []}).done(function(records_pro) {
-    	    	_.each(records_pro, function(p){
-    	    		manik_product_lst.push({'product_nm': p.name, 'product_id': p.id,
-    	    								'default_qty': p.default_qty, 'order_qty': 0.0, 'manik_qty': 0.0})
-    	    	})
-    	    });
-    	})
-    });
-
-    self.manik_customer_dataset = new instance.web.DataSetSearch(self, 'res.partner', {}, [['customer', '=' , 'True']])
-    self.manik_customer_dataset.read_slice([], {'domain': []}).done(function(records_cus) {
-    	_.each(records_cus, function(c){
-    		self.manik_ord_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , curr_date],['partner_id', '=', c.id]])
-    	    self.manik_ord_dataset.read_slice([], {'domain': []}).done(function(records_ord) {
-    	    	if (records_ord.length > 0){
-    	    		_.each(records_ord, function(o){
-    	    			product_m_list = []
-    	    			self.manik_line_dataset = new instance.web.DataSetSearch(self, 'morder.tacking.line', {}, [['id','in', o.morder_tacking_line_ids]]);
-    	        	    self.manik_line_dataset.read_slice([], {'domain': []}).done(function(line_rec) {
-    	        	    	if( line_rec.length > 0){
-	    	        	    	manik_qty = 0
-	    	        	    	_.each(line_rec, function(product){
-	    	        	    		product_m_list.push({'product_nm': product.product_id[1],
-	    	        	    						   'product_id': product.product_id[0],
-	    	        	    						   'default_qty': product.default_qty,
-	    	        	    						   'order_qty': product.order_qty})
-		    						manik_qty = manik_qty + product.order_qty
-		    						if ( product.product_id[0] in item_total_dic2)
-		    				  		 {
-		    					  		 total = (item_total_dic2[product.product_id[0]] + product.order_qty)
-		    					  		 item_total_dic[product.product_id[1]] = [{'qty': total}]
-		    					  		 item_total_dic2[product.product_id[0]] = total
-		    				  		 }
-		    					  	 else
-		    					  	 {
-		    					  		item_total_dic[product.product_id[1]] = [{'qty': product.order_qty}]
-		    					  		item_total_dic2[product.product_id[0]] = product.order_qty
-		    					  	 }
-	    	        	    	})
-	    	        	    	manik_cust_lst = []
-		        	    		manik_cust_lst.push({'customer_id': c.id, 'product_lst': product_m_list,
-		        	    							 'manik_qty': manik_qty})
-		        	    		manik_order_dict[c.name] = manik_cust_lst
-		        	    		product_m_list = []
-    	        	    	}
-    	        	    	else{
-    	        	    		manik_cust_lst = []
-    	        	    		manik_cust_lst.push({'customer_id': c.id, 'product_lst': manik_product_lst})
-    	        	    		manik_order_dict[c.name] = manik_cust_lst
-    	        	    	}
-    	        	    })
-    	    		})
-    	    	}
-    	    	else{
-    	    		manik_cust_lst = []
-    	    		manik_cust_lst.push({'customer_id': c.id, 'product_lst': manik_product_lst})
-    	    		manik_order_dict[c.name] = manik_cust_lst
-    	    	}
-    	    })
-    		
-    	})
-    });
-
+    var manik_product_dic = {}
+    var manik_item_total_dic = {}
+    function get_manik_order_taking_data(){
+    	self.manik_comp_dataset = new instance.web.DataSetSearch(self, 'res.company', {}, [['comp_code', '=' , 'MK']]);
+        self.manik_comp_dataset.read_slice([], {'domain': []}).done(function(records_com) {
+        	_.each(records_com, function(r){
+        		self.manik_product_dataset = new instance.web.DataSetSearch(self, 'product.product', {}, [['company_id', '=' , r.id]]);
+        	    self.manik_product_dataset.read_slice([], {'domain': []}).done(function(records_pro) {
+        	    	_.each(records_pro, function(p){
+        	    		manik_product_lst = []
+        	    		manik_product_lst.push({'product_nm': p.name, 'product_id': p.id,
+        	    								'default_qty': p.default_qty, 'order_qty': 0.0, 'manik_qty': 0.0})
+						manik_product_dic[p.id] = manik_product_lst
+        	    	})
+        	    });
+        	})
+        });
+        self.manik_customer_dataset = new instance.web.DataSetSearch(self, 'res.partner', {}, [['customer', '=' , 'True']])
+        self.manik_customer_dataset.read_slice([], {'domain': []}).done(function(records_cus) {
+        	manik_item_total_dic = {}
+        	_.each(records_cus, function(c){
+        		pro_lst = []
+        		_.each(manik_product_dic, function(p){
+        			pro_lst.push(p[0])
+        		});
+        		manik_p_lst = []
+        		self.manik_ord_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , curr_date],['partner_id', '=', c.id]])
+        	    self.manik_ord_dataset.read_slice([], {'domain': []}).done(function(records_ord) {
+        	    	if (records_ord.length > 0){
+        	    		_.each(records_ord, function(o){
+        	    			self.manik_line_dataset = new instance.web.DataSetSearch(self, 'morder.tacking.line', {}, [['id','in', o.morder_tacking_line_ids]]);
+        	        	    self.manik_line_dataset.read_slice([], {'domain': []}).done(function(line_rec) {
+        	        	    	if( line_rec.length > 0){
+        	        	    		_.each(pro_lst, function(mpl){
+        	        	    			manik_p_lst.push({'product_nm': mpl['product_nm'], product_id: mpl['product_id'], default_qty: mpl['default_qty'],
+            							  'order_qty': mpl['order_qty'], 'manik_qty': mpl['manik_qty']})
+        	                		});
+        	        	    		manik_qty = 0
+	        	        	    	_.each(line_rec, function(prod){
+	        	        	    		_.each(manik_p_lst, function(plst){
+	        	        	    			if(plst['product_id'] == prod.product_id[0]){
+	        	        	    				manik_qty = manik_qty + prod.order_qty
+	        	        	    				plst['order_qty'] = prod.order_qty
+	        	        	    			}
+	        	        	    			if (plst['product_id'] in manik_item_total_dic)
+		        	        	    		{
+										  		manik_item_total_dic[plst['product_id']] = manik_item_total_dic[plst['product_id']]
+		        	        	    		}
+	        	        	    			else{
+	        	        	    				manik_item_total_dic[plst['product_id']] = 0.0
+	        	        	    			}
+	        	        	    		});
+	        	        	    		if ( prod.product_id[0] in manik_item_total_dic)
+	        	        	    		{
+									  		total = (manik_item_total_dic[prod.product_id[0]] + prod.order_qty)
+									  		manik_item_total_dic[prod.product_id[0]] = total
+			    				  		}
+	            	        	    });
+	        	        	    	manik_cust_lst = []
+        	                		manik_cust_lst.push({'customer_id': c.id, 'product_lst': manik_p_lst, 'manik_qty': manik_qty})
+        	                		manik_order_dict[c.name] = manik_cust_lst
+        	                		manik_p_lst = []
+        	        	    	}
+        	        	    	else{
+        	        	    		manik_cust_lst = []
+        	                		manik_cust_lst.push({'customer_id': c.id, 'product_lst': pro_lst})
+        	                		manik_order_dict[c.name] = manik_cust_lst
+        	        	    	}
+                	    	});
+        	    		})
+        	    	}
+        	    	else{
+        	    		manik_cust_lst = []
+                		manik_cust_lst.push({'customer_id': c.id, 'product_lst': pro_lst})
+                		manik_order_dict[c.name] = manik_cust_lst
+        	    	}
+        		});
+        	});
+        });
+        
+        return {'manik_product_lst': manik_product_dic, 'manik_order_dict': manik_order_dict, 'item_total_dic': manik_item_total_dic}
+    }
+    
     instance.web.client_actions.add('manikarnika.order.homepage', 'instance.web_manikarnika.manik_order_action');
     instance.web_manikarnika.manik_order_action = instance.web.Widget.extend({
     	events: {
     		'click #edit': 'input_edit_click',
     		'click #save': 'input_save_click',
     	},
-    	template: "ManikarnikaOrders",
         init: function(parent, name) {
             this._super(parent);
             var self = this;
-            this.manik_product_lst = manik_product_lst;
-            this.manik_order_dict = manik_order_dict
-            this.item_total = item_total_dic
         },
         start: function() {
+        	this.render()
+        },
+        render: function(){
+        	details = get_manik_order_taking_data()
+		  	this.$el.html(QWeb.render('ManikarnikaOrders',{manik_product_lst: details['manik_product_lst'],
+		  												   manik_order_dict: details['manik_order_dict'],
+		  												   item_total: details['item_total_dic']}))
+		  	manik_product_lst = []
+        	manik_order_dict = {}
         },
         input_edit_click : function(ev)
         {
@@ -342,8 +361,8 @@ openerp.web_manikarnika = function(instance) {
         	list_pro = []
         	$action.parent().parent().find('td').each(function(){
         		if($(this).find("input")){
-        			if($(this).find("input").attr('id')){
-        				list_pro.push({'product_id': $(this).find("input").attr('id'),'order_qty':$(this).find("input").val()})
+        			if($(this).find("input").attr('id') && (parseFloat($(this).find("input").val()) > 0 )){
+        				list_pro.push({'product_id': $(this).find("input").attr('id'),'order_qty': parseFloat($(this).find("input").val())})
         			}
 				}
         	})
@@ -364,76 +383,88 @@ openerp.web_manikarnika = function(instance) {
 //  ********************************* Grains Order ***********************************
 
     var gr_product_lst = []
-    var gr_cust_lst = []
     var gr_order_dict = {}
+    var gr_product_dic = {}
     var gr_item_total_dic = {}
-    var gr_item_total_dic2 = {}
-    self.gr_comp_dataset = new instance.web.DataSetSearch(self, 'res.company', {}, [['comp_code', '=' , 'GR']]);
-    self.gr_comp_dataset.read_slice([], {'domain': []}).done(function(records_com) {
-    	_.each(records_com, function(r){
-    		self.gr_product_dataset = new instance.web.DataSetSearch(self, 'product.product', {}, [['company_id', '=' , r.id]]);
-    	    self.gr_product_dataset.read_slice([], {'domain': []}).done(function(records_pro) {
-    	    	_.each(records_pro, function(p){
-    	    		gr_product_lst.push({'product_nm': p.name, 'product_id': p.id,
-    	    							 'default_qty': p.default_qty, 'order_qty': 0.0, 'gr_qty': 0.0})
-    	    	})
-    	    });
-    	})
-    });
-
-    self.gr_customer_dataset = new instance.web.DataSetSearch(self, 'res.partner', {}, [['customer', '=' , 'True']])
-    self.gr_customer_dataset.read_slice([], {'domain': []}).done(function(records_cus) {
-    	_.each(records_cus, function(c){
-    		self.gr_ord_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , curr_date],['partner_id', '=', c.id]])
-    	    self.gr_ord_dataset.read_slice([], {'domain': []}).done(function(records_ord) {
-    	    	if (records_ord.length > 0){
-    	    		_.each(records_ord, function(o){
-    	    			product_g_list = []
-    	    			self.gr_line_dataset = new instance.web.DataSetSearch(self, 'gorder.tacking.line', {}, [['id','in', o.gorder_tacking_line_ids]]);
-    	        	    self.gr_line_dataset.read_slice([], {'domain': []}).done(function(line_rec) {
-    	        	    	if( line_rec.length > 0){
-    	        	    		gr_qty = 0
-        	        	    	_.each(line_rec, function(product){
-        	        	    		product_g_list.push({'product_nm': product.product_id[1],
-        	        	    						   'product_id': product.product_id[0],
-        	        	    						   'default_qty': product.default_qty,
-        	        	    						   'order_qty': product.order_qty})
-    	    						gr_qty = gr_qty + product.order_qty
-    	    						if ( product.product_id[0] in gr_item_total_dic2)
-    	    				  		 {
-    	    					  		 total = (gr_item_total_dic2[product.product_id[0]] + product.order_qty)
-    	    					  		 gr_item_total_dic[product.product_id[1]] = [{'qty': total}]
-    	    					  		 gr_item_total_dic2[product.product_id[0]] = total
-    	    				  		 }
-    	    					  	 else
-    	    					  	 {
-    	    					  		gr_item_total_dic[product.product_id[1]] = [{'qty': product.order_qty}]
-    	    					  		gr_item_total_dic2[product.product_id[0]] = product.order_qty
-    	    					  	 }
-        	        	    	})
-        	        	    	gr_cust_lst = []
-    	        	    		gr_cust_lst.push({'customer_id': c.id, 'product_lst': product_g_list,
-    	        	    						  'gr_qty': gr_qty})
-    	        	    		gr_order_dict[c.name] = gr_cust_lst
-    	        	    		product_g_list = []
-    	        	    	}
-    	        	    	else{
-    	        	    		gr_cust_lst = []
-    	        	    		gr_cust_lst.push({'customer_id': c.id, 'product_lst': gr_product_lst})
-    	        	    		gr_order_dict[c.name] = gr_cust_lst
-    	        	    	}
-    	        	    })
-    	    		})
-    	    	}
-    	    	else{
-    	    		gr_cust_lst = []
-    	    		gr_cust_lst.push({'customer_id': c.id, 'product_lst': gr_product_lst})
-    	    		gr_order_dict[c.name] = gr_cust_lst
-    	    	}
-    	    })
-    		
-    	})
-    });
+    function get_grain_order_taking_data(){
+    	self.gr_comp_dataset = new instance.web.DataSetSearch(self, 'res.company', {}, [['comp_code', '=' , 'GR']]);
+        self.gr_comp_dataset.read_slice([], {'domain': []}).done(function(records_com) {
+        	_.each(records_com, function(r){
+        		self.gr_product_dataset = new instance.web.DataSetSearch(self, 'product.product', {}, [['company_id', '=' , r.id]]);
+        	    self.gr_product_dataset.read_slice([], {'domain': []}).done(function(records_pro) {
+        	    	_.each(records_pro, function(p){
+        	    		gr_product_lst = []
+        	    		gr_product_lst.push({'product_nm': p.name, 'product_id': p.id,
+        	    								'default_qty': p.default_qty, 'order_qty': 0.0, 'gr_qty': 0.0})
+						gr_product_dic[p.id] = gr_product_lst
+        	    	})
+        	    });
+        	})
+        });
+        self.gr_customer_dataset = new instance.web.DataSetSearch(self, 'res.partner', {}, [['customer', '=' , 'True']])
+        self.gr_customer_dataset.read_slice([], {'domain': []}).done(function(records_cus) {
+        	gr_item_total_dic = {}
+        	_.each(records_cus, function(c){
+        		gr_pro_lst = []
+        		_.each(gr_product_dic, function(p){
+        			gr_pro_lst.push(p[0])
+        		});
+        		gr_p_lst = []
+        		self.gr_ord_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , curr_date],['partner_id', '=', c.id]])
+        	    self.gr_ord_dataset.read_slice([], {'domain': []}).done(function(records_ord) {
+        	    	if (records_ord.length > 0){
+        	    		_.each(records_ord, function(o){
+        	    			self.gr_line_dataset = new instance.web.DataSetSearch(self, 'gorder.tacking.line', {}, [['id','in', o.gorder_tacking_line_ids]]);
+        	        	    self.gr_line_dataset.read_slice([], {'domain': []}).done(function(line_rec) {
+        	        	    	if( line_rec.length > 0){
+        	        	    		_.each(gr_pro_lst, function(mpl){
+        	        	    			gr_p_lst.push({'product_nm': mpl['product_nm'], product_id: mpl['product_id'], default_qty: mpl['default_qty'],
+            							  'order_qty': mpl['order_qty'], 'gr_qty': mpl['gr_qty']})
+        	                		});
+        	        	    		gr_qty = 0
+	        	        	    	_.each(line_rec, function(prod){
+	        	        	    		_.each(gr_p_lst, function(plst){
+	        	        	    			if(plst['product_id'] == prod.product_id[0]){
+	        	        	    				gr_qty = gr_qty + prod.order_qty
+	        	        	    				plst['order_qty'] = prod.order_qty
+	        	        	    			}
+	        	        	    			if (plst['product_id'] in gr_item_total_dic)
+		        	        	    		{
+										  		gr_item_total_dic[plst['product_id']] = gr_item_total_dic[plst['product_id']]
+		        	        	    		}
+	        	        	    			else{
+	        	        	    				gr_item_total_dic[plst['product_id']] = 0.0
+	        	        	    			}
+	        	        	    		});
+	        	        	    		if ( prod.product_id[0] in gr_item_total_dic)
+	        	        	    		{
+									  		total = (gr_item_total_dic[prod.product_id[0]] + prod.order_qty)
+									  		gr_item_total_dic[prod.product_id[0]] = total
+			    				  		}
+	            	        	    });
+	        	        	    	gr_cust_lst = []
+        	                		gr_cust_lst.push({'customer_id': c.id, 'product_lst': gr_p_lst, 'gr_qty': gr_qty})
+        	                		gr_order_dict[c.name] = gr_cust_lst
+        	                		gr_p_lst = []
+        	        	    	}
+        	        	    	else{
+        	        	    		gr_cust_lst = []
+        	                		gr_cust_lst.push({'customer_id': c.id, 'product_lst': gr_pro_lst})
+        	                		gr_order_dict[c.name] = gr_cust_lst
+        	        	    	}
+                	    	});
+        	    		})
+        	    	}
+        	    	else{
+        	    		gr_cust_lst = []
+                		gr_cust_lst.push({'customer_id': c.id, 'product_lst': gr_pro_lst})
+                		gr_order_dict[c.name] = gr_cust_lst
+        	    	}
+        		});
+        	});
+        });
+        return {'gr_product_lst': gr_product_dic, 'gr_order_dict': gr_order_dict, 'gr_item_total_dic': gr_item_total_dic}
+    }
 
     instance.web.client_actions.add('grains.order.homepage', 'instance.web_manikarnika.gr_order_action');
     instance.web_manikarnika.gr_order_action = instance.web.Widget.extend({
@@ -441,16 +472,22 @@ openerp.web_manikarnika = function(instance) {
     		'click #edit': 'input_edit_click',
     		'click #save': 'input_save_click',
     	},
-    	template: "GriansOrders",
         init: function(parent, name) {
             this._super(parent);
             var self = this;
-            this.gr_product_lst = gr_product_lst;
-            this.gr_order_dict = gr_order_dict
-            this.gr_item_total = gr_item_total_dic
         },
-        start: function() {
-        },
+	    start: function() {
+	    	this.render()
+	    },
+	    render: function(){
+	    	details = get_grain_order_taking_data()
+	    	console.log("::::::::::::details",details)
+		  	this.$el.html(QWeb.render('GriansOrders',{gr_product_lst: details['gr_product_lst'],
+		  											  gr_order_dict: details['gr_order_dict'],
+  													  gr_item_total: details['gr_item_total_dic']}))
+		  	gr_product_lst = []
+	    	gr_order_dict = {}
+	    },
         input_edit_click : function(ev)
         {
         	var $action = $(ev.currentTarget);
@@ -467,7 +504,7 @@ openerp.web_manikarnika = function(instance) {
         	list_pro = []
         	$action.parent().parent().find('td').each(function(){
         		if($(this).find("input")){
-        			if($(this).find("input").attr('id')){
+        			if($(this).find("input").attr('id') && (parseFloat($(this).find("input").val()) > 0 )){
         				list_pro.push({'product_id': $(this).find("input").attr('id'),'order_qty':$(this).find("input").val()})
         			}
 				}

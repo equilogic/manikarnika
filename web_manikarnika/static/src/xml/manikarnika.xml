@@ -341,10 +341,12 @@
                              <td rowspan="2">
                                  
                              </td>
-                             <t t-foreach="widget.manik_product_lst" t-as="qty">
-                                 <td class="pro_qty">
-                                     <h4><t t-esc="qty['default_qty']"></t></h4>
-                                 </td>
+                             <t t-foreach="manik_product_lst" t-as="qty">
+                                 <t t-foreach="manik_product_lst[qty]" t-as="q">
+                                     <td class="pro_qty">
+                                        <h4><t t-esc="q['default_qty']"></t></h4>
+                                     </td>
+                                 </t>
                              </t>
                              <td rowspan="2" class="pro_nm">
                                 <h3>Shop Total</h3>
@@ -352,18 +354,20 @@
                             <td rowspan="2" colspan="3" width="2%"></td>
                          </tr>
                         <tr>
-                            <t t-foreach="widget.manik_product_lst" t-as="pro">
-                                <td class="pro_nm">
-                                    <h4><t t-esc="pro['product_nm']"></t></h4>
-                                </td>
+                            <t t-foreach="manik_product_lst" t-as="pro">
+                                <t t-foreach="manik_product_lst[pro]" t-as="p">
+                                    <td class="pro_nm">
+                                        <h4><t t-esc="p['product_nm']"></t></h4>
+                                    </td>
+                                </t>
                              </t>
                         </tr>
-                        <t t-foreach="widget.manik_order_dict" t-as="order">
+                        <t t-foreach="manik_order_dict" t-as="order">
                             <tr>
                                 <td class="customer_lst">
                                     <h4><t t-esc="order"/></h4>
                                 </td>
-                                <t t-foreach="widget.manik_order_dict[order]" t-as="column">
+                                <t t-foreach="manik_order_dict[order]" t-as="column">
                                     <t t-if="column['product_lst']">
                                         <t t-foreach="column['product_lst']" t-as="pro">
                                             <td>
@@ -405,11 +409,9 @@
                             <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
-                            <t t-foreach="widget.item_total" t-as="val">
+                            <t t-foreach="item_total" t-as="val">
                                 <td class="right_side">
-                                    <t t-foreach="widget.item_total[val]" t-as="column">
-                                        <h4><t t-esc="column['qty']"/></h4>
-                                    </t>
+                                     <t t-esc="item_total[val]"/>
                                 </td>
                             </t>
                         </tr>
@@ -421,6 +423,7 @@
              </tr>
          </table>
     </t>
+    <!-- ********************************************** Grians Order Interface ***************************************** -->
     <t t-name="GriansOrders">
          <table width="100%" >
              <tr>
@@ -438,10 +441,12 @@
                              <td rowspan="2">
                                  
                              </td>
-                             <t t-foreach="widget.gr_product_lst" t-as="qty">
-                                 <td class="pro_qty">
-                                     <h4><t t-esc="qty['default_qty']"></t></h4>
-                                 </td>
+                             <t t-foreach="gr_product_lst" t-as="qty">
+                                 <t t-foreach="gr_product_lst[qty]" t-as="q">
+                                     <td class="pro_qty">
+                                        <h4><t t-esc="q['default_qty']"></t></h4>
+                                     </td>
+                                 </t>
                              </t>
                              <td rowspan="2" class="pro_nm">
                                 <h3>Shop Total</h3>
@@ -449,18 +454,20 @@
                             <td rowspan="2" colspan="3" width="2%"></td>
                          </tr>
                         <tr>
-                            <t t-foreach="widget.gr_product_lst" t-as="pro">
-                                <td class="pro_nm">
-                                    <h4><t t-esc="pro['product_nm']"></t></h4>
-                                </td>
+                             <t t-foreach="gr_product_lst" t-as="pro">
+                                <t t-foreach="gr_product_lst[pro]" t-as="p">
+                                    <td class="pro_nm">
+                                        <h4><t t-esc="p['product_nm']"></t></h4>
+                                    </td>
+                                </t>
                              </t>
                         </tr>
-                        <t t-foreach="widget.gr_order_dict" t-as="order">
+                        <t t-foreach="gr_order_dict" t-as="order">
                             <tr>
                                 <td class="customer_lst">
                                     <h4><t t-esc="order"/></h4>
                                 </td>
-                                <t t-foreach="widget.gr_order_dict[order]" t-as="column">
+                                <t t-foreach="gr_order_dict[order]" t-as="column">
                                     <t t-if="column['product_lst']">
                                         <t t-foreach="column['product_lst']" t-as="pro">
                                             <td>
@@ -502,11 +509,9 @@
                             <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
-                            <t t-foreach="widget.gr_item_total" t-as="val">
+                            <t t-foreach="gr_item_total" t-as="val">
                                 <td class="right_side">
-                                    <t t-foreach="widget.gr_item_total[val]" t-as="column">
-                                        <h4><t t-esc="column['qty']"/></h4>
-                                    </t>
+                                     <t t-esc="gr_item_total[val]"/>
                                 </td>
                             </t>
                         </tr>
