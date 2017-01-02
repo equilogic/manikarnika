@@ -146,37 +146,39 @@
                                      <h4><t t-esc="order"/></h4>
                                  </td>
                                  <t t-foreach="orders[order]" t-as="column">
-                                      <t t-if="((!column['manik_qty']) and (!column['driver_list']))">
-                                          <td id="ipt_td_manik">
-                                              <input type="number" min="0" style="text-align: right;" class="form-control" t-att-id="column['id']" model="morder.tacking.line" t-att-value="column['qty']" readonly='readonly'></input>
-                                          </td>
+                                      <t t-if="column['product_lst']">
+                                          <t t-foreach="column['product_lst']" t-as="pro">
+                                              <td>
+                                                  <input type="number" min="0" style="text-align: right;" class="form-control" t-att-id="pro['id']" model="morder.tacking.line" t-att-value="pro['qty']" readonly='readonly'></input>
+                                              </td>
+                                           </t>
                                       </t>
                                       <t t-if="(column['driver_list'])">
-                                          <td>
-                                              <select class="form-control dri" t-att-id="column['order_id']" model="order.tacking" disabled="disabled">
-                                              <option/>
-                                              <t t-foreach="column['driver_list']" t-as="driver">
-                                                  <t t-if="column.driver_id == driver.dr_id">
-                                                      <option t-att-value="driver['dr_id']" t-att-selected=" 'selected'">
-                                                        <t t-esc="driver['driver_nm']"/>
-                                                      </option>
-                                                  </t>
-                                                  <t t-if="column.driver_id != driver.dr_id">
-                                                      <option t-att-value="driver['dr_id']">
-                                                        <t t-esc="driver['driver_nm']"/>
-                                                      </option>
-                                                  </t>
-                                              </t>
-                                              <option/>
-                                              </select>
-                                          </td>
-                                     </t>
-                                     <t t-if="(column['manik_qty'] == 0)" ><td style="text-align: right"><h4>0</h4></td></t>
-                                     <t t-if="column['manik_qty']">
-                                        <td class="right_side">
-                                            <h4><t t-esc="column['manik_qty']"/></h4>
-                                        </td>
-                                     </t>
+                                           <td>
+                                               <select class="form-control dri" t-att-id="column['order_id']" model="order.tacking" disabled="disabled">
+                                               <option/>
+                                               <t t-foreach="column['driver_list']" t-as="driver">
+                                                   <t t-if="column.driver_id == driver.dr_id">
+                                                       <option t-att-value="driver['dr_id']" t-att-selected=" 'selected'">
+                                                         <t t-esc="driver['driver_nm']"/>
+                                                       </option>
+                                                   </t>
+                                                   <t t-if="column.driver_id != driver.dr_id">
+                                                       <option t-att-value="driver['dr_id']">
+                                                         <t t-esc="driver['driver_nm']"/>
+                                                       </option>
+                                                   </t>
+                                               </t>
+                                               <option/>
+                                               </select>
+                                           </td>
+                                      </t>
+                                      <t t-if="(column['manik_qty'] == 0)" ><td style="text-align: right"><h4>0</h4></td></t>
+                                      <t t-if="column['manik_qty']">
+                                         <td class="right_side">
+                                             <h4><t t-esc="column['manik_qty']"/></h4>
+                                         </td>
+                                      </t>
                                  </t>
                                   <td>
                                      <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
@@ -262,11 +264,13 @@
                                      <h4><t t-esc="g_order"/></h4>
                                  </td>
                                  <t t-foreach="grain_orders[g_order]" t-as="g_column">
-                                     <t t-if="((!g_column['grain_qty']) and (!g_column['driver_list']))">
-                                         <td >
-                                             <input min="0" style="text-align: right" type="number" class="form-control" t-att-id="g_column['id']"  t-att-value="g_column['qty']" readonly='readonly'
-                                                />
-                                         </td>
+                                     <t t-if="g_column['product_lst']">
+                                         <t t-foreach="g_column['product_lst']" t-as="pro">
+                                            <td >
+                                                <input min="0" style="text-align: right" type="number" class="form-control" t-att-id="pro['id']"  t-att-value="pro['qty']" readonly='readonly'
+                                                   />
+                                            </td>
+                                         </t>
                                      </t>
                                      <t t-if="(g_column['driver_list'])">
                                           <td>
