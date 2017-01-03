@@ -149,7 +149,7 @@
                                       <t t-if="column['product_lst']">
                                           <t t-foreach="column['product_lst']" t-as="pro">
                                               <td>
-                                                  <input type="number" min="0" style="text-align: right;" class="form-control" t-att-id="pro['id']" model="morder.tacking.line" t-att-value="pro['qty']" readonly='readonly'></input>
+                                                  <input type="number" min="0" style="text-align: right;" class="form-control" t-att-data-d_qty="pro['d_qty']" t-att-data-sr="pro['serial_no']" t-att-data-pro_id="pro['product_id']" t-att-id="pro['id']" model="morder.tacking.line" t-att-value="pro['qty']" readonly='readonly'></input>
                                               </td>
                                            </t>
                                       </t>
@@ -179,14 +179,13 @@
                                              <h4><t t-esc="column['manik_qty']"/></h4>
                                          </td>
                                       </t>
-                                 </t>
                                   <td>
                                      <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
                                  </td>
                                  <td>
-                                     <input type="image" id="save" style="visibility:hidden" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                     <input type="image" id="save" t-att-data-ord_id="column['order_id']" style="visibility:hidden"  src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
                                  </td>
-                                  
+                                  </t>
                              </tr>
                         </t>
                         <tr>
@@ -267,7 +266,7 @@
                                      <t t-if="g_column['product_lst']">
                                          <t t-foreach="g_column['product_lst']" t-as="pro">
                                             <td >
-                                                <input min="0" style="text-align: right" type="number" class="form-control" t-att-id="pro['id']"  t-att-value="pro['qty']" readonly='readonly'
+                                                <input min="0" style="text-align: right" type="number" class="form-control" t-att-data-d_qty="pro['d_qty']" t-att-data-sr="pro['serial_no']" t-att-data-pro_id="pro['product_id']" t-att-id="pro['id']"  t-att-value="pro['qty']" readonly='readonly'
                                                    />
                                             </td>
                                          </t>
@@ -292,7 +291,6 @@
                                               </select>
                                           </td>
                                      </t>
-                                    <!--  <t t-if="(!g_column['grain_qty'] == 0)" ><td class="right_side"><h4>0</h4></td></t> -->
                                      <t t-if="g_column['grain_qty']">
                                          <td class="right_side">
                                              <h4><t t-esc="g_column['grain_qty']"/></h4>
@@ -303,7 +301,7 @@
                                            <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
                                         </td>
                                         <td>
-                                            <input type="image" id="save" style="visibility:hidden" t-att-data-dic="g_column['customer_id']"  src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                            <input type="image" id="save" style="visibility:hidden" t-att-data-ord_id="g_column['order_id']" t-att-data-dic="g_column['customer_id']"  src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
                                         </td>
                                      </t>
                                  </t>

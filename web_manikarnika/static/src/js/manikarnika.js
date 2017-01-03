@@ -23,33 +23,43 @@ openerp.web_manikarnika = function(instance) {
     var pro_dic = {}
     var m_product_lst = []
     var m_pro_lst = []
-    function get_order_taking_data(model, date){
+    function get_manik_product_list(model,date){
     	self.manik_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , date],
-     	                                                                               ['state', 'in', ['draft','confirm']]]);
+      	                                                                               ['state', 'in', ['draft','confirm']]]);
 
-    	self.manik_dataset.read_slice([], {'domain': []}).done(function(records) {
- 	    	_.each(records, function(r){
-     			self.manik_line_dataset = new instance.web.DataSetSearch(self, model, {}, [['id','in', r.morder_tacking_line_ids]]);
- 	    	    self.manik_line_dataset.read_slice([], {'domain': []}).done(function(line_rec) {
- 	    	    	_.each(line_rec, function(v){
- 	    	    		m_product_lst = []
-	 	    	    	m_product_lst.push({'id': 0,
-	 	    	    						'product_name':  v.product_id[1],
-					    				  	'product_id': v.product_id[0],
-					    				  	'qty': 0})
-	 	    	    	pro_dic[v.product_id[1]] = m_product_lst
- 	    	    	})
- 	    	    });
- 	    	});
- 	    });
-    	_.each(pro_dic, function(p){
-				m_pro_lst.push(p[0])
-    	})
+     	self.manik_dataset.read_slice([], {'domain': []}).done(function(records) {
+  	    	_.each(records, function(r){
+      			self.manik_line_dataset = new instance.web.DataSetSearch(self, model, {}, [['id','in', r.morder_tacking_line_ids]]);
+  	    	    self.manik_line_dataset.read_slice([], {'domain': []}).done(function(line_rec) {
+  	    	    	_.each(line_rec, function(v){
+  	    	    		m_product_lst = []
+ 	 	    	    	m_product_lst.push({'id': 0,
+ 	 	    	    						'product_name':  v.product_id[1],
+ 					    				  	'product_id': v.product_id[0],
+ 					    				  	'qty': 0})
+ 	 	    	    	pro_dic[v.product_id[1]] = m_product_lst
+  	    	    	})
+  	    	    });
+  	    	});
+  	    });
+     	return pro_dic
+    }
+    function get_order_taking_data(model, date, manik_pro_lst){
  	    self.manik_dataset.read_slice([], {'domain': []}).done(function(records) {
 	    	_.each(records, function(r){
     			self.manik_line_dataset = new instance.web.DataSetSearch(self, model, {}, [['id','in', r.morder_tacking_line_ids]]);
 	    	    self.manik_line_dataset.read_slice([], {'domain': []}).done(function(line_rec) {
-	    	    	m_p_lst = m_pro_lst
+	    	    	m_p_lst = []
+    				sr = 1
+    				_.each(manik_pro_lst, function(mp){
+    					m_p_lst.push({'id': mp['id'],
+    								  'serial_no': sr,
+    	    						  'product_name':  mp['product_name'],
+			    				  	  'product_id': mp['product_id'],
+			    				  	  'qty': mp['qty'],
+			    				  	  'd_qty': mp['d_qty']})
+			    		sr = sr + 1
+    				})
 	    	    	if(line_rec.length > 0){
 	        	    	manik_qty = 0
 	    	    		_.each(line_rec, function(v){
@@ -98,7 +108,12 @@ openerp.web_manikarnika = function(instance) {
         	this.render(curr_date);
         },
         render: function(date){
-		  	details = get_order_taking_data('morder.tacking.line', date)
+        	pro_list = []
+        	pro_details = get_manik_product_list('morder.tacking.line', date)
+        	_.each(pro_details, function(p){
+        		pro_list.push(p[0])
+        	})
+		  	details = get_order_taking_data('morder.tacking.line', date, pro_list)
 		  	this.$el.html(QWeb.render('DeliveryManikarnikaTemp', {orders: details['order_dic'],
 					 									  product: details['product_list'],
 						                                  item_dic: details['item_dic']}))
@@ -121,9 +136,21 @@ openerp.web_manikarnika = function(instance) {
 //        	ev.preventDefault();
         	var $action = $(ev.currentTarget);
         	self.table_master_dataset = new instance.web.DataSetSearch(self, 'morder.tacking.line', {}, []);
+        	self.order_master_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, []);
         	$action.parent().parent().find('td').each(function(){
         		if($(this).find("input")){
-        			if($(this).find("input").attr('id')){
+        			if($(this).find("input").attr('id') == 0){
+        				if(parseFloat($(this).find("input").val()) > 0){
+        					lst = [[0, 0, {'serial_no': parseInt($(this).find("input").data('sr')),
+        								   'product_id': parseInt($(this).find("input").data('pro_id')),
+        								   'order_date_line': curr_date,
+        								   'default_order_qty': parseFloat($(this).find("input").data('d_qty')),
+        								   'order_qty': parseFloat($(this).find("input").val())}]]
+        					self.order_master_dataset.write(parseInt($action.data('ord_id')),
+           												{'morder_tacking_line_ids': lst})
+        				}
+        			}
+        			else{
         				self.table_master_dataset.write(parseInt($(this).find("input").attr('id')),
         												{'order_qty': parseFloat($(this).find("input").val())})
         			}
@@ -161,8 +188,7 @@ openerp.web_manikarnika = function(instance) {
 	var grain_product_list = {}
 	var grain_item_dic = {}
     var g_pro_dic = {}
-    var g_pro_lst = []
-    function get_order_gorder_data(model, data){
+    function get_grain_product_list(model,data){
     	self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , date],
     	                                                                                ['state', 'in', ['draft','confirm']]]);
       	self.grain_dataset.read_slice([], {'domain': []}).done(function(grain_records) {
@@ -174,29 +200,35 @@ openerp.web_manikarnika = function(instance) {
 	 	    	    	g_product_lst.push({'id': 0,
 	 	    	    						'product_name':  v.product_id[1],
 					    				  	'product_id': v.product_id[0],
-					    				  	'qty': 0})
+					    				  	'qty': 0,
+					    				  	'd_qty': v.default_order_qty})
 	 	    	    	g_pro_dic[v.product_id[1]] = g_product_lst
   					})
       			});
       		});
       	});
-      	_.each(g_pro_dic, function(p){
-				g_pro_lst.push(p[0])
-      	})
+      	return g_pro_dic
+    }
+    var g_pro_lst = []
+    function get_order_gorder_data(model, data, grain_pro_lst){
     	self.grain_dataset.read_slice([], {'domain': []}).done(function(grain_records) {
     		_.each(grain_records, function(grain_r){
     			self.grain_line_dataset = new instance.web.DataSetSearch(self, model, {}, [['id','in', grain_r.gorder_tacking_line_ids]]);
     			self.grain_line_dataset.read_slice([], {'domain': []}).done(function(grain_line_rec) {
-    				g_p_lst = g_pro_lst
+    				g_p_lst = []
+    				sr = 1
+    				_.each(grain_pro_lst, function(mp){
+    					g_p_lst.push({'id': mp['id'],
+    								  'serial_no': sr,
+    	    						  'product_name':  mp['product_name'],
+			    				  	  'product_id': mp['product_id'],
+			    				  	  'qty': mp['qty'],
+			    				  	  'd_qty': mp['d_qty']})
+			    		sr = sr + 1
+    				})
     				if(grain_line_rec.length > 0){
     					grain_qty = 0
     					_.each(grain_line_rec, function(grain_v){
-    						_.each(g_p_lst, function(mp){
-	    	    				if(grain_v.product_id[0] == mp['product_id']){
-	    	    					mp['qty'] = grain_v.order_qty
-	    	    					mp['id'] = grain_v.id
-	    	    				}
-	    	    			})
     						grain_product_list[grain_v.product_id[1]] = grain_v.default_order_qty
 						  	grain_qty = grain_qty + grain_v.order_qty
 						  	if ( grain_v.product_id[1] in grain_item_dic)
@@ -208,6 +240,12 @@ openerp.web_manikarnika = function(instance) {
 						  	{
 						  		grain_item_dic[grain_v.product_id[1]] = grain_v.order_qty
 						  	}
+    						_.each(g_p_lst, function(mp){
+	    	    				if(grain_v.product_id[0] == mp['product_id']){
+	    	    					mp['qty'] = grain_v.order_qty
+	    	    					mp['id'] = grain_v.id
+	    	    				}
+	    	    			})
     					});
     					grain_val_list = []
     					grain_val_list.push({'product_lst': g_p_lst,'customer_id':grain_r.partner_id[0],'grain_qty':grain_qty, 'driver_list': driver_list, 'driver_id': grain_r.driver_id[0], 'order_id': grain_r.id})
@@ -234,8 +272,12 @@ openerp.web_manikarnika = function(instance) {
         	this.render(curr_date)
         },
         render: function(date){
-        	details = get_order_gorder_data('gorder.tacking.line', date)
-        	console.log("details::::::::::details",details)
+        	pro_list = []
+        	pro_details = get_grain_product_list('gorder.tacking.line', date)
+        	_.each(pro_details, function(p){
+        		pro_list.push(p[0])
+        	})
+        	details = get_order_gorder_data('gorder.tacking.line', date, pro_list)
         	this.$el.html(QWeb.render('DeliveryGrainsTemp',{grain_orders: details['grain_order_dic'],
 												          	grain_product: details['grain_product_list'],
 												          	grain_item_dic: details['grain_item_dic'],}))
@@ -259,11 +301,23 @@ openerp.web_manikarnika = function(instance) {
 //        	ev.preventDefault();
         	var $action = $(ev.currentTarget);
         	self.table_master_dataset = new instance.web.DataSetSearch(self, 'gorder.tacking.line', {}, []);
+        	self.order_master_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, []);
         	$action.parent().parent().find('td').each(function(){
         		if($(this).find("input")){
-        			if($(this).find("input").attr('id')){
+        			if($(this).find("input").attr('id') == 0){
+        				if(parseFloat($(this).find("input").val()) > 0){
+        					lst = [[0, 0, {'serial_no': parseInt($(this).find("input").data('sr')),
+        								   'product_id': parseInt($(this).find("input").data('pro_id')),
+        								   'order_date_line': curr_date,
+        								   'default_order_qty': parseFloat($(this).find("input").data('d_qty')),
+        								   'order_qty': parseFloat($(this).find("input").val())}]]
+        					self.order_master_dataset.write(parseInt($action.data('ord_id')),
+           												{'gorder_tacking_line_ids': lst})
+        				}
+        			}
+        			else{
         				self.table_master_dataset.write(parseInt($(this).find("input").attr('id')),
-        												{'order_qty': parseFloat($(this).find("input").val())})
+								{'order_qty': parseFloat($(this).find("input").val())})
         			}
 				}
         	})
@@ -276,7 +330,7 @@ openerp.web_manikarnika = function(instance) {
         	grain_item_dic = {}
         	g_pro_lst = []
 		  	g_pro_dic = {}
-        	this.render(current_date)
+        	this.render(curr_date)
         },
         change_driver: function(ev){
         	var self = this
