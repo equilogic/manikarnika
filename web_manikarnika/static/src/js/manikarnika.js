@@ -54,7 +54,6 @@ openerp.web_manikarnika = function(instance) {
 	        	    	manik_qty = 0
 	    	    		_.each(line_rec, function(v){
 	    	    			_.each(m_p_lst, function(mp){
-	    	    				console.log("FFF",v.product_id[0],mp['product_id'])
 	    	    				if(v.product_id[0] == mp['product_id']){
 	    	    					mp['qty'] = v.order_qty
 	    	    					mp['id'] = v.id
@@ -134,7 +133,12 @@ openerp.web_manikarnika = function(instance) {
         	$action.parent().parent().find('select').attr("disabled", 'disabled')
         	$action.css('visibility', 'hidden')
         	$action.parent().parent().find('#edit').css('visibility', 'visible')
-        	location.reload(true)
+        	order_dic = {}
+		  	item_dic = {}
+		  	product_list = {}
+		  	m_pro_lst = []
+		  	pro_dic = {}
+        	this.render(curr_date)
         },
         change_driver: function(ev){
         	var self = this
@@ -188,7 +192,6 @@ openerp.web_manikarnika = function(instance) {
     					grain_qty = 0
     					_.each(grain_line_rec, function(grain_v){
     						_.each(g_p_lst, function(mp){
-	    	    				console.log("FFF",grain_v.product_id[0],mp['product_id'])
 	    	    				if(grain_v.product_id[0] == mp['product_id']){
 	    	    					mp['qty'] = grain_v.order_qty
 	    	    					mp['id'] = grain_v.id
@@ -268,7 +271,12 @@ openerp.web_manikarnika = function(instance) {
         	$action.css('visibility', 'hidden')
         	$action.parent().parent().find('#edit').css('visibility', 'visible')
         	$action.parent().parent().find('select').attr("disabled", 'disabled')
-        	location.reload(true)
+        	grain_orders = {}
+        	grain_product = {}
+        	grain_item_dic = {}
+        	g_pro_lst = []
+		  	g_pro_dic = {}
+        	this.render(current_date)
         },
         change_driver: function(ev){
         	var self = this
@@ -397,6 +405,7 @@ openerp.web_manikarnika = function(instance) {
 		  												   item_total: details['item_total_dic']}))
 		  	manik_product_lst = []
         	manik_order_dict = {}
+        	manik_item_total_dic = {}
         },
         input_edit_click : function(ev)
         {
@@ -408,6 +417,7 @@ openerp.web_manikarnika = function(instance) {
         input_save_click: function(ev)
         {
         	ev.preventDefault();
+        	var self = this;
         	var $action = $(ev.currentTarget);
         	order_dic = {'manik': {}}
         	view = {}
@@ -424,13 +434,17 @@ openerp.web_manikarnika = function(instance) {
         	if(view){
         		var model = new instance.web.Model("order.tacking");
             	model.call('order_taking_create',{context: order_dic}).then(function(result){
-            		
+            		$action.parent().parent().find('input').attr("readonly", 'readonly')
+                	$action.css('visibility', 'hidden')
+                	$action.parent().parent().find('#edit').css('visibility', 'visible')
+                	manik_product_lst = []
+            		manik_order_dict = {}
+            		manik_item_total_dic = {}
+                	self.render();
             	});
         	}
-        	$action.parent().parent().find('input').attr("readonly", 'readonly')
-        	$action.css('visibility', 'hidden')
-        	$action.parent().parent().find('#edit').css('visibility', 'visible')
-        	location.reload(true)
+        	
+//        	location.reload(true)
         },
     });
     
@@ -540,6 +554,7 @@ openerp.web_manikarnika = function(instance) {
   													  gr_item_total: details['gr_item_total_dic']}))
 		  	gr_product_lst = []
 	    	gr_order_dict = {}
+	    	gr_item_total_dic = {}
 	    },
         input_edit_click : function(ev)
         {
@@ -551,6 +566,7 @@ openerp.web_manikarnika = function(instance) {
         input_save_click: function(ev)
         {
         	ev.preventDefault();
+        	var self = this;
         	var $action = $(ev.currentTarget);
         	order_dic = {'grain': {}}
         	view = {}
@@ -567,13 +583,15 @@ openerp.web_manikarnika = function(instance) {
         	if(view){
         		var model = new instance.web.Model("order.tacking");
             	model.call('order_taking_create',{context: order_dic}).then(function(result){
-            		
+            		$action.parent().parent().find('input').attr("readonly", 'readonly')
+                	$action.css('visibility', 'hidden')
+                	$action.parent().parent().find('#edit').css('visibility', 'visible')
+                	gr_product_lst = []
+            		gr_order_dict = {}
+            		gr_item_total_dic = {}
+                	self.render();
             	});
         	}
-        	$action.parent().parent().find('input').attr("readonly", 'readonly')
-        	$action.css('visibility', 'hidden')
-        	$action.parent().parent().find('#edit').css('visibility', 'visible')
-        	location.reload(true)
         },
     });
 
@@ -682,6 +700,7 @@ openerp.web_manikarnika = function(instance) {
         {
         	
         	ev.preventDefault();
+        	var self = this;
         	var $action = $(ev.currentTarget);
         	view = {}
         	list_pro = []
@@ -699,13 +718,12 @@ openerp.web_manikarnika = function(instance) {
         	if(view){
         		var model = new instance.web.Model("vehicle.allocation");
             	model.call('vehicle_allocation_create',{context: view}).then(function(result){
-            		
+            		$action.parent().parent().find('input').attr("readonly", 'readonly')
+                	$action.css('visibility', 'hidden')
+                	$action.parent().parent().find('#edit').css('visibility', 'visible')
+                	self.render();
             	});
         	}
-        	$action.parent().parent().find('input').attr("readonly", 'readonly')
-        	$action.css('visibility', 'hidden')
-        	$action.parent().parent().find('#edit').css('visibility', 'visible')
-        	location.reload(true)
         },
     });
 };

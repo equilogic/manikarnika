@@ -44,12 +44,14 @@ class order_tackinig(models.Model):
             if orders:
                 for order in orders:
                     if self._context.keys()[0] == 'manik':
-                        print "::::::::::::</t>"
+                        pro_lst = []
+                        sr = 0
                         if order.morder_tacking_line_ids:
-                            for mnk_lst in order.morder_tacking_line_ids:
-                                for p in valu_dic[0].values()[0]:
-                                    if (int(mnk_lst.product_id.id) == int(p['product_id'])):
-                                        print ":::::::::::::::in if"
+                            for p in valu_dic[0].values()[0]:
+                                for mnk_lst in order.morder_tacking_line_ids:
+                                    sr = grn_lst.serial_no
+                                    if (int(p['product_id']) == int(mnk_lst.product_id.id)):
+                                        pro_lst.append(p)
                                         if float(p['order_qty']) > 0:
                                             if float(p['order_qty']) < mnk_lst.default_order_qty:
                                                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
@@ -58,16 +60,21 @@ class order_tackinig(models.Model):
                                             if (float(p['order_qty']) % mnk_lst.default_order_qty) != 0.0:
                                                 raise ValidationError('You can take order qty in the multiples of %s.' % mnk_lst.default_order_qty)
                                         mnk_lst.write({'order_qty': p['order_qty']})
-                            return order.id
-                        for products in valu_dic[0].values():
-                            MK_lst = self.get_order_taking_lines(products)
+                        for pro in pro_lst:
+                            if pro in valu_dic[0].values()[0]:
+                                valu_dic[0].values()[0].remove(pro)
+                        MK_lst = self.get_order_taking_lines(valu_dic[0].values()[0], sr)
                         order.morder_tacking_line_ids = MK_lst
                         return order.id
                     if self._context.keys()[0] == 'grain':
+                        pro_lst = []
+                        sr = 0
                         if order.gorder_tacking_line_ids:
-                            for grn_lst in order.gorder_tacking_line_ids:
-                                for p in valu_dic[0].values()[0]:
-                                    if (int(grn_lst.product_id.id) == int(p['product_id'])):
+                            for p in valu_dic[0].values()[0]:
+                                for grn_lst in order.gorder_tacking_line_ids:
+                                    sr = grn_lst.serial_no
+                                    if (int(p['product_id']) == int(grn_lst.product_id.id)):
+                                        pro_lst.append(p)
                                         if float(p['order_qty']) > 0:
                                             if float(p['order_qty']) < grn_lst.default_order_qty:
                                                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
@@ -76,13 +83,15 @@ class order_tackinig(models.Model):
                                             if (float(p['order_qty']) % grn_lst.default_order_qty) != 0.0:
                                                 raise ValidationError('You can take order qty in the multiples of %s.' % grn_lst.default_order_qty)
                                         grn_lst.write({'order_qty': p['order_qty']})
-                            return order.id
-                        for products in valu_dic[0].values():
-                            GR_lst = self.get_order_taking_lines(products)
+                        for pro in pro_lst:
+                            if pro in valu_dic[0].values()[0]:
+                                valu_dic[0].values()[0].remove(pro)
+                        GR_lst = self.get_order_taking_lines(valu_dic[0].values()[0],sr)
                         order.gorder_tacking_line_ids = GR_lst
                         return order.id
             if self._context.keys()[0] == 'manik':
-                MK_lst = self.get_order_taking_lines(valu_dic[0].values()[0])
+                sr = 0
+                MK_lst = self.get_order_taking_lines(valu_dic[0].values()[0], sr)
                 if MK_lst:
                     order_taking_id = self.create({'partner_id': valu_dic[0].keys()[0],
                                                    'order_date': order_dt,
@@ -90,7 +99,8 @@ class order_tackinig(models.Model):
                     order_taking_id.morder_tacking_line_ids = MK_lst
                     return order_taking_id.id
             if self._context.keys()[0] == 'grain':
-                GR_lst = self.get_order_taking_lines(valu_dic[0].values()[0])
+                sr = 0
+                GR_lst = self.get_order_taking_lines(valu_dic[0].values()[0], sr)
                 order_taking_id = self.create({'partner_id': valu_dic[0].keys()[0],
                                                'order_date': order_dt,
                                                'state': 'draft' })
@@ -98,7 +108,7 @@ class order_tackinig(models.Model):
                 return order_taking_id.id
 
     @api.multi
-    def get_order_taking_lines(self, products):
+    def get_order_taking_lines(self, products, sr):
         prod_obj = self.env['product.product']
         order_track_lines_lst = []
         order_dt = date.today().strftime('%Y-%m-%d')
@@ -107,7 +117,7 @@ class order_tackinig(models.Model):
             order_dt = order_dt + timedelta (days=1)
             order_dt = order_dt.strftime("%Y-%m-%d")
         if products:
-            sr_no = 1
+            sr_no = int(sr) + 1
             for product in products:
                 prod = prod_obj.search([('id','=',
                                                 product['product_id'])])
