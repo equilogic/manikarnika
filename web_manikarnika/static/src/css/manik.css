@@ -1,36 +1,42 @@
 @charset "UTF-8";
 .scr{
     overflow-x: scroll;
-    margin: 10px;
 }
 .pro_qty
 {
-	background-color:darkseagreen !important;
-	text-align: right !important;
+	background-color: darkseagreen !important;
+    text-align: right !important;
+    min-width: 100px;
+    text-align: center !important;
+    font-size: 20px;
+    margin: 4px 0 0 -12px !important;
 }
 
 .pro_nm
 {
-	background-color:azure;
-	text-align: center !important;
-	min-width: 80px;
+    background-color: azure;
+    text-align: center !important;
+    width: 100px;
+    font-size: 17px;
 }
 
 .customer_lst
 {
-	background-color: cornflowerblue !important;
-	min-width: 200px;
+	width: 200px;
+    background: azure !important;
+    text-align: center;
+    font-size: 16px;
 }
 
 .item_tot
 {
-	background-color: darkkhaki !important;
+	background-color: darkseagreen !important;
+	font-size: 16px;
 }
 
 .right_side
 {
 	text-align: right !important;
-	font-size: large;
 }
 .orddate{
 	margin-bottom: 20px;
@@ -40,4 +46,20 @@
 .searchbtn{
 	margin-top: 5px !important;
 	border: 1px solid black !important;
+}
+.input_style{
+    text-align: center !important;
+    font-size: 20px !important;
+    color: darkred !important;
+    font-weight: bold !important;
+}
+.total_style{
+    text-align: center !important;
+    font-size: 20px !important;
+    color: darkseagreen !important;
+    font-weight: bold !important;
+    margin: 4px 0 0 -12px !important;
+}
+.customer_lst h4{
+    margin-left:5px;
 }
