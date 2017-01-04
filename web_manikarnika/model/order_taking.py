@@ -191,7 +191,7 @@ class order_tackinig(models.Model):
             if all_products:
                 for GR_prod in all_products:
                     total_qty[GR_prod.name] = 0
-                    product_dict[GR_prod.name] = 0
+                    product_dict[GR_prod.name] = GR_prod.default_qty
                     for i in partner_ids:
                         if i.name in order_dict:
                             order_dict[i.name].append({'custome_nm': i.name,
@@ -282,7 +282,7 @@ class order_tackinig(models.Model):
             if all_products:
                 for MK_prod in all_products:
                     total_qty[MK_prod.name] = 0
-                    product_dict[MK_prod.name] = 0
+                    product_dict[MK_prod.name] = MK_prod.default_qty 
                     for i in partner_ids:
                         if i.name in order_dict:
                             order_dict[i.name].append({'custome_nm': i.name,

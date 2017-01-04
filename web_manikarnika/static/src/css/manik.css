@@ -4,36 +4,45 @@
 }
 .pro_qty
 {
-	background-color: darkseagreen !important;
+	background-color: #167F92 !important;
     text-align: right !important;
     min-width: 100px;
     text-align: center !important;
     font-size: 20px;
     margin: 4px 0 0 -12px !important;
+    color:white  !important;
+    border-color: #4c4c4c;
 }
 
 .pro_nm
 {
-    background-color: azure;
+    background-color: #85bfca;
     text-align: center !important;
     width: 100px;
     font-size: 17px;
+    color:#55556f;
+    border-color: #4c4c4c;
 }
 
 .customer_lst
 {
 	width: 200px;
-    background: azure !important;
+    background: #85bfca !important;
     text-align: center;
     font-size: 16px;
+    color:#55556f;
 }
 
 .item_tot
 {
-	background-color: darkseagreen !important;
+	background-color: #167F92 !important;
 	font-size: 16px;
+	color:white;
+	border-color: #4c4c4c;
 }
-
+.right_side{
+    border-color: #4c4c4c;
+}
 .right_side
 {
 	text-align: right !important;
@@ -41,7 +50,8 @@
 .orddate{
 	margin-bottom: 20px;
 	border: 1px solid black !important;
-	width: 165px !important;
+	width: 200px !important;
+	height: 40px !important;
 }
 .searchbtn{
 	margin-top: 5px !important;
@@ -56,10 +66,64 @@
 .total_style{
     text-align: center !important;
     font-size: 20px !important;
-    color: darkseagreen !important;
+    color: white !important;
     font-weight: bold !important;
     margin: 4px 0 0 -12px !important;
+    border-color: #4c4c4c;
 }
 .customer_lst h4{
     margin-left:5px;
+}
+.scr .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control{
+    background-color: Lavender !important;
+}
+.scr .form-control{
+    /*background-color: Lavender;*/
+    border: none !important;
+    box-shadow: none !important;
+}
+.scr td{
+    vertical-align: middle !important;
+}
+.input_td{
+ background: Lavender;
+}
+.item_tot h4 {
+    margin-left: 5px;
+}
+.searchbtn{
+    line-height: normal !important;
+    background: #4CAF50 !important;
+    border: none !important;
+    color: white !important;
+    padding: 4px 15px !important;
+    /* background: #4CAF50; */
+    text-align: center !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    margin-left:3% !important;
+}
+.scr button{
+   line-height: normal;
+    background-color: #4CAF50;
+    border: none;
+    color: slategray;
+    padding: 8px 8px;
+    /* background: #4CAF50; */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+}
+.customer_label{
+     background: #167F92!important;
+    color: white;
+    border-color: #4c4c4c;
+    text-align:center;
+     font-size: 25px;
+    font-weight: bold;
+    
 }

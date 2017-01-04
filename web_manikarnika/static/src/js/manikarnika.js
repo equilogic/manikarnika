@@ -57,6 +57,7 @@ openerp.web_manikarnika = function(instance) {
             }
             self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, []);
             self.grain_dataset.call('get_morder_tacking_line',[[],current_date]).done(function(result){
+                console.log('result====',result)
                 if(result[0].length != 0){
                     var product_list = self.get_line_dict(result[1])
                     var item_dic = self.get_line_dict(result[2])
@@ -79,7 +80,10 @@ openerp.web_manikarnika = function(instance) {
             $action.parent().parent().find('input').attr("readonly", false)
             $action.parent().parent().find('select').attr("disabled", false)
             $action.css('visibility', 'hidden')
-            $action.parent().parent().find('#save').css('visibility', 'visible')
+            $action.parent().parent().find('#save').css('visibility', 'visible');
+            $action.closest('tr').find('td').removeClass('input_td');
+            $action.parent().hide();
+            $action.parent().parent().find('#save').parent().show();
         },
         input_save_click: function(ev)
         {
@@ -102,7 +106,10 @@ openerp.web_manikarnika = function(instance) {
             $action.parent().parent().find('input').attr("readonly", 'readonly')
             $action.parent().parent().find('select').attr("disabled", 'disabled')
             $action.css('visibility', 'hidden')
-            $action.parent().parent().find('#edit').css('visibility', 'visible')
+            $action.parent().parent().find('#edit').css('visibility', 'visible');
+            $action.closest('tr').find('td').addClass('input_td');
+            $action.parent().hide();
+            $action.parent().parent().find('#edit').parent().show();
         },
         change_driver: function(ev){
             var self = this
@@ -169,7 +176,6 @@ openerp.web_manikarnika = function(instance) {
             }
             self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, []);
             self.grain_dataset.call('get_gorder_tacking_line',[[],current_date]).done(function(result){
-                console.log('result====',result)
                 if(result[0].length != 0){
                     var tmp_grain_product_list = self.get_line_dict(result[1])
                     var tmp_grain_item_dic = self.get_line_dict(result[2])
@@ -191,7 +197,10 @@ openerp.web_manikarnika = function(instance) {
             $action.parent().parent().find('input').attr("readonly", false)
             $action.parent().parent().find('select').attr("disabled", false)
             $action.css('visibility', 'hidden')
-            $action.parent().parent().find('#save').css('visibility', 'visible')
+            $action.parent().parent().find('#save').css('visibility', 'visible');
+            $action.closest('tr').find('td').removeClass('input_td');
+            $action.parent().hide();
+            $action.parent().parent().find('#save').parent().show();
         },
         input_save_click: function(ev)
         {
@@ -213,7 +222,10 @@ openerp.web_manikarnika = function(instance) {
             $action.parent().parent().find('input').attr("readonly", 'readonly')
             $action.css('visibility', 'hidden')
             $action.parent().parent().find('#edit').css('visibility', 'visible')
-            $action.parent().parent().find('select').attr("disabled", 'disabled')
+            $action.parent().parent().find('select').attr("disabled", 'disabled');
+            $action.closest('tr').find('td').addClass('input_td');
+            $action.parent().hide();
+            $action.parent().parent().find('#edit').parent().show();
         },
         change_driver: function(ev){
             var self = this
@@ -277,7 +289,6 @@ openerp.web_manikarnika = function(instance) {
             var current_date = curr_date;
             self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, []);
             self.grain_dataset.call('get_manik_order_line',[[],current_date]).done(function(result){
-                console.log('result=====',result)
                 if(result[0].length != 0){
                     var manik_product_lst = result[1];
                     var item_total_dic = self.get_line_dict(result[2]);
@@ -297,7 +308,10 @@ openerp.web_manikarnika = function(instance) {
             var $action = $(ev.currentTarget);
             $action.parent().parent().find('input').attr("readonly", false)
             $action.css('visibility', 'hidden')
-            $action.parent().parent().find('#save').css('visibility', 'visible')
+            $action.parent().parent().find('#save').css('visibility', 'visible');
+            $action.closest('tr').find('td').removeClass('input_td');
+            $action.parent().hide();
+            $action.parent().parent().find('#save').parent().show();
         },
         input_save_click: function(ev)
         {
@@ -327,7 +341,10 @@ openerp.web_manikarnika = function(instance) {
             model.call('order_taking_create',{context: order_dic}).done(function(result){
                 $action.parent().parent().find('input').attr("readonly", 'readonly')
                 $action.css('visibility', 'hidden')
-                $action.parent().parent().find('#edit').css('visibility', 'visible')
+                $action.parent().parent().find('#edit').css('visibility', 'visible');
+                $action.closest('tr').find('td').addClass('input_td');
+                $action.parent().hide();
+                $action.parent().parent().find('#edit').parent().show();
                 var relod = true;
                 $( ".scr tbody tr" ).each(function( index ,i) {
                     if($(this).find('#save').attr('style') == 'visibility: visible;' ){
@@ -402,7 +419,10 @@ openerp.web_manikarnika = function(instance) {
             var $action = $(ev.currentTarget);
             $action.parent().parent().find('input').attr("readonly", false)
             $action.css('visibility', 'hidden')
-            $action.parent().parent().find('#save').css('visibility', 'visible')
+            $action.parent().parent().find('#save').css('visibility', 'visible');
+            $action.closest('tr').find('td').removeClass('input_td');
+            $action.parent().hide();
+            $action.parent().parent().find('#save').parent().show();
         },
         input_save_click: function(ev)
         {
@@ -431,7 +451,10 @@ openerp.web_manikarnika = function(instance) {
                 model.call('order_taking_create',{context: order_dic}).then(function(result){
                     $action.parent().parent().find('input').attr("readonly", 'readonly')
                     $action.css('visibility', 'hidden')
-                    $action.parent().parent().find('#edit').css('visibility', 'visible')
+                    $action.parent().parent().find('#edit').css('visibility', 'visible');
+                    $action.closest('tr').find('td').addClass('input_td');
+                    $action.parent().hide();
+                    $action.parent().parent().find('#edit').parent().show();
                     var relod = true;
                     $( ".scr tbody tr" ).each(function( index ,i) {
                         if($(this).find('#save').attr('style') == 'visibility: visible;' ){
@@ -488,8 +511,11 @@ openerp.web_manikarnika = function(instance) {
         {
             var $action = $(ev.currentTarget);
             $action.parent().parent().find('input').attr("readonly", false)
-            $action.css('visibility', 'hidden')
-            $action.parent().parent().find('#save').css('visibility', 'visible')
+            $action.css('visibility', 'hidden');
+            $action.parent().parent().find('#save').css('visibility', 'visible');
+            $action.closest('tr').find('td').removeClass('input_td');
+            $action.parent().hide();
+            $action.parent().parent().find('#save').parent().show();
         },
         input_save_click: function(ev)
         {
@@ -512,11 +538,13 @@ openerp.web_manikarnika = function(instance) {
             view[$action.data('dic')] = list_pro
             if(view){
                 var model = new instance.web.Model("vehicle.allocation");
-                console.log('view======',$('#save'))
                 model.call('vehicle_allocation_create',{context: view}).done(function(result){
                     $action.parent().parent().find('input').attr("readonly", 'readonly')
                     $action.css('visibility', 'hidden')
-                    $action.parent().parent().find('#edit').css('visibility', 'visible')  
+                    $action.parent().parent().find('#edit').css('visibility', 'visible') ;
+                    $action.parent().hide();
+                    $action.parent().parent().find('#edit').parent().show();
+                    $action.closest('tr').find('td').addClass('input_td')
                     var relod = true;
                     $( ".scr tbody tr" ).each(function( index ,i) {
                         if($(this).find('#save').attr('style') == 'visibility: visible;' ){
@@ -531,43 +559,3 @@ openerp.web_manikarnika = function(instance) {
         },
     });
 };
-
-//location.reload(true)
-/*var grain_order_dic = {}
-var grain_product_list = {}
-var grain_list = []
-var grain_item_dic = {}
-self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, [['order_date', '=' , curr_date],
-                                                                                ['state', 'in', ['draft','confirm']]]);
-self.grain_dataset.read_slice([], {'domain': []}).done(function(grain_records) {
-	_.each(grain_records, function(grain_r){
-		self.grain_line_dataset = new instance.web.DataSetSearch(self, 'gorder.tacking.line', {}, [['id','in', grain_r.gorder_tacking_line_ids]]);
-	    self.grain_line_dataset.read_slice([], {'domain': []}).done(function(grain_line_rec) {
-	    	if(grain_line_rec.length > 0){
-	    		grain_val_list = []
-    	    	grain_qty = 0
-    	    	_.each(grain_line_rec, function(grain_v){
-    	    		grain_product_list[grain_v.product_id[1]] = grain_v.default_order_qty
-    				grain_val_list.push({'id': grain_v.id,
-					   'customer_id':grain_r.partner_id[0],
-				  	   'product_name':  grain_v.product_id[1],
-				  	   'product_id': grain_v.product_id[0],
-				  	   'qty': grain_v.order_qty,
-				  	   'custome_nm': grain_r.partner_id[1]})
-				  	 grain_qty = grain_qty + grain_v.order_qty
-				  	 if ( grain_v.product_id[0] in grain_item_dic)
-			  		 {
-				  		 total = (grain_item_dic2[grain_v.product_id[1]] + grain_v.order_qty)
-				  		 grain_item_dic[grain_v.product_id[1]] = total
-			  		 }
-				  	 else
-				  	 {
-				  		grain_item_dic[grain_v.product_id[1]] = grain_v.order_qty
-				  	 }
-    	    	});
-    	    	grain_val_list.push({'grain_qty':grain_qty, 'driver_list': driver_list, 'driver_id': grain_r.driver_id[0], 'order_id': grain_r.id})
-    	    	grain_order_dic[grain_r.partner_id[1]] = grain_val_list
-	    	}
-	    });
-	});
-});*/

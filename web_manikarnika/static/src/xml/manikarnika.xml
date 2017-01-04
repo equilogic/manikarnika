@@ -11,18 +11,18 @@
                  <td width="96%">
                      <table class="scr" width="100%" border="1">
                           <tr>
-                             <td rowspan="2">
-                                 
+                             <td rowspan="2" class="customer_label">
+                                 Products
                              </td>
                              <t t-foreach="widget.vehicles" t-as="va">
                                  <td class="pro_qty">
                                      <h4><t t-esc="va['driver_nm']"></t></h4>
                                  </td>
                              </t>
-                            <td class="pro_nm" rowspan="2">
+                            <td class="pro_nm" rowspan="2" style="background:#167F92!important;color:white;border-color: #4c4c4c;">
                                 <h3>Total</h3>
                             </td>
-                            <td rowspan="2" colspan="2" width="2%"></td>
+                            <td rowspan="2" colspan="2" width="2%" style="background:#167F92;"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.vehicles" t-as="va">
@@ -39,30 +39,30 @@
                                  <t t-foreach="widget.vehicle_products[v_pro]" t-as="column">
                                     <t t-if="column['driver_lst']">
                                         <t t-foreach="column['driver_lst']" t-as="pro">
-                                            <td>
-                                                <input step="0.00" min="0" style="text-align: right;" type="number" class="form-control input_style" t-att-id="pro['driver_id']" t-att-data-v_id="pro['vehicle_id']" t-att-value="pro['order_qty']" data-input="false" readonly='readonly'></input>
+                                            <td class="input_td">
+                                                <input step="0.00" min="0" style="text-align: right;" type="text" class="form-control input_style" t-att-id="pro['driver_id']" t-att-data-v_id="pro['vehicle_id']" t-att-value="pro['order_qty']" data-input="false" readonly='readonly'></input>
                                             </td>
                                         </t>
                                     </t>
                                     <t t-foreach="widget.vehicle_pro_qty" t-as="val">
                                         <t t-if="(v_pro == val)">
-                                            <td class="right_side">
+                                            <td class="right_side" style="background:#85bfca !important;color:white;order-color: #4c4c4c;">
                                                 <h4 class="total_style"><t t-esc="widget.vehicle_pro_qty[val]"/></h4>
                                             </td>
                                         </t>
                                     </t>
-                                    <td>
-                                        <img id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
+                                    <td class="input_td">
+                                        <button  id="edit"><i class="fa fa-2x fa-pencil-square-o" aria-hidden="true"></i></button>
                                     </td>
                                     <t t-if="column['product_id']">
-                                        <td>
-                                            <img id="save" style="visibility:hidden" t-att-data-sr="column['sr_n']" t-att-data-dic="column['product_id']" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                        <td style="display:none;background:Lavender;">
+                                            <button  id="save" style="visibility:hidden" t-att-data-sr="column['sr_n']" t-att-data-dic="column['product_id']"><i class="fa fa-2x fa-floppy-o" aria-hidden="true"></i></button>
                                         </td>
                                     </t>
                                  </t>
                              </tr>
                         </t>
-                        <tr>
+                        <tr style="background:#167F92 !important;color:white;border-color: #4c4c4c;">
                             <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
@@ -86,7 +86,7 @@
      <t t-name="VehicleTemp">
          <table width="100%">
              <tr>
-                 <td><h1><center> Vehicle Allocation </center></h1> </td>
+                 <td><h1 style="background: #167F92;color: white;"><center> Vehicle Allocation </center></h1> </td>
              </tr>
          </table>
          <table width="100%" id="VehicleTempLine">
@@ -102,8 +102,8 @@
                  <td width="96%" >
                      <table class="scr" width="100%" border="1">
                          <tr>
-                             <td rowspan="2">
-                                 
+                             <td rowspan="2" class="customer_label">
+                                 Customers
                              </td>
                             <t t-foreach="widget.product" t-as="val">
                                 <td class="pro_qty">
@@ -113,10 +113,10 @@
                             <td rowspan="2" class="pro_nm" style="display:none;">
                                 <h3>Driver</h3>
                             </td>
-                             <td rowspan="2" class="pro_nm">
+                             <td rowspan="2" class="pro_nm" style="background:#167F92 !important;color:white !important;border-color: #4c4c4c;">
                                 <h3>Shop Total</h3>
                             </td>
-                            <td rowspan="2" colspan="2" width="1%"></td>
+                            <td rowspan="2" colspan="2" width="1%" style="background:#167F92;"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.product" t-as="prod">
@@ -132,8 +132,8 @@
                                  </td>
                                  <t t-foreach="widget.orders[order]" t-as="column">
                                       <t t-if="((!column['manik_qty']) and (!column['driver_list']))">
-                                          <td id="ipt_td_manik">
-                                              <input type="number" min="0" style="text-align: right;" class="form-control input_style" t-att-id="column['id']" data-input="false" model="morder.tacking.line" t-att-value="column['qty']" readonly='readonly'></input>
+                                          <td id="ipt_td_manik" class="input_td">
+                                              <input type="text" min="0" style="text-align: right;" class="form-control input_style" t-att-id="column['id']" data-input="false" model="morder.tacking.line" t-att-value="column['qty']" readonly='readonly'></input>
                                           </td>
                                       </t>
                                       <t t-if="(column['driver_list'])">
@@ -156,23 +156,22 @@
                                               </select>
                                           </td>
                                      </t>
-                                     <t t-if="(column['manik_qty'] == 0)" ><td style="text-align: right"><h4 class="total_style">0</h4></td></t>
+                                     <t t-if="(column['manik_qty'] == 0)" ><td style="background:#85bfca !important;color:white;text-align: right;border-color: #4c4c4c;"><h4 class="total_style">0</h4></td></t>
                                      <t t-if="column['manik_qty']">
-                                        <td class="right_side">
+                                        <td class="right_side" style="background:#85bfca !important;color:white;border-color: #4c4c4c;">
                                             <h4 class="total_style"><t t-esc="column['manik_qty']"/></h4>
                                         </td>
                                      </t>
                                  </t>
-                                  <td>
-                                     <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
+                                  <td class="input_td">
+                                      <button  id="edit"><i class="fa fa-2x fa-pencil-square-o" aria-hidden="true"></i></button>
                                  </td>
-                                 <td>
-                                     <input type="image" id="save" style="visibility:hidden" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                 <td style="display:none;background:Lavender;" class="input_td">
+                                     <button  style="visibility:hidden"  id="save"><i class="fa fa-2x fa-floppy-o" aria-hidden="true"></i></button>
                                  </td>
-                                  
                              </tr>
                         </t>
-                        <tr>
+                        <tr style="background:#167F92 !important;color:white;order-color: #4c4c4c;">
                             <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
@@ -192,14 +191,14 @@
     <t t-name="DeliveryManikarnikaTemp">
          <table width="100%">
              <tr>
-                 <td colspan="3"><h1><center>Delivery Schedule Manikarnika </center></h1> </td>
+                 <td colspan="3" ><h1 style="background: #167F92;color: white;"><center>Delivery Schedule Manikarnika </center></h1> </td>
              </tr>
              <tr>
-                 <td width="10%">
+                 <td width="2%">
                      
                  </td>
                  <td width="15%">
-                      <input class="form-control orddate" id="orderdate" name="orderdate" placeholder="Select Date" type="date"/>
+                      <input class="form-control orddate input_style" id="orderdate" name="orderdate" placeholder="Select Date" type="date"/>
                  </td>
                  <td>
                       <button type="button" class="searchbtn" id="search">Search</button>
@@ -220,8 +219,8 @@
                  <td width="96%">
                      <table class="scr" width="100%" border="1">
                           <tr>
-                             <td rowspan="2">
-                                 
+                             <td rowspan="2" class="customer_label">
+                                 Customers
                              </td>
                               <t t-foreach="widget.grain_product" t-as="val">
                                 <td class="pro_qty">
@@ -231,10 +230,10 @@
                             <td rowspan="2" class="pro_nm" style="display:none;">
                                 <h3>Driver</h3>
                             </td>
-                            <td rowspan="2" class="pro_nm">
+                            <td rowspan="2" class="pro_nm" style="background:#167F92 !important;color:white !important;border-color: #4c4c4c;">
                                 <h3>Shop Total</h3>
                             </td>
-                            <td rowspan="2" colspan="2" width="1%"></td>
+                            <td rowspan="2" colspan="2" width="1%" style="background:#167F92;"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.grain_product" t-as="g_prod">
@@ -250,8 +249,8 @@
                                  </td>
                                  <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
                                      <t t-if="((!g_column['grain_qty']) and (!g_column['driver_list']))">
-                                         <td >
-                                             <input min="0" style="text-align: right" type="number" class="form-control input_style" data-input='false' t-att-id="g_column['id']"  t-att-value="g_column['qty']" readonly='readonly'
+                                         <td class="input_td">
+                                             <input min="0" style="text-align: right" type="text" class="form-control input_style" data-input='false' t-att-id="g_column['id']"  t-att-value="g_column['qty']" readonly='readonly'
                                                 />
                                          </td>
                                      </t>
@@ -275,24 +274,24 @@
                                               </select>
                                           </td>
                                      </t>
-                                     <t t-if="(g_column['grain_qty'] == 0)" ><td class="right_side"><h4 class="total_style">0</h4></td></t>
+                                     <t t-if="(g_column['grain_qty'] == 0)" ><td class="right_side" style="background:#85bfca !important;color:white;border-color: #4c4c4c;"><h4 class="total_style">0</h4></td></t>
                                      <t t-if="g_column['grain_qty']">
-                                         <td class="right_side">
+                                         <td class="right_side" style="background:#85bfca !important;color:white;border-color: #4c4c4c;">
                                              <h4 class="total_style"><t t-esc="g_column['grain_qty']"/></h4>
                                          </td>
                                      </t>
                                       <t t-if="g_column['customer_id']">
-                                        <td>
-                                           <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
+                                        <td class="input_td">
+                                            <button  id="edit"><i class="fa fa-2x fa-pencil-square-o" aria-hidden="true"></i></button>
                                         </td>
-                                        <td>
-                                            <input type="image" id="save" style="visibility:hidden" t-att-data-dic="g_column['customer_id']"  src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                        <td style="display:none;background:Lavender;" class="input_td">
+                                            <button  id="save" style="visibility:hidden" t-att-data-dic="g_column['customer_id']"><i class="fa fa-2x fa-floppy-o" aria-hidden="true"></i></button>
                                         </td>
                                      </t>
                                  </t>
                              </tr>
                         </t>
-                        <tr>
+                        <tr style="background:#167F92 !important;color:white;">
                             <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
@@ -312,10 +311,10 @@
     <t t-name="DeliveryGrainsTemp" id="DeliveryGrainsTemp">
          <table width="100%">
              <tr>
-                 <td colspan="3"><h1><center> Delivery Schedule Grains </center></h1> </td>
+                 <td colspan="3" ><h1 style="background: #167F92;color: white;"><center> Delivery Schedule Grains </center></h1> </td>
              </tr>
              <tr>
-                 <td width="10%">
+                 <td width="2%">
                      
                  </td>
                  <td width="15%">
@@ -328,103 +327,6 @@
          </table>
          <table width="100%" id="grain_line">
          </table>
-        <!--  <table width="100%">
-             <tr>
-                 <td width="2%">
-                     
-                 </td>
-                 <td width="96%">
-                     <table class="scr" width="100%" border="1">
-                          <tr>
-                             <td rowspan="2">
-                                 
-                             </td>
-                              <t t-foreach="widget.grain_product" t-as="val">
-                                <td class="pro_qty">
-                                    <h4><t t-esc="widget.grain_product[val]"/></h4>
-                                </td>
-                             </t>
-                            <td rowspan="2" class="pro_nm">
-                                <h3>Driver</h3>
-                            </td>
-                            <td rowspan="2" class="pro_nm">
-                                <h3>Shop Total</h3>
-                            </td>
-                            <td rowspan="2" colspan="2" width="1%"></td>
-                         </tr>
-                        <tr>
-                            <t t-foreach="widget.grain_product" t-as="g_prod">
-                                <td class="pro_nm">
-                                    <h4><t t-esc="g_prod"></t></h4>
-                                </td>
-                            </t>
-                        </tr>
-                        <t t-foreach="widget.grain_orders" t-as="g_order">
-                            <tr>
-                                 <td class="customer_lst">
-                                     <h4><t t-esc="g_order"/></h4>
-                                 </td>
-                                 <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
-                                     <t t-if="((!g_column['grain_qty']) and (!g_column['driver_list']))">
-                                         <td >
-                                             <input min="0" style="text-align: right" type="number" class="form-control" t-att-id="g_column['id']"  t-att-value="g_column['qty']" readonly='readonly'
-                                                />
-                                         </td>
-                                     </t>
-                                     <t t-if="(g_column['driver_list'])">
-                                          <td>
-                                              <select class="form-control dri" t-att-id="g_column['order_id']" model="order.tacking" disabled="disabled">
-                                              <option/>
-                                              <t t-foreach="g_column['driver_list']" t-as="driver">
-                                                  <t t-if="g_column.driver_id == driver.dr_id">
-                                                      <option t-att-value="driver['dr_id']" t-att-selected=" 'selected'">
-                                                        <t t-esc="driver['driver_nm']"/>
-                                                      </option>
-                                                  </t>
-                                                  <t t-if="g_column.driver_id != driver.dr_id">
-                                                      <option t-att-value="driver['dr_id']">
-                                                        <t t-esc="driver['driver_nm']"/>
-                                                      </option>
-                                                  </t>
-                                              </t>
-                                              <option/>
-                                              </select>
-                                          </td>
-                                     </t>
-                                     <t t-if="(!g_column['grain_qty'] == 0)" ><td class="right_side"><h4>0</h4></td></t>
-                                     <t t-if="g_column['grain_qty']">
-                                         <td class="right_side">
-                                             <h4><t t-esc="g_column['grain_qty']"/></h4>
-                                         </td>
-                                     </t>
-                                      <t t-if="g_column['customer_id']">
-                                        <td>
-                                           <input type="image" id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
-                                        </td>
-                                        <td>
-                                            <input type="image" id="save" style="visibility:hidden" t-att-data-dic="g_column['customer_id']"  src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
-                                        </td>
-                                     </t>
-                                 </t>
-                             </tr>
-                        </t>
-                        <tr>
-                            <td class="item_tot">
-                                <h4>Item Total</h4>
-                            </td>
-                            <t t-foreach="widget.grain_item_dic" t-as="val">
-                                <td class="right_side">
-                                    <h4><t t-esc="widget.grain_item_dic[val]"/></h4>
-                                </td>
-                            </t>
-                        </tr>
-                    </table>
-                 </td>
-                 <td width="2%">
-                     
-                 </td>
-             </tr>
-         </table> -->
     </t>
    
     <t t-name="ManikarnikaOrdersLines">
@@ -435,18 +337,18 @@
                  <td width="96%">
                      <table class="scr" width="100%" border="1">
                          <tr>
-                             <td rowspan="2">
-                                 
+                             <td rowspan="2" class="customer_label">
+                                 Customers
                              </td>
                              <t t-foreach="widget.manik_product_lst" t-as="qty">
                                  <td class="pro_qty">
                                      <h4><t t-esc="qty['default_qty']"></t></h4>
                                  </td>
                              </t>
-                             <td rowspan="2" class="pro_nm">
+                             <td rowspan="2" class="pro_nm" style="background:#167F92 !important;color:white !important;border-color: #4c4c4c;">
                                 <h3>Shop Total</h3>
                             </td>
-                            <td rowspan="2" colspan="3" width="2%"></td>
+                            <td rowspan="2" colspan="3" width="2%" style="background:#167F92;"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.manik_product_lst" t-as="pro">
@@ -463,28 +365,28 @@
                                 <t t-foreach="widget.manik_order_dict[order]" t-as="column">
                                     <t t-if="column['product_lst']">
                                         <t t-foreach="column['product_lst']" t-as="pro">
-                                            <td>
-                                                <input step="0.00" min="0" style="text-align: right;" data-input='false' type="number" class="input_style form-control" t-att-id="pro['product_id']" model="morder.tacking.line" t-att-value="pro['order_qty']" readonly='readonly'></input>
+                                            <td class="input_td">
+                                                <input step="0.00" min="0" style="text-align: right;" data-input='false' type="text" class="input_style form-control" t-att-id="pro['product_id']" model="morder.tacking.line" t-att-value="pro['order_qty']" readonly='readonly'></input>
                                             </td>
                                         </t>
                                     </t>
                                     <t t-if="column['manik_qty']">
-                                        <td class="right_side">
+                                        <td class="right_side" style="background:#85bfca !important;color:white;border-color: #4c4c4c;">
                                             <h4 class="total_style"><t t-esc="column['manik_qty']"/></h4>
                                         </td>
                                     </t>
                                     <t t-if="!column['manik_qty']">
-                                        <td style="text-align: right"><h4 class="total_style">0</h4></td>
+                                        <td style="background:#85bfca !important;color:white;text-align: right;border-color: #4c4c4c;"><h4 class="total_style">0</h4></td>
                                     </t>
-                                    <td>
-                                        <img id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
+                                    <td class="input_td">
+                                        <button  id="edit"><i class="fa fa-2x fa-pencil-square-o" aria-hidden="true"></i></button>
                                     </td>
                                     <t t-if="column['customer_id']">
-                                        <td>
-                                            <img id="save" style="visibility:hidden" t-att-data-dic="column['customer_id']" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                        <td style="display:none;background:Lavender;" class="input_td">
+                                            <button  id="save"  style="visibility:hidden" t-att-data-dic="column['customer_id']"><i class="fa fa-2x fa-floppy-o"  aria-hidden="true"></i></button>
                                         </td>
                                     </t>
-                                     <t t-if="column['manik_qty']">
+                                     <!-- <t t-if="column['manik_qty']">
                                         <td>
                                             <img id="created" style="height: 16px; width: 16px;" src="/..//manikarnika/web_manikarnika/static/img/validate.png"/>
                                         </td>
@@ -493,11 +395,11 @@
                                         <td style="text-align: right">
                                             <img id="notcreated" style="height: 16px; width: 16px;" src="/..//manikarnika/web_manikarnika/static/img/redcross.png"/>
                                         </td>
-                                    </t>
+                                    </t> -->
                                  </t>
                              </tr>
                         </t>
-                        <tr>
+                        <tr style="background:#167F92 !important;color:white;">
                             <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
@@ -519,7 +421,7 @@
     <t t-name="ManikarnikaOrders">
          <table width="100%">
              <tr>
-                 <td><h1><center>Manikarnika Order Interface</center></h1> </td>
+                 <td><h1 style="background: #167F92;color: white;"><center>Manikarnika Order Interface</center></h1> </td>
              </tr>
          </table>
          <table width="100%" id="ManikarnikaOrdersLines">
@@ -534,18 +436,18 @@
                  <td width="96%">
                      <table border="1" class="scr" width="100%">
                          <tr>
-                             <td rowspan="2">
-                                 
+                             <td rowspan="2" class="customer_label">
+                                 Customers
                              </td>
                              <t t-foreach="widget.gr_product_lst" t-as="qty">
                                  <td class="pro_qty">
                                      <h4><t t-esc="qty['default_qty']"></t></h4>
                                  </td>
                              </t>
-                             <td rowspan="2" class="pro_nm">
+                             <td rowspan="2" class="pro_nm" style="background:#167F92 !important;color:white !important;border-color: #4c4c4c;">
                                 <h3>Shop Total</h3>
                             </td>
-                            <td rowspan="2" colspan="3" width="2%"></td>
+                            <td rowspan="2" colspan="3" width="2%" style="background:#167F92;"></td>
                          </tr>
                         <tr>
                             <t t-foreach="widget.gr_product_lst" t-as="pro">
@@ -562,28 +464,28 @@
                                 <t t-foreach="widget.gr_order_dict[order]" t-as="column">
                                     <t t-if="column['product_lst']">
                                         <t t-foreach="column['product_lst']" t-as="pro">
-                                            <td>
-                                                <input step="0.00" min="0" style="text-align: right;" data-input='false' type="number" class="form-control input_style" t-att-id="pro['product_id']" t-att-value="pro['order_qty']" readonly='readonly'></input>
+                                            <td class="input_td">
+                                                <input step="0.00" min="0" style="text-align: right;" data-input='false' type="text" class="form-control input_style" t-att-id="pro['product_id']" t-att-value="pro['order_qty']" readonly='readonly'></input>
                                             </td>
                                         </t>
                                     </t>
                                     <t t-if="column['gr_qty']">
-                                        <td class="right_side">
+                                        <td class="right_side" style="background:#85bfca !important;color:white;border-color: #4c4c4c;">
                                            <h4 class="total_style"><t t-esc="column['gr_qty']"/></h4>
                                         </td>
                                     </t>
                                     <t t-if="!column['gr_qty']">
-                                        <td style="text-align: right"><h4 class="total_style">0</h4></td>
+                                        <td style="background:#85bfca !important;color:white;text-align: right;border-color: #4c4c4c;"><h4 class="total_style">0</h4></td>
                                     </t>
-                                    <td>
-                                        <img id="edit" src="/..//manikarnika/web_manikarnika/static/img/gtk-edit.png"/>
+                                    <td class="input_td">
+                                        <button  id="edit"><i class="fa fa-2x fa-pencil-square-o" aria-hidden="true"></i></button>
                                     </td>
                                     <t t-if="column['customer_id']">
-                                        <td>
-                                            <img id="save" style="visibility:hidden" t-att-data-dic="column['customer_id']" src="/..//manikarnika/web_manikarnika/static/img/Save-icon2.png"/>
+                                        <td style="display:none;background:Lavender;" class="input_td">
+                                            <button  id="save"  style="visibility:hidden" t-att-data-dic="column['customer_id']"><i class="fa fa-2x fa-floppy-o" aria-hidden="true"></i></button>
                                         </td>
                                     </t>
-                                     <t t-if="column['gr_qty']">
+                                     <!-- <t t-if="column['gr_qty']">
                                         <td>
                                             <img id="created" style="height: 16px; width: 16px;" src="/..//manikarnika/web_manikarnika/static/img/validate.png"/>
                                         </td>
@@ -592,11 +494,11 @@
                                         <td>
                                             <img id="notcreated" style="height: 16px; width: 16px;" src="/..//manikarnika/web_manikarnika/static/img/redcross.png"/>
                                         </td>
-                                    </t>
+                                    </t> -->
                                  </t>
                              </tr>
                         </t>
-                        <tr>
+                        <tr style="background:#167F92 !important;color:white;">
                             <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
@@ -618,7 +520,7 @@
     <t t-name="GriansOrders">
          <table width="100%" >
              <tr>
-                 <td><h1><center>Grains Order Interface</center></h1> </td>
+                 <td><h1 style="background: #167F92;color: white;"><center>Grains Order Interface</center></h1> </td>
              </tr>
          </table>
          <table width="100%" id="GriansOrdersLines">
