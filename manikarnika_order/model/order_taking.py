@@ -120,7 +120,7 @@ class order_tackinig(models.Model):
         if products:
             sr_no = 1
             for prod in products:
-                order_track_lines_lst.append((0,0,{'serial_no': sr_no,
+                order_track_lines_lst.append((0,0,{
                            'product_id': prod.id,
                            'qty_aval': prod.qty_available or 0.0,
                            'default_order_qty': prod.default_qty or 0.0,
@@ -167,9 +167,9 @@ class order_tackinig(models.Model):
 class morder_tacking_line(models.Model):
     _name='morder.tacking.line'
 
-    _rec_name = 'serial_no'
-    order_tacking_id = fields.Many2one('Order Tacking')
-    serial_no = fields.Char('SI')
+    _rec_name = 'product_id'
+    
+    order_tacking_id = fields.Many2one('order.tacking', string='Order Tacking')
     product_id = fields.Many2one('product.product','Product')
     qty_aval = fields.Float('Qty On Hand')
     default_order_qty = fields.Float('Default Order Qty')
@@ -208,9 +208,9 @@ class morder_tacking_line(models.Model):
 class gorder_tacking_line(models.Model):
     _name='gorder.tacking.line'
     
-    _rec_name = 'serial_no'
-    order_tacking_id = fields.Many2one('Order Tacking')
-    serial_no = fields.Char('SI')
+    _rec_name = 'product_id'
+    
+    order_tacking_id = fields.Many2one('order.tacking', string='Order Tacking')
     product_id = fields.Many2one('product.product','Product')
     qty_aval = fields.Float('Qty On Hand')
     default_order_qty = fields.Float('Default Order Qty')
@@ -297,7 +297,6 @@ class vehicle_allocation(models.Model):
         loc_id = location_obj.search([('location_id', '!=', False), ('location_id.name', 'ilike', 'WH'),
                     ('company_id.id', '=', comp.id), ('usage', '=', 'internal')])
         loc_dest_id = location_obj.search([('vehicle_id','=',self.vehicle_id.id)])
-        print "\n loc_dest_id :::::::::::: ",loc_dest_id
         picking_obj = self.env['stock.picking']
         move_obj = self.env['stock.move']
         picking_type = self.env['stock.picking.type'].search([('code', '=', 'internal'),
@@ -358,7 +357,7 @@ class vehicle_allocation(models.Model):
 class vehicle_allocation_line(models.Model):
 
     _name='vehicle.allocation.line'
-    _rec_name = 'serial_no'
+    _rec_name = 'product_id'
 
     vehicle_allocation_id = fields.Many2one('vehicle.allocation','Vehicle Allocation')
     product_id = fields.Many2one('product.product','Product')
@@ -367,7 +366,6 @@ class vehicle_allocation_line(models.Model):
     order_carton = fields.Integer('Order Cartons')
     extra_carton = fields.Integer('Extra Cartons')
     total_carton = fields.Integer('Total Cartons')
-    serial_no = fields.Char('Serial No')
     order_date = fields.Date('Order Date', default=date.today().strftime('%Y-%m-%d'))
     
     @api.onchange('product_id')

@@ -365,6 +365,7 @@ class order_tackinig(models.Model):
             GR_lst = []
             prod_obj = self.env['product.product']
             mak_line_obj = self.env['morder.tacking.line']
+            gr_line_obj = self.env['gorder.tacking.line']
             order_dt = date.today().strftime('%Y-%m-%d')
             valu_dic = self._context.values()
             orders = self.search([('partner_id.id','=',
@@ -373,43 +374,55 @@ class order_tackinig(models.Model):
             if orders:
                 for order in orders:
                     if self._context.keys()[0] == 'manik':
-                        if order.morder_tacking_line_ids:
-                            for mnk_lst in order.morder_tacking_line_ids:
-                                for p in valu_dic[0].values()[0]:
-                                    if (int(mnk_lst.product_id.id) == int(p['product_id'])):
+#                        if order.morder_tacking_line_ids:
+#                            for mnk_lst in order.morder_tacking_line_ids:
+                        for p in valu_dic[0].values()[0]:
+                            line_ids = mak_line_obj.search([('order_tacking_id','=', order.id),
+                                              ('product_id','=', int(p['product_id']))])
+                            if line_ids:
+                                for line in line_ids:
+                                    if (int(line.product_id.id) == int(p['product_id'])):
                                         if float(p['order_qty']) > 0:
-                                            if float(p['order_qty']) < mnk_lst.default_order_qty:
+                                            if float(p['order_qty']) < line.default_order_qty:
                                                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
-                                            if float(p['order_qty']) > mnk_lst.qty_aval:
+                                            if float(p['order_qty']) > line.qty_aval:
                                                 raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
-                                            if (float(p['order_qty']) % mnk_lst.default_order_qty) != 0.0:
-                                                raise ValidationError('You can take order qty in the multiples of %s.' % mnk_lst.default_order_qty)
-                                        mnk_lst.write({'order_qty': p['order_qty']})
-                                    else:
-#                                        t = len(mnk_lst) + 1
-#                                        product_data = prod_obj.browse(int(p['order_qty']))
-#                                        order_track_lines_lst= {'serial_no': t,
-#                                                           'product_id': product_data.id,
-#                                                           'qty_aval': product_data.qty_available or 0.0,
-#                                                           'default_order_qty': product_data.default_qty or 0.0,
-#                                                           'order_price': product_data.lst_price or 0.0,
-#                                                           'order_qty': p['order_qty'],
-#                                                           'order_tacking_id': order.id,
-#                                                           'order_date_line': order.order_date or False}
-#                                        mak_line_obj.create(order_track_lines_lst)
-                                        for products in valu_dic[0].values():
-                                            MK_lst = self.get_order_taking_lines(products)
-                                        order.morder_tacking_line_ids = MK_lst
-                            return order.id
-                        for products in valu_dic[0].values():
-                            print "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
-                            MK_lst = self.get_order_taking_lines(products)
-                        order.morder_tacking_line_ids = MK_lst
-                        return order.id
+                                            if (float(p['order_qty']) % line.default_order_qty) != 0.0:
+                                                raise ValidationError('You can take order qty in the multiples of %s.' % line.default_order_qty)
+                                        line.write({'order_qty': p['order_qty']})
+                            else:
+                                product_data = prod_obj.browse(int(p['product_id']))
+                                
+                                if product_data.id == int(p['product_id']):
+                                    if float(p['order_qty']) > 0:
+                                        if float(p['order_qty']) < product_data.default_qty:
+                                            raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
+                                        if float(p['order_qty']) > product_data.qty_available:
+                                            raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
+                                        if (float(p['order_qty']) % product_data.default_qty) != 0.0:
+                                            raise ValidationError('You can take order qty in the multiples of %s.' % product_data.default_qty)
+                                                                                
+                                    order_track_lines_lst= {
+                                                       'product_id': product_data.id,
+                                                       'qty_aval': product_data.qty_available or 0.0,
+                                                       'default_order_qty': product_data.default_qty or 0.0,
+                                                       'order_price': product_data.lst_price or 0.0,
+                                                       'order_qty': p['order_qty'],
+                                                       'order_tacking_id': order.id,
+                                                       'order_date_line': order.order_date or False}
+                                    mak_line_obj.create(order_track_lines_lst)
+#                        else:
+#                            for products in valu_dic[0].values():
+#                                MK_lst = self.get_order_taking_lines(products)
+#                            order.morder_tacking_line_ids = MK_lst 
                     if self._context.keys()[0] == 'grain':
-                        if order.gorder_tacking_line_ids:
-                            for grn_lst in order.gorder_tacking_line_ids:
-                                for p in valu_dic[0].values()[0]:
+#                        if order.gorder_tacking_line_ids:
+#                            for grn_lst in order.gorder_tacking_line_ids:
+                        for p in valu_dic[0].values()[0]:
+                            line_ids = gr_line_obj.search([('order_tacking_id','=', order.id),
+                                                        ('product_id','=', int(p['product_id']))])                                
+                            if line_ids:
+                                for grn_lst in line_ids:
                                     if (int(grn_lst.product_id.id) == int(p['product_id'])):
                                         if float(p['order_qty']) > 0:
                                             if float(p['order_qty']) < grn_lst.default_order_qty:
@@ -419,15 +432,32 @@ class order_tackinig(models.Model):
                                             if (float(p['order_qty']) % grn_lst.default_order_qty) != 0.0:
                                                 raise ValidationError('You can take order qty in the multiples of %s.' % grn_lst.default_order_qty)
                                         grn_lst.write({'order_qty': p['order_qty']})
-                                    else:
-                                        for products in valu_dic[0].values():
-                                            GR_lst = self.get_order_taking_lines(products)
-                                        order.gorder_tacking_line_ids = GR_lst                                        
-                            return order.id
-                        for products in valu_dic[0].values():
-                            GR_lst = self.get_order_taking_lines(products)
-                        order.gorder_tacking_line_ids = GR_lst
-                        return order.id
+                            else:
+                                product_data = prod_obj.browse(int(p['product_id']))
+                                
+                                if product_data.id == int(p['product_id']):
+                                    if float(p['order_qty']) > 0:
+                                        if float(p['order_qty']) < product_data.default_qty:
+                                            raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
+                                        if float(p['order_qty']) > product_data.qty_available:
+                                            raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
+                                        if (float(p['order_qty']) % product_data.default_qty) != 0.0:
+                                            raise ValidationError('You can take order qty in the multiples of %s.' % product_data.default_qty)
+                                                                                
+                                    order_track_lines_lst= {
+                                                       'product_id': product_data.id,
+                                                       'qty_aval': product_data.qty_available or 0.0,
+                                                       'default_order_qty': product_data.default_qty or 0.0,
+                                                       'order_price': product_data.lst_price or 0.0,
+                                                       'order_qty': p['order_qty'],
+                                                       'order_tacking_id': order.id,
+                                                       'order_date_line': order.order_date or False}
+                                    gr_line_obj.create(order_track_lines_lst)
+#                        else:
+#                            for products in valu_dic[0].values():
+#                                MK_lst = self.get_order_taking_lines(products)
+#                            order.morder_tacking_line_ids = MK_lst                            
+                    return order.id
             if self._context.keys()[0] == 'manik':
                 MK_lst = self.get_order_taking_lines(valu_dic[0].values()[0])
                 order_taking_id =  False
@@ -468,7 +498,7 @@ class order_tackinig(models.Model):
                         raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
                     if (float(product['order_qty']) % prod.default_qty) != 0.0:
                         raise ValidationError('You can take order qty in the multiples of %s.' % prod.default_qty)
-                order_track_lines_lst.append((0,0,{'serial_no': sr_no,
+                order_track_lines_lst.append((0,0,{
                            'product_id': prod.id,
                            'qty_aval': prod.qty_available or 0.0,
                            'default_order_qty': prod.default_qty or 0.0,
@@ -561,14 +591,14 @@ class vehicle_allocation(models.Model):
                                             line.write({'order_qty': v['order_qty']})
                                 else:
                                     vehicle_id.vehicle_allocation_line_ids = [(0, 0,
-                                                                      {'serial_no': v['sr_n'],
+                                                                      {
                                                                        'product_id': int(self._context.keys()[0]),
                                                                        'order_qty': v['order_qty']})]
                         else:
                             vehicle_id = self.create({'vehicle_id': int(v['vehicle_id']),
                                                       'driver_id': int(v['driver_id'])})
                             vehicle_id.vehicle_allocation_line_ids = [(0, 0,
-                                                                      {'serial_no': v['sr_n'],
+                                                                      {
                                                                        'product_id': int(self._context.keys()[0]),
                                                                        'order_qty': v['order_qty']})]
                 return {}
