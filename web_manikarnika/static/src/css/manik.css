@@ -50,7 +50,7 @@
 .orddate{
 	margin-bottom: 20px;
 	border: 1px solid black !important;
-	width: 200px !important;
+	/*width: 150px !important;*/
 	height: 40px !important;
 }
 .searchbtn{
@@ -104,6 +104,20 @@
     font-size: 16px !important;
     font-weight: bold !important;
     margin-left:3% !important;
+}
+#left_panel_toggle{
+   line-height: normal !important;
+    background: cadetblue !important;
+    border: none !important;
+    color: white !important;
+    padding: 10px 15px !important;
+    /* background: #4CAF50; */
+    text-align: center !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    float:left;
 }
 .scr button{
    line-height: normal;

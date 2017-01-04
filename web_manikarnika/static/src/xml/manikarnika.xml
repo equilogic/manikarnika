@@ -86,7 +86,7 @@
      <t t-name="VehicleTemp">
          <table width="100%">
              <tr>
-                 <td><h1 style="background: #167F92;color: white;"><center> Vehicle Allocation </center></h1> </td>
+                 <td><h1 style="background: #167F92;color: white;"><center><button id="left_panel_toggle">Left Panel Hide/Show</button> Vehicle Allocation </center></h1> </td>
              </tr>
          </table>
          <table width="100%" id="VehicleTempLine">
@@ -191,14 +191,14 @@
     <t t-name="DeliveryManikarnikaTemp">
          <table width="100%">
              <tr>
-                 <td colspan="3" ><h1 style="background: #167F92;color: white;"><center>Delivery Schedule Manikarnika </center></h1> </td>
+                 <td colspan="3" ><h1 style="background: #167F92;color: white;"><center><button id="left_panel_toggle">Left Panel Hide/Show</button> Delivery Schedule Manikarnika </center></h1> </td>
              </tr>
              <tr>
                  <td width="2%">
                      
                  </td>
-                 <td width="15%">
-                      <input class="form-control orddate input_style" id="orderdate" name="orderdate" placeholder="Select Date" type="date"/>
+                 <td width="20%">
+                      <input class="form-control orddate input_style" id="datepicker" name="orderdate" placeholder="Select Date"/>
                  </td>
                  <td>
                       <button type="button" class="searchbtn" id="search">Search</button>
@@ -311,14 +311,14 @@
     <t t-name="DeliveryGrainsTemp" id="DeliveryGrainsTemp">
          <table width="100%">
              <tr>
-                 <td colspan="3" ><h1 style="background: #167F92;color: white;"><center> Delivery Schedule Grains </center></h1> </td>
+                 <td colspan="3" ><h1 style="background: #167F92;color: white;"><center><button id="left_panel_toggle">Left Panel Hide/Show</button> Delivery Schedule Grains </center></h1> </td>
              </tr>
              <tr>
                  <td width="2%">
                      
                  </td>
-                 <td width="15%">
-                      <input class="form-control orddate input_style" id="orderdate" name="orderdate" placeholder="Select Date" type="date"/>
+                 <td width="20%">
+                      <input class="form-control orddate input_style" id="datepicker" name="orderdate" placeholder="Select Date"/>
                  </td>
                  <td>
                      <button type="button" id="search" class="searchbtn">Search</button>
@@ -421,7 +421,7 @@
     <t t-name="ManikarnikaOrders">
          <table width="100%">
              <tr>
-                 <td><h1 style="background: #167F92;color: white;"><center>Manikarnika Order Interface</center></h1> </td>
+                 <td><h1 style="background: #167F92;color: white;"><center><button id="left_panel_toggle">Left Panel Hide/Show</button>Manikarnika Order Interface</center></h1> </td>
              </tr>
          </table>
          <table width="100%" id="ManikarnikaOrdersLines">
@@ -520,7 +520,7 @@
     <t t-name="GriansOrders">
          <table width="100%" >
              <tr>
-                 <td><h1 style="background: #167F92;color: white;"><center>Grains Order Interface</center></h1> </td>
+                 <td><h1 style="background: #167F92;color: white;"><center><button id="left_panel_toggle">Left Panel Hide/Show</button> Grains Order Interface</center></h1> </td>
              </tr>
          </table>
          <table width="100%" id="GriansOrdersLines">

@@ -20,11 +20,15 @@ openerp.web_manikarnika = function(instance) {
             'click #save': 'input_save_click',
             'change .dri': 'change_driver',
             'click #search': 'manik_button_click',
+            'click #left_panel_toggle':'left_panel_toggle'
         },
         init: function(parent, name) {
             this._super(parent);
             var self = this
             this.render(curr_date)
+        },
+        left_panel_toggle : function(){
+            $(".oe_leftbar").toggle()
         },
         get_line_dict : function(result){
             var myObj = result
@@ -55,6 +59,8 @@ openerp.web_manikarnika = function(instance) {
             if(date_value != undefined){
                 current_date = date_value;
             }
+            console.log("iiiiiiiiiio",current_date)
+            $("#datepicker").datepicker({ dateFormat: 'yy-mm-dd' })
             self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, []);
             self.grain_dataset.call('get_morder_tacking_line',[[],current_date]).done(function(result){
                 console.log('result====',result)
@@ -121,8 +127,8 @@ openerp.web_manikarnika = function(instance) {
             self.ord_dataset.write(id, {'driver_id': dri_id})
         },
         manik_button_click: function(ev) {
-            if($("#orderdate").val()){
-                this.start($("#orderdate").val())
+            if($("#datepicker").val()){
+                this.start($("#datepicker").val())
             }
             else{
                 alert("Please select the order date!")
@@ -139,6 +145,10 @@ openerp.web_manikarnika = function(instance) {
             'click #save': 'input_save_click',
             'click #search': 'grain_button_click',
             'change .dri': 'change_driver',
+            'click #left_panel_toggle':'left_panel_toggle'
+        },
+        left_panel_toggle : function(){
+            $(".oe_leftbar").toggle()
         },
         get_line_dict : function(result){
             var myObj = result
@@ -165,7 +175,7 @@ openerp.web_manikarnika = function(instance) {
         init: function(parent, name) {
             this._super(parent);
             var self = this
-            this.render(curr_date)
+            this.render(curr_date);
         },
         start: function(date_value) {
             var self = this
@@ -174,6 +184,7 @@ openerp.web_manikarnika = function(instance) {
             if(date_value != undefined){
                 current_date = date_value;
             }
+            $("#datepicker").datepicker({ dateFormat: 'yy-mm-dd' })
             self.grain_dataset = new instance.web.DataSetSearch(self, 'order.tacking', {}, []);
             self.grain_dataset.call('get_gorder_tacking_line',[[],current_date]).done(function(result){
                 if(result[0].length != 0){
@@ -255,11 +266,15 @@ openerp.web_manikarnika = function(instance) {
         events: {
             'click #edit': 'input_edit_click',
             'click #save': 'input_save_click',
+            'click #left_panel_toggle':'left_panel_toggle'
         },
         template: "ManikarnikaOrders",
         init: function(parent, name) {
             this._super(parent);
             var self = this;
+        },
+        left_panel_toggle : function(){
+            $(".oe_leftbar").toggle()
         },
         get_line_dict : function(result){
             var myObj = result
@@ -367,10 +382,14 @@ openerp.web_manikarnika = function(instance) {
         events: {
             'click #edit': 'input_edit_click',
             'click #save': 'input_save_click',
+            'click #left_panel_toggle':'left_panel_toggle'
         },
         template: "GriansOrders",
         init: function(parent, name) {
             this._super(parent);
+        },
+        left_panel_toggle : function(){
+            $(".oe_leftbar").toggle()
         },
         get_line_dict : function(result){
             var myObj = result
@@ -476,6 +495,7 @@ openerp.web_manikarnika = function(instance) {
         events: {
             'click #edit': 'input_edit_click',
             'click #save': 'input_save_click',
+            'click #left_panel_toggle':'left_panel_toggle'
         },
         template: "VehicleTemp",
         init: function(parent, name) {
@@ -483,11 +503,15 @@ openerp.web_manikarnika = function(instance) {
             var self = this;
             self.change_id = [];
         },
+        left_panel_toggle : function(){
+            $(".oe_leftbar").toggle()
+        },
         start: function() {
             var self = this;
             var model = 'gorder.tacking.line';
             var current_date = curr_date;
             var update_data = [];
+            $(".oe_leftbar").hide();
             self.grain_dataset = new instance.web.DataSetSearch(self, 'vehicle.allocation', {}, []);
             self.grain_dataset.call('get_va_customer_line',[[],current_date]).done(function(result){
                 console.log("resultresultresult",result);
