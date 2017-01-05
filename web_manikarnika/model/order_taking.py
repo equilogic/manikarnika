@@ -523,7 +523,7 @@ class vehicle_allocation(models.Model):
         vehicle_driver_id_dic = {}
         vehicle_pro_id_dic = {}  
         vehicle_dri_pro_dict = {}  
-        res_comp_ids = self.env['res.company'].search([('comp_code', 'in', ['GR','MK'])])       
+        res_comp_ids = self.env['res.company'].search([('comp_code', 'in', ['GR','MK'])])
         if res_comp_ids:
             all_products = self.env['product.product'].search([('company_id', 'in', res_comp_ids.ids)], order="name asc")
             if all_products:

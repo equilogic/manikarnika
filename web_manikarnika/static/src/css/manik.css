@@ -141,3 +141,31 @@
     font-weight: bold;
     
 }
+.total{
+    background:#167F92 !important;
+    color:white;
+    border-color: #4c4c4c;
+}
+.right_side_total{
+    background:#85bfca !important;
+    color:white;
+    order-color: #4c4c4c;
+}
+.bottom_side_total{
+    background:#167F92 !important;
+    color:white;
+    border-color: #4c4c4c;
+}
+
+.table_list{
+   position: absolute;
+    height: 88%;
+    overflow: auto;
+    width: 96%;
+}
+.delivery_table_list{
+     position: absolute;
+    height: 80%;
+    overflow: auto;
+    width: 96%;
+}
