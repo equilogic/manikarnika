@@ -23,11 +23,339 @@
 from openerp import models, api
 from datetime import datetime, date, timedelta
 from openerp.exceptions import Warning,ValidationError
+from operator import itemgetter
+
 
 class order_tackinig(models.Model):
 
     _inherit = 'order.tacking'
 
+    @api.multi
+    def get_gr_order_line(self, curr_date):
+        partner_ids = self.env['res.partner'].search([('customer', '=', True)])
+        order_ids = self.search([('order_date', '=' , curr_date),('partner_id', 'in', partner_ids.ids)])
+        order_list = []
+        order_dict = {}
+        product_dict ={}
+        total_qty = {}
+        default_product_list = []
+        manik_product_lst = []
+        res_comp_ids = self.env['res.company'].search([('comp_code', '=', 'GR')])
+        if res_comp_ids:
+            MK_products = self.env['product.product'].search([('company_id', 'in', res_comp_ids.ids)], order="name asc")
+            if MK_products:
+                for MK_prod in MK_products:
+                    total_qty[MK_prod.name] = 0
+                    default_product_list.append({'product_id': MK_prod.id,'product_nm': MK_prod.name,'order_qty': 0.0,'default_qty': MK_prod.default_qty})
+                    manik_product_lst.append({'product_nm': MK_prod.name, 'product_id': MK_prod.id,
+                                            'default_qty': MK_prod.default_qty, 'order_qty': 0.0, 'gr_qty': 0.0})
+        if order_ids:
+            partner_order_ids = []
+            for order_id in order_ids:
+                if order_id.partner_id.id:
+                    partner_order_ids.append(order_id.partner_id.id)
+                gr_qty = 0
+                qr_val_list = []
+                product_val_lst = []
+                for g_line in order_id.gorder_tacking_line_ids:
+                    if g_line.product_id.id and order_id.partner_id:
+                        if total_qty.has_key(g_line.product_id.name):
+                             total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
+                        else:
+                            total_qty[g_line.product_id.name] = g_line.order_qty 
+                    if order_id.partner_id:
+                        gr_qty = gr_qty + g_line.order_qty
+                        product_val_lst.append(g_line.product_id.id)
+                        qr_val_list.append({
+                                                'product_id': g_line.product_id and g_line.product_id.id or False,
+                                                'product_nm': g_line.product_id and 
+                                                                g_line.product_id.name or False,
+                                                'order_qty': g_line.order_qty or 0.0,
+                                                'default_qty': g_line.default_order_qty or 0.0,
+                                        })
+                        
+                for lst in default_product_list:
+                    if lst.get('product_id') not in product_val_lst:
+                        qr_val_list.append(lst)
+                                                
+#                if not qr_val_list :
+#                    qr_val_list = order_dict[order_id.partner_id.name][0]['product_lst']
+                val_list = {'customer_id':order_id.partner_id.id,'gr_qty': gr_qty, 'product_lst': qr_val_list, 'product_name': 'zzzzzzzzzzzzzz'}
+                order_dict[order_id.partner_id.name] =   [val_list] 
+            for i in partner_ids:
+                if i.id not in partner_order_ids:
+                    order_dict[i.name] = [{'customer_id': i.id,'gr_qty': 0.0,
+                                       'product_lst': default_product_list,
+                                       'product_name': 'zzzzzzzzzzzzzz'}]                           
+            order_list.append(order_dict)
+        else:
+            for i in partner_ids:
+                order_dict[i.name] = [{'customer_id': i.id,'manik_qty': 0.0,
+                                       'product_lst': default_product_list,
+                                       'product_name': 'zzzzzzzzzzzzzz'}]
+            order_list.append(order_dict)
+        order_list_new = []
+        for ord_list in order_list:
+            for key, value in ord_list.items():
+                newlist = sorted(value[0]['product_lst'], key=lambda k: k['product_nm'])
+                value[0]['product_lst'] = newlist
+                ord_list.update({key: value})
+            order_list_new.append(ord_list)
+        manik_product_lst_new =  sorted(manik_product_lst, key=lambda k: k['product_nm'])
+        return [order_list_new, manik_product_lst, total_qty]
+
+    @api.multi
+    def get_manik_order_line(self, curr_date):
+        partner_ids = self.env['res.partner'].search([('customer', '=', True)])
+        order_ids = self.search([('order_date', '=' , curr_date),('partner_id', 'in', partner_ids.ids)])
+        order_list = []
+        order_dict = {}
+        product_dict ={}
+        total_qty = {}
+        default_product_list = []
+        manik_product_lst = []
+        res_comp_ids = self.env['res.company'].search([('comp_code', '=', 'MK')])
+        if res_comp_ids:
+            MK_products = self.env['product.product'].search([('company_id', 'in', res_comp_ids.ids)], order="name asc")
+            if MK_products:
+                for MK_prod in MK_products:
+                    total_qty[MK_prod.name] = 0
+                    default_product_list.append({'product_id': MK_prod.id,'product_nm': MK_prod.name,'order_qty': 0.0,'default_qty': MK_prod.default_qty})
+                    manik_product_lst.append({'product_nm': MK_prod.name, 'product_id': MK_prod.id,
+                                            'default_qty': MK_prod.default_qty, 'order_qty': 0.0, 'manik_qty': 0.0})
+        if order_ids:
+            partner_order_ids = []
+            for order_id in order_ids:
+                if order_id.partner_id.id:
+                    partner_order_ids.append(order_id.partner_id.id)
+                manikar_qty = 0
+                manikar_val_list = []
+                product_val_lst = []
+                for g_line in order_id.morder_tacking_line_ids:
+                    if g_line.product_id.id and order_id.partner_id:
+                        if total_qty.has_key(g_line.product_id.name):
+                             total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
+                        else:
+                            total_qty[g_line.product_id.name] = g_line.order_qty 
+                    if order_id.partner_id:
+                        manikar_qty = manikar_qty + g_line.order_qty
+                        product_val_lst.append(g_line.product_id.id)
+                        manikar_val_list.append({
+                                                'product_id': g_line.product_id and g_line.product_id.id or False,
+                                                'product_nm': g_line.product_id and 
+                                                                g_line.product_id.name or False,
+                                                'order_qty': g_line.order_qty or 0.0,
+                                                'default_qty': g_line.default_order_qty or 0.0,})
+                for lst in default_product_list:
+                    if lst.get('product_id') not in product_val_lst:
+                        manikar_val_list.append(lst)
+                val_list = {'customer_id':order_id.partner_id.id,'manik_qty': manikar_qty, 'product_lst':manikar_val_list, 'product_name': 'zzzzzzzzzzzzzz'}
+                order_dict[order_id.partner_id.name] =   [val_list]
+            for i in partner_ids:
+                if i.id not in partner_order_ids:
+                    order_dict[i.name] = [{'customer_id': i.id,'manik_qty': 0.0,
+                                       'product_lst': default_product_list,
+                                       'product_name': 'zzzzzzzzzzzzzz'}]          
+            order_list.append(order_dict)
+        else:
+            for i in partner_ids:
+                order_dict[i.name] = [{'customer_id': i.id,'manik_qty': 0.0,
+                                       'product_lst': default_product_list,
+                                       'product_name': 'zzzzzzzzzzzzzz'}]     
+            order_list.append(order_dict)      
+        order_list_new = []
+        for ord_list in order_list:
+            for key, value in ord_list.items():
+                newlist = sorted(value[0]['product_lst'], key=lambda k: k['product_nm'])
+                value[0]['product_lst'] = newlist
+                ord_list.update({key: value})
+            order_list_new.append(ord_list)
+        manik_product_lst_new =  sorted(manik_product_lst, key=lambda k: k['product_nm'])
+        return [order_list_new, manik_product_lst_new, total_qty]
+
+    @api.multi
+    def get_gorder_tacking_line(self, curr_date):
+        partner_ids = self.env['res.partner'].search([('customer', '=', True)])
+        order_ids = self.search([('order_date', '=' , curr_date), ('state', 'in', ('draft','confirm'))])
+        order_list = []
+        order_dict = {}
+        product_dict ={}
+        total_qty = {}
+        
+        default_product_list = []
+        manik_product_lst = []
+        order_partner_ids = []
+        res_comp_ids = self.env['res.company'].search([('comp_code', '=', 'GR')])
+        if res_comp_ids:
+            all_products = self.env['product.product'].search([('company_id', 'in', res_comp_ids.ids)], order="name asc")
+            if all_products:
+                for GR_prod in all_products:
+                    total_qty[GR_prod.name] = 0
+                    product_dict[GR_prod.name] = GR_prod.default_qty
+                    for i in partner_ids:
+                        if i.name in order_dict:
+                            order_dict[i.name].append({'custome_nm': i.name,
+                                                                    'id': False,
+                                                                    'product_id': GR_prod.id,
+                                                                    'product_name': GR_prod.name or False,
+                                                                    'qty': 0.0,
+                                                                    })                         
+                        else:
+                            order_dict[i.name] = [{'custome_nm': i.name,
+                                                                    'id': False,
+                                                                    'product_id': GR_prod.id,
+                                                                    'product_name': GR_prod.name or False,
+                                                                    'qty': 0.0,
+                                                                    }]    
+        if order_ids: 
+            for order_id in order_ids:
+                grain_qty = 0
+                grain_val_list = []
+                if order_id.partner_id:
+                    order_partner_ids.append(order_id.partner_id.id)
+                for g_line in order_id.gorder_tacking_line_ids:
+                    if g_line.product_id.id and order_id.partner_id:
+                        if total_qty.has_key(g_line.product_id.name):
+                            total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
+                        else:
+                            total_qty[g_line.product_id.name] = g_line.order_qty 
+                    
+                    if g_line.product_id.id:
+                        product_dict[g_line.product_id.name] = g_line.default_order_qty
+                    if order_id.partner_id:
+                        grain_qty = grain_qty + g_line.order_qty
+                        temp_dict = {'custome_nm': order_id.partner_id.name,
+                                                                    'id': False,
+                                                                    'product_id': g_line.product_id and g_line.product_id.id or False,
+                                                                    'product_name': g_line.product_id and 
+                                                                                    g_line.product_id.name or False,
+                                                                    'qty':  0.0,
+                                                                    }                        
+                        grain_val_list.append({'custome_nm': order_id.partner_id.name,
+                                                                    'id': g_line.id,
+                                                                    'product_id': g_line.product_id and g_line.product_id.id or False,
+                                                                    'product_name': g_line.product_id and 
+                                                                                    g_line.product_id.name or False,
+                                                                    'qty': g_line.order_qty or 0.0,
+                                                                    })
+                    if temp_dict in order_dict[order_id.partner_id.name]:
+                        order_dict[order_id.partner_id.name].insert(order_dict[order_id.partner_id.name].index(temp_dict), {'custome_nm': order_id.partner_id.name,
+                                                                    'id': g_line.id,
+                                                                    'product_id': g_line.product_id and g_line.product_id.id or False,
+                                                                    'product_name': g_line.product_id and 
+                                                                                    g_line.product_id.name or False,
+                                                                    'qty': g_line.order_qty,
+                                                                    })
+                        order_dict[order_id.partner_id.name].pop( order_dict[order_id.partner_id.name].index(temp_dict))
+                val_list = {'customer_id':order_id.partner_id.id,'grain_qty': grain_qty, 'driver_list': [], 
+                            'driver_id': order_id.driver_id.id, 'order_id': order_id.id, 'product_name': 'zzzzzzzzzzzzzz'}
+                order_dict[order_id.partner_id.name].append(val_list)          
+        for i in partner_ids:
+            if i.id not in order_partner_ids:
+                 val_list = {'customer_id':i.id,'grain_qty': 0, 'driver_list': [], 
+                            'driver_id': False, 'order_id': False, 'product_name': 'zzzzzzzzzzzzzz'}
+                 order_dict[i.name].append(val_list)      
+        order_list.append(order_dict)
+        order_list_new = []
+        for ord_list in order_list:
+            for key, value in ord_list.items():
+                newlist = sorted(value, key=lambda k: k['product_name'])
+                ord_list.update({key: newlist})
+            order_list_new.append(ord_list)
+        return [order_list_new, product_dict, total_qty]
+ 
+    @api.multi
+    def get_morder_tacking_line(self, curr_date):
+        partner_ids = self.env['res.partner'].search([('customer', '=', True)])
+        order_ids = self.search([('order_date', '=' , curr_date), ('state', 'in', ('draft','confirm'))])
+        order_list = []
+        order_dict = {}
+        product_dict ={}
+        total_qty = {}
+        
+        default_product_list = []
+        manik_product_lst = []
+        order_partner_ids = []
+        res_comp_ids = self.env['res.company'].search([('comp_code', '=', 'MK')])
+        if res_comp_ids:
+            all_products = self.env['product.product'].search([('company_id', 'in', res_comp_ids.ids)], order="name asc")
+            if all_products:
+                for MK_prod in all_products:
+                    total_qty[MK_prod.name] = 0
+                    product_dict[MK_prod.name] = MK_prod.default_qty 
+                    for i in partner_ids:
+                        if i.name in order_dict:
+                            order_dict[i.name].append({'custome_nm': i.name,
+                                                                    'id': False,
+                                                                    'product_id': MK_prod.id,
+                                                                    'product_name': MK_prod.name or False,
+                                                                    'qty': 0.0,
+                                                                    })                         
+                        else:
+                            order_dict[i.name] = [{'custome_nm': i.name,
+                                                                    'id': False,
+                                                                    'product_id': MK_prod.id,
+                                                                    'product_name': MK_prod.name or False,
+                                                                    'qty': 0.0,
+                                                                    }]   
+        if order_ids: 
+            for order_id in order_ids:
+                grain_qty = 0
+                grain_val_list = []
+                if order_id.partner_id:
+                    order_partner_ids.append(order_id.partner_id.id)
+                for g_line in order_id.morder_tacking_line_ids:
+                    if g_line.product_id.id and order_id.partner_id:
+                        if total_qty.has_key(g_line.product_id.name):
+                            total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
+                        else:
+                            total_qty[g_line.product_id.name] = g_line.order_qty 
+                    
+                    if g_line.product_id.id:
+                        product_dict[g_line.product_id.name] = g_line.default_order_qty
+                    if order_id.partner_id:
+                        grain_qty = grain_qty + g_line.order_qty
+                        temp_dict = {'custome_nm': order_id.partner_id.name,
+                                                                    'id': False,
+                                                                    'product_id': g_line.product_id and g_line.product_id.id or False,
+                                                                    'product_name': g_line.product_id and 
+                                                                                    g_line.product_id.name or False,
+                                                                    'qty':  0.0,
+                                                                    }
+                        grain_val_list.append({'custome_nm': order_id.partner_id.name,
+                                                                    'id': g_line.id,
+                                                                    'product_id': g_line.product_id and g_line.product_id.id or False,
+                                                                    'product_name': g_line.product_id and 
+                                                                                    g_line.product_id.name or False,
+                                                                    'qty': g_line.order_qty,
+                                                                    })
+                    if temp_dict in order_dict[order_id.partner_id.name]:
+                        order_dict[order_id.partner_id.name].insert(order_dict[order_id.partner_id.name].index(temp_dict), {'custome_nm': order_id.partner_id.name,
+                                                                    'id': g_line.id,
+                                                                    'product_id': g_line.product_id and g_line.product_id.id or False,
+                                                                    'product_name': g_line.product_id and 
+                                                                                    g_line.product_id.name or False,
+                                                                    'qty': g_line.order_qty,
+                                                                    })
+                        order_dict[order_id.partner_id.name].pop( order_dict[order_id.partner_id.name].index(temp_dict))
+                val_list = {'customer_id':order_id.partner_id.id,'manik_qty': grain_qty, 'driver_list': [], 
+                            'driver_id': order_id.driver_id.id, 'order_id': order_id.id, 'product_name': 'zzzzzzzzzzzzzz'}
+                order_dict[order_id.partner_id.name].append(val_list)          
+        for i in partner_ids:
+            if i.id not in order_partner_ids:
+                 val_list = {'customer_id':i.id,'manik_qty': 0, 'driver_list': [], 
+                            'driver_id': False, 'order_id': False, 'product_name': 'zzzzzzzzzzzzzz'}
+                 order_dict[i.name].append(val_list)      
+        order_list.append(order_dict)
+        order_list_new = []
+        
+        for ord_list in order_list:
+            for key, value in ord_list.items():
+                newlist = sorted(value, key=lambda k: k['product_name'])
+                ord_list.update({key: newlist})
+            order_list_new.append(ord_list)
+        return [order_list_new, product_dict, total_qty]
+        
     @api.model
     def order_taking_create(self):
         if self._context is None:
@@ -36,6 +364,8 @@ class order_tackinig(models.Model):
             MK_lst = []
             GR_lst = []
             prod_obj = self.env['product.product']
+            mak_line_obj = self.env['morder.tacking.line']
+            gr_line_obj = self.env['gorder.tacking.line']
             order_dt = date.today().strftime('%Y-%m-%d')
             valu_dic = self._context.values()
             orders = self.search([('partner_id.id','=',
@@ -44,29 +374,55 @@ class order_tackinig(models.Model):
             if orders:
                 for order in orders:
                     if self._context.keys()[0] == 'manik':
-                        print "::::::::::::</t>"
-                        if order.morder_tacking_line_ids:
-                            for mnk_lst in order.morder_tacking_line_ids:
-                                for p in valu_dic[0].values()[0]:
-                                    if (int(mnk_lst.product_id.id) == int(p['product_id'])):
-                                        print ":::::::::::::::in if"
+#                        if order.morder_tacking_line_ids:
+#                            for mnk_lst in order.morder_tacking_line_ids:
+                        for p in valu_dic[0].values()[0]:
+                            line_ids = mak_line_obj.search([('order_tacking_id','=', order.id),
+                                              ('product_id','=', int(p['product_id']))])
+                            if line_ids:
+                                for line in line_ids:
+                                    if (int(line.product_id.id) == int(p['product_id'])):
                                         if float(p['order_qty']) > 0:
-                                            if float(p['order_qty']) < mnk_lst.default_order_qty:
+                                            if float(p['order_qty']) < line.default_order_qty:
                                                 raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
-                                            if float(p['order_qty']) > mnk_lst.qty_aval:
+                                            if float(p['order_qty']) > line.qty_aval:
                                                 raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
-                                            if (float(p['order_qty']) % mnk_lst.default_order_qty) != 0.0:
-                                                raise ValidationError('You can take order qty in the multiples of %s.' % mnk_lst.default_order_qty)
-                                        mnk_lst.write({'order_qty': p['order_qty']})
-                            return order.id
-                        for products in valu_dic[0].values():
-                            MK_lst = self.get_order_taking_lines(products)
-                        order.morder_tacking_line_ids = MK_lst
-                        return order.id
+                                            if (float(p['order_qty']) % line.default_order_qty) != 0.0:
+                                                raise ValidationError('You can take order qty in the multiples of %s.' % line.default_order_qty)
+                                        line.write({'order_qty': p['order_qty']})
+                            else:
+                                product_data = prod_obj.browse(int(p['product_id']))
+                                
+                                if product_data.id == int(p['product_id']):
+                                    if float(p['order_qty']) > 0:
+                                        if float(p['order_qty']) < product_data.default_qty:
+                                            raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
+                                        if float(p['order_qty']) > product_data.qty_available:
+                                            raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
+                                        if (float(p['order_qty']) % product_data.default_qty) != 0.0:
+                                            raise ValidationError('You can take order qty in the multiples of %s.' % product_data.default_qty)
+                                                                                
+                                    order_track_lines_lst= {
+                                                       'product_id': product_data.id,
+                                                       'qty_aval': product_data.qty_available or 0.0,
+                                                       'default_order_qty': product_data.default_qty or 0.0,
+                                                       'order_price': product_data.lst_price or 0.0,
+                                                       'order_qty': p['order_qty'],
+                                                       'order_tacking_id': order.id,
+                                                       'order_date_line': order.order_date or False}
+                                    mak_line_obj.create(order_track_lines_lst)
+#                        else:
+#                            for products in valu_dic[0].values():
+#                                MK_lst = self.get_order_taking_lines(products)
+#                            order.morder_tacking_line_ids = MK_lst 
                     if self._context.keys()[0] == 'grain':
-                        if order.gorder_tacking_line_ids:
-                            for grn_lst in order.gorder_tacking_line_ids:
-                                for p in valu_dic[0].values()[0]:
+#                        if order.gorder_tacking_line_ids:
+#                            for grn_lst in order.gorder_tacking_line_ids:
+                        for p in valu_dic[0].values()[0]:
+                            line_ids = gr_line_obj.search([('order_tacking_id','=', order.id),
+                                                        ('product_id','=', int(p['product_id']))])                                
+                            if line_ids:
+                                for grn_lst in line_ids:
                                     if (int(grn_lst.product_id.id) == int(p['product_id'])):
                                         if float(p['order_qty']) > 0:
                                             if float(p['order_qty']) < grn_lst.default_order_qty:
@@ -76,26 +432,50 @@ class order_tackinig(models.Model):
                                             if (float(p['order_qty']) % grn_lst.default_order_qty) != 0.0:
                                                 raise ValidationError('You can take order qty in the multiples of %s.' % grn_lst.default_order_qty)
                                         grn_lst.write({'order_qty': p['order_qty']})
-                            return order.id
-                        for products in valu_dic[0].values():
-                            GR_lst = self.get_order_taking_lines(products)
-                        order.gorder_tacking_line_ids = GR_lst
-                        return order.id
+                            else:
+                                product_data = prod_obj.browse(int(p['product_id']))
+                                
+                                if product_data.id == int(p['product_id']):
+                                    if float(p['order_qty']) > 0:
+                                        if float(p['order_qty']) < product_data.default_qty:
+                                            raise ValidationError('You can not take "Order qty" less than "Default Order Qty" !')
+                                        if float(p['order_qty']) > product_data.qty_available:
+                                            raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
+                                        if (float(p['order_qty']) % product_data.default_qty) != 0.0:
+                                            raise ValidationError('You can take order qty in the multiples of %s.' % product_data.default_qty)
+                                                                                
+                                    order_track_lines_lst= {
+                                                       'product_id': product_data.id,
+                                                       'qty_aval': product_data.qty_available or 0.0,
+                                                       'default_order_qty': product_data.default_qty or 0.0,
+                                                       'order_price': product_data.lst_price or 0.0,
+                                                       'order_qty': p['order_qty'],
+                                                       'order_tacking_id': order.id,
+                                                       'order_date_line': order.order_date or False}
+                                    gr_line_obj.create(order_track_lines_lst)
+#                        else:
+#                            for products in valu_dic[0].values():
+#                                MK_lst = self.get_order_taking_lines(products)
+#                            order.morder_tacking_line_ids = MK_lst                            
+                    return order.id
             if self._context.keys()[0] == 'manik':
                 MK_lst = self.get_order_taking_lines(valu_dic[0].values()[0])
+                order_taking_id =  False
                 if MK_lst:
                     order_taking_id = self.create({'partner_id': valu_dic[0].keys()[0],
                                                    'order_date': order_dt,
                                                    'state': 'draft' })
-                    order_taking_id.morder_tacking_line_ids = MK_lst
-                    return order_taking_id.id
+                    order_taking_id.morder_tacking_line_ids =MK_lst
+                return order_taking_id and order_taking_id.id
             if self._context.keys()[0] == 'grain':
                 GR_lst = self.get_order_taking_lines(valu_dic[0].values()[0])
-                order_taking_id = self.create({'partner_id': valu_dic[0].keys()[0],
-                                               'order_date': order_dt,
-                                               'state': 'draft' })
-                order_taking_id.gorder_tacking_line_ids = GR_lst
-                return order_taking_id.id
+                order_taking_id = False
+                if GR_lst:
+                    order_taking_id = self.create({'partner_id': valu_dic[0].keys()[0],
+                                                   'order_date': order_dt,
+                                                   'state': 'draft' })
+                    order_taking_id.gorder_tacking_line_ids = GR_lst
+                return order_taking_id and order_taking_id.id
 
     @api.multi
     def get_order_taking_lines(self, products):
@@ -118,7 +498,7 @@ class order_tackinig(models.Model):
                         raise ValidationError('You can not take "Order qty" more than "Qty On Hand" !')
                     if (float(product['order_qty']) % prod.default_qty) != 0.0:
                         raise ValidationError('You can take order qty in the multiples of %s.' % prod.default_qty)
-                order_track_lines_lst.append((0,0,{'serial_no': sr_no,
+                order_track_lines_lst.append((0,0,{
                            'product_id': prod.id,
                            'qty_aval': prod.qty_available or 0.0,
                            'default_order_qty': prod.default_qty or 0.0,
@@ -133,6 +513,59 @@ class vehicle_allocation(models.Model):
 
     _inherit = 'vehicle.allocation'
 
+    @api.multi
+    def get_va_customer_line(self, curr_date):
+        partner_ids = driver_ids = self.env['res.partner'].search([('driver', '=', True)])
+        fleet_vehicle_ids = self.env['fleet.vehicle'].search([('driver_id', 'in', driver_ids.ids)])
+        va_driver_list = []
+        manik_product_lst = []
+        va_val_list = []
+        vehicle_driver_id_dic = {}
+        vehicle_pro_id_dic = {}  
+        vehicle_dri_pro_dict = {}  
+        res_comp_ids = self.env['res.company'].search([('comp_code', 'in', ['GR','MK'])])
+        if res_comp_ids:
+            all_products = self.env['product.product'].search([('company_id', 'in', res_comp_ids.ids)], order="name asc")
+            if all_products:
+                for all_prod in all_products: 
+                    va_driver_list_1 = []
+                    vehicle_pro_id_dic[all_prod.name] = 0.0
+                    for fleet_vehicle in fleet_vehicle_ids :
+                        va_driver_list_1.append({'driver_nm': fleet_vehicle.driver_id.name, 'driver_id': fleet_vehicle.driver_id.id, 'vehicle_nm': fleet_vehicle.name,
+                                         'vehicle_id': fleet_vehicle.id, 'order_qty': 0.0 ,'total_qty': 0.0})                        
+                    vehicle_dri_pro_dict[all_prod.name] = [{'product_id': all_prod.id, 
+                                                                             'sr_n': 0,
+                                                                         'driver_lst': va_driver_list_1}]           
+            for fleet_vehicle in fleet_vehicle_ids : 
+                va_driver_list.append({'driver_nm': fleet_vehicle.driver_id.name, 'driver_id': fleet_vehicle.driver_id.id, 'vehicle_nm': fleet_vehicle.name,
+                                         'vehicle_id': fleet_vehicle.id, 'order_qty': 0.0 ,'total_qty': 0.0})
+        vehical_all_data = self.env['vehicle.allocation'].search([('driver_id', 'in', partner_ids.ids), ('order_date', '=' , curr_date)])
+        if vehical_all_data:
+            for veh_data in vehical_all_data:
+                va_qty = 0
+                for line_data in veh_data.vehicle_allocation_line_ids:
+                    if veh_data.driver_id:
+                        va_qty = line_data.order_qty
+                        if veh_data.driver_id.name in vehicle_driver_id_dic:
+                            total = (vehicle_driver_id_dic[veh_data.driver_id.name] + va_qty)
+                            vehicle_driver_id_dic[veh_data.driver_id.name] = total
+                        else:
+                            vehicle_driver_id_dic[veh_data.driver_id.name] = va_qty
+                        if line_data.product_id.name in vehicle_pro_id_dic:
+                            total = (vehicle_pro_id_dic[line_data.product_id.name] + va_qty)
+                            vehicle_pro_id_dic[line_data.product_id.name] =  total
+                        driver_lst_dict = {'driver_id': veh_data.driver_id.id,'order_qty': line_data.order_qty,'total_qty':va_qty,
+                                           'driver_nm':veh_data.driver_id.name,'vehicle_id': veh_data.vehicle_id.id,
+                                           'vehicle_nm':veh_data.vehicle_id.name,}
+                        if line_data.product_id.name in vehicle_dri_pro_dict:
+                            data_dict = vehicle_dri_pro_dict[line_data.product_id.name][0].get('driver_lst', False)
+                            if data_dict:
+                                for data_1 in data_dict:
+                                    if veh_data.driver_id.id == data_1.get('driver_id', False):
+                                        data_1['order_qty'] = line_data.order_qty
+                                        data_1['total_qty'] = va_qty
+        return [vehicle_dri_pro_dict, va_driver_list,vehicle_driver_id_dic,vehicle_pro_id_dic]
+
     @api.model
     def vehicle_allocation_create(self):
         if self._context is None:
@@ -143,29 +576,29 @@ class vehicle_allocation(models.Model):
             if self._context.values():
                 for v in self._context.values()[0]:
                     if float(v['order_qty']) > 0:
-                        vehicles = self.search([('driver_id', '=', int(v['driver_id'])),
+                        vehicles = self.search([ ('vehicle_id', '=', v['vehicle_id']),('driver_id', '=', int(v['driver_id'])),
                                                 ('order_date','=', date_today)])
                         if vehicles:
                             for vehicle_id in vehicles:
-                                if vehicle_id.vehicle_allocation_line_ids:
-                                    for line in vehicle_id.vehicle_allocation_line_ids:
+                                vehicles_line = self.env['vehicle.allocation.line'].search([ 
+                                                        ('vehicle_allocation_id.vehicle_id', '=', v['vehicle_id']),
+                                                        ('vehicle_allocation_id.driver_id', '=', int(v['driver_id'])),
+                                                        ('product_id','=', int(self._context.keys()[0])),
+                                                        ('vehicle_allocation_id.order_date','=', date_today)])     
+                                if vehicles_line:
+                                    for line in vehicles_line:
                                         if line.product_id.id == int(self._context.keys()[0]):
                                             line.write({'order_qty': v['order_qty']})
-                                        else:
-                                            vehicle_id.vehicle_allocation_line_ids = [(0, 0,
-                                                                              {'serial_no': v['sr_n'],
-                                                                               'product_id': int(self._context.keys()[0]),
-                                                                               'order_qty': v['order_qty']})]
                                 else:
                                     vehicle_id.vehicle_allocation_line_ids = [(0, 0,
-                                                                      {'serial_no': v['sr_n'],
+                                                                      {
                                                                        'product_id': int(self._context.keys()[0]),
                                                                        'order_qty': v['order_qty']})]
                         else:
                             vehicle_id = self.create({'vehicle_id': int(v['vehicle_id']),
                                                       'driver_id': int(v['driver_id'])})
                             vehicle_id.vehicle_allocation_line_ids = [(0, 0,
-                                                                      {'serial_no': v['sr_n'],
+                                                                      {
                                                                        'product_id': int(self._context.keys()[0]),
                                                                        'order_qty': v['order_qty']})]
                 return {}

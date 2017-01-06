@@ -6,6 +6,7 @@
         <template id="assets_backend_manikarnika" inherit_id="web.assets_backend" name="Web Manikarnika assets">
             <xpath expr="." position="inside">
                 <link href="/web_manikarnika/static/src/css/manik.css" rel="stylesheet" type="text/css" />
+                 <script type="text/javascript" src="/web_manikarnika/static/lib/sticky_table_header/sticky_table_headers.js"/>
                 <script type="text/javascript" src="/web_manikarnika/static/src/js/manikarnika.js"/>
             </xpath>
         </template>
