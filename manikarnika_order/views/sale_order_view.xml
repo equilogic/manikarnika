@@ -10,7 +10,6 @@
 					<field name="vehicle_id"/>
 					<field name="driver_id"/>
 				</xpath>
-
 			</field>
 		</record>
 	</data>
