@@ -1,0 +1,17 @@
+<openerp>
+	<data>
+		<!-- Inherited form view of sale order -->
+		<record id="inherited_sale_form_view" model="ir.ui.view">
+			<field name="name">inherited.sale.form.view.ex</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='project_id']" position="after">
+					<field name="vehicle_id"/>
+					<field name="driver_id"/>
+				</xpath>
+
+			</field>
+		</record>
+	</data>
+</openerp>
