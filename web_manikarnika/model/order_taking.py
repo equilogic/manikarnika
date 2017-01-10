@@ -31,60 +31,6 @@ class order_tackinig(models.Model):
     _inherit = 'order.tacking'
 
     @api.multi
-    def get_manik_delivery_schidule_detail(self):
-        res_manik_comp = self.env['res.company'].search([('comp_code', '=', 'MK')])
-        manik_products = self.env['product.product'].search([('company_id', 'in', res_manik_comp.ids)], order="name asc")
-        partner_ids = self.env['res.partner'].search([('customer', '=', True)])
-#         order_ids = self.search([('partner_id', 'in', partner_ids.ids)])
-        final_lst = []
-        if manik_products:
-            for mk_prod in manik_products:
-                val = {'name': mk_prod.name or '',
-                       'defaultQty': mk_prod.default_qty or 0.0,
-                       'id': mk_prod.id or False,
-                       'record': []}
-                for partner in partner_ids:
-                    morder_line = self.env['morder.tacking.line'].search([('product_id','=', mk_prod.id),
-                                    ('order_tacking_id.partner_id','=', partner.id)])
-                    if morder_line:
-                        val['record'].append({'id': partner.id or False,
-                                              'name': partner.name or '',
-                                              'qty': morder_line and morder_line[0].order_qty or 0.0})
-                    else:
-                        val['record'].append({'id': partner.id or False,
-                                              'name': partner.name or '',
-                                              'qty': 0})
-                final_lst.append(val)
-        return final_lst
-
-    @api.multi
-    def get_grains_delivery_schidule_detail(self):
-        res_grains_comp = self.env['res.company'].search([('comp_code', '=', 'GR')])
-        grains_products = self.env['product.product'].search([('company_id', 'in', res_grains_comp.ids)], order="name asc")
-        partner_ids = self.env['res.partner'].search([('customer', '=', True)])
-#         order_ids = self.search([('partner_id', 'in', partner_ids.ids)])
-        final_lst = []
-        if grains_products:
-            for gr_prod in grains_products:
-                val = {'name': gr_prod.name or '',
-                       'defaultQty': gr_prod.default_qty or 0.0,
-                       'id': gr_prod.id or False,
-                       'record': []}
-                for partner in partner_ids:
-                    gorder_line = self.env['gorder.tacking.line'].search([('product_id','=', gr_prod.id),
-                                    ('order_tacking_id.partner_id','=', partner.id)])
-                    if gorder_line:
-                        val['record'].append({'id': partner.id or False,
-                                              'name': partner.name or '',
-                                              'qty': gorder_line and gorder_line[0].order_qty or 0.0})
-                    else:
-                        val['record'].append({'id': partner.id or False,
-                                              'name': partner.name or '',
-                                              'qty': 0})
-                final_lst.append(val)
-        return final_lst
-
-    @api.multi
     def get_gr_order_line(self, curr_date):
         partner_ids = self.env['res.partner'].search([('customer', '=', True)])
         order_ids = self.search([('order_date', '=' , curr_date),('partner_id', 'in', partner_ids.ids)])
@@ -593,6 +539,7 @@ class vehicle_allocation(models.Model):
             for fleet_vehicle in fleet_vehicle_ids : 
                 va_driver_list.append({'driver_nm': fleet_vehicle.driver_id.name, 'driver_id': fleet_vehicle.driver_id.id, 'vehicle_nm': fleet_vehicle.name,
                                          'vehicle_id': fleet_vehicle.id, 'order_qty': 0.0 ,'total_qty': 0.0})
+                vehicle_driver_id_dic[fleet_vehicle.driver_id.name] = 0
         vehical_all_data = self.env['vehicle.allocation'].search([('driver_id', 'in', partner_ids.ids), ('order_date', '=' , curr_date)])
         if vehical_all_data:
             for veh_data in vehical_all_data:
@@ -603,8 +550,8 @@ class vehicle_allocation(models.Model):
                         if veh_data.driver_id.name in vehicle_driver_id_dic:
                             total = (vehicle_driver_id_dic[veh_data.driver_id.name] + va_qty)
                             vehicle_driver_id_dic[veh_data.driver_id.name] = total
-                        else:
-                            vehicle_driver_id_dic[veh_data.driver_id.name] = va_qty
+#                        else:
+#                            vehicle_driver_id_dic[veh_data.driver_id.name] = va_qty
                         if line_data.product_id.name in vehicle_pro_id_dic:
                             total = (vehicle_pro_id_dic[line_data.product_id.name] + va_qty)
                             vehicle_pro_id_dic[line_data.product_id.name] =  total

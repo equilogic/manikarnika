@@ -64,9 +64,16 @@ openerp.web_manikarnika = function(instance) {
                     var scrollArea = $(".table_list")[0];
                     if(scrollArea){
                         $('table.scr').each(function(){
-                            $(this).stickyTableHeaders({scrollableArea : scrollArea});
+                            /*$(this).stickyTableHeaders({scrollableArea : scrollArea});*/
+                            $(this).tableHeadFixer({"left" : 1, "foot" : true, "head" : true,"right" : 3})
                         });
+                        
                     }
+                    $("input").keypress(function (e) {
+                        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                            return false;
+                        }
+                    });
                     $("input").change(function(){
                         $(this).attr('data-input',true);
                     });
@@ -180,9 +187,15 @@ openerp.web_manikarnika = function(instance) {
                     var scrollArea = $(".table_list")[0];
                     if(scrollArea){
                         $('table.scr').each(function(){
-                            $(this).stickyTableHeaders({scrollableArea : scrollArea});
+                            /*$(this).stickyTableHeaders({scrollableArea : scrollArea});*/
+                        	$(this).tableHeadFixer({"left" : 1, "foot" : true, "head" : true,"right" : 3})
                         });
                     }
+                    $("input").keypress(function (e) {
+                        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                            return false;
+                        }
+                    });
                     $("input").change(function(){
                         $(this).attr('data-input',true);
                     });
@@ -302,9 +315,15 @@ openerp.web_manikarnika = function(instance) {
                     self.item_dic = details['item_dic'];
                     $("#DeliveryManikarnikaTempline").html(QWeb.render("DeliveryManikarnikaTempline", { 'widget' : self }));
                     var scrollArea = $(".delivery_table_list")[0];
+                    $("input").keypress(function (e) {
+                        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                            return false;
+                        }
+                    });
                     if(scrollArea){
                         $('table.scr').each(function(){
-                            $(this).stickyTableHeaders({scrollableArea : scrollArea});
+                           /* $(this).stickyTableHeaders({scrollableArea : scrollArea});*/
+                        	$(this).tableHeadFixer({"left" : 1, "foot" : true, "head" : true,"right" : 3})
                         });
                     }
                     $("input").change(function(){
@@ -333,8 +352,12 @@ openerp.web_manikarnika = function(instance) {
                 if($(this).find("input")){
                     if($(this).find("input").attr('id') && $(this).find("input").attr('data-input') == 'true' ){
                         $(this).find("input").attr('data-input',false);
+                        var order_qty = $(this).find("input").val();
+                        if(order_qty.length == 0){
+                            order_qty = 0
+                        }
                         self.table_master_dataset.write(parseInt($(this).find("input").attr('id')),
-                                {'order_qty': parseFloat($(this).find("input").val())}).done(function(){
+                                {'order_qty': parseFloat(order_qty)}).done(function(){
                                    self.start(); 
                                 });
                                 
@@ -429,9 +452,15 @@ openerp.web_manikarnika = function(instance) {
                     var scrollArea = $(".delivery_table_list")[0];
                     if(scrollArea){
                         $('table.scr').each(function(){
-                            $(this).stickyTableHeaders({scrollableArea : scrollArea});
+                            /*$(this).stickyTableHeaders({scrollableArea : scrollArea});*/
+                        	$(this).tableHeadFixer({"left" : 1, "foot" : true, "head" : true,"right" : 3})
                         });
                     }
+                    $("input").keypress(function (e) {
+                        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                            return false;
+                        }
+                    });
                     $("input").change(function(){
                         $(this).attr('data-input',true);
                     });
@@ -458,8 +487,12 @@ openerp.web_manikarnika = function(instance) {
                 if($(this).find("input")){
                     if($(this).find("input").attr('id') && $(this).find("input").attr('data-input') == 'true' ){
                         $(this).find("input").attr('data-input',false);
+                        var order_qty = $(this).find("input").val();
+                        if(order_qty.length == 0){
+                            order_qty = 0
+                        }
                         self.table_master_dataset.write(parseInt($(this).find("input").attr('id')),
-                                {'order_qty': parseFloat($(this).find("input").val())}).done(function(){
+                                {'order_qty': parseFloat(order_qty)}).done(function(){
                                    self.start(); 
                                 });
                     }
@@ -530,9 +563,15 @@ openerp.web_manikarnika = function(instance) {
                     var scrollArea = $(".table_list")[0];
                     if(scrollArea){
                         $('table.scr').each(function(){
-                            $(this).stickyTableHeaders({scrollableArea : scrollArea});
+                            /*$(this).stickyTableHeaders({scrollableArea : scrollArea});*/
+                            $(this).tableHeadFixer({"left" : 1, "foot" : true, "head" : true,"right" : 3})
                         });
                     }
+                    $("input").keypress(function (e) {
+                        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                            return false;
+                        }
+                    });
                     $("input").change(function(){
                         $(this).attr('data-input',true);
                     });
@@ -558,6 +597,10 @@ openerp.web_manikarnika = function(instance) {
                 if($(this).find("input")){
                     if($(this).find("input").attr('id') && $(this).find("input").attr('data-input') == 'true' ){
                         $(this).find("input").attr('data-input',false);
+                        var order_qty = $(this).find("input").val();
+                        if(order_qty.length == 0){
+                            order_qty = 0
+                        }
                         list_pro.push({'vehicle_id':$(this).find("input").data('v_id'),
                             'driver_id': $(this).find("input").attr('id'),
                             'order_qty':$(this).find("input").val(),
