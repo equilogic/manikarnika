@@ -29,6 +29,9 @@
 		<field name="help">Product Summary</field>
 	</record>
 
+        <!-- Menu of Product summary report wizard -->
         
+        <menuitem id="action_product_summary_id" 
+                    action="action_product_summary" parent="menu_of_report" />
 </data>
 </openerp>

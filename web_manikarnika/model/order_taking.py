@@ -31,6 +31,11 @@ class order_tackinig(models.Model):
     _inherit = 'order.tacking'
 
     @api.multi
+    def manik_delivery_order_update_app(self, code, order_id, line_id, qty):
+        print "code, order_id, line_id, qty",code, order_id, line_id, qty
+        return final_lst
+    
+    @api.multi
     def get_manik_delivery_schidule_detail(self):
         res_manik_comp = self.env['res.company'].search([('comp_code', '=', 'MK')])
         manik_products = self.env['product.product'].search([('company_id', 'in', res_manik_comp.ids)], order="name asc")
