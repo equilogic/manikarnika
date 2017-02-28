@@ -112,6 +112,7 @@ class order_tackinig(models.Model):
         order_dict = {}
         product_dict ={}
         total_qty = {}
+        tmp_total_qty = {}
         default_product_list = []
         manik_product_lst = []
         res_comp_ids = self.env['res.company'].search([('comp_code', '=', 'MK')])
@@ -131,12 +132,14 @@ class order_tackinig(models.Model):
                 manikar_qty = 0
                 manikar_val_list = []
                 product_val_lst = []
+                
                 for g_line in order_id.morder_tacking_line_ids:
                     if g_line.product_id.id and order_id.partner_id:
-                        if total_qty.has_key(g_line.product_id.name):
+                        if tmp_total_qty.has_key(g_line.product_id.id):
                              total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
                         else:
                             total_qty[g_line.product_id.name] = g_line.order_qty 
+                            tmp_total_qty[g_line.product_id.id] = g_line.order_qty 
                     if order_id.partner_id:
                         manikar_qty = manikar_qty + g_line.order_qty
                         product_val_lst.append(g_line.product_id.id)
