@@ -19,12 +19,16 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import order_taking
-import res_partner
-import route
-import received_remain_qty
-import sale_order
+from datetime import datetime, date, timedelta
+from openerp import models, fields, api
+from openerp.exceptions import Warning,ValidationError
 
+class sale_order(models.Model):
+    _inherit='sale.order'
+    
+    vehicle_id = fields.Many2one('fleet.vehicle','Vehicle')
+    driver_id = fields.Many2one('res.partner','Driver')
+    
 
 
 

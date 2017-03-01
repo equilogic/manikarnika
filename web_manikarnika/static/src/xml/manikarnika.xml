@@ -247,7 +247,11 @@
                             <tr>
                                 <t t-foreach="widget.product" t-as="prod">
                                     <td class="pro_nm">
+<<<<<<< HEAD
                                         <h4><t t-esc="prod.split('____')[0]"></t></h4>
+=======
+                                        <h4><t t-esc="prod"></t></h4>
+>>>>>>> b20ecaa7ec3cb3eee3c7ddd8b8b8b385764470c8
                                     </td>
                                 </t>
                                 <td rowspan="2" class="pro_nm" style="display:none;">
@@ -369,6 +373,7 @@
                                     </td>
                                 </t>
                                 <td style="background:#167F92;" colspan="3"></td>
+<<<<<<< HEAD
                             </tr>
                             <tr>
                                 <t t-foreach="widget.grain_product" t-as="g_prod">
@@ -384,6 +389,23 @@
                                 </td>
                                 <td rowspan="2" colspan="2" width="1%" style="background:#167F92;"></td>
                             </tr>
+=======
+                            </tr>
+                            <tr>
+                                <t t-foreach="widget.grain_product" t-as="g_prod">
+                                    <td class="pro_nm">
+                                        <h4><t t-esc="g_prod"></t></h4>
+                                    </td>
+                                </t>
+                                <td rowspan="2" class="pro_nm" style="display:none;">
+                                    <h3>Driver</h3>
+                                </td>
+                                <td rowspan="2" class="pro_nm" style="background:#167F92 !important;color:white !important;border-color: #4c4c4c;">
+                                    <h3>Shop Total</h3>
+                                </td>
+                                <td rowspan="2" colspan="2" width="1%" style="background:#167F92;"></td>
+                            </tr>
+>>>>>>> b20ecaa7ec3cb3eee3c7ddd8b8b8b385764470c8
                         </thead>
                     <tbody>
                         <t t-foreach="widget.grain_orders" t-as="g_order">

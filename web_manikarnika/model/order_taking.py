@@ -31,6 +31,74 @@ class order_tackinig(models.Model):
     _inherit = 'order.tacking'
 
     @api.multi
+    def manik_delivery_order_update_app(self, code, order_id, line_id, qty):
+        if order_id and line_id:
+            if code == 'MK':
+                m_line_id = self.env['morder.tacking.line'].search([('product_id', '=', line_id)])
+                if m_line_id:
+                    m_line_id.write({'order_qty': qty})
+                    return m_line_id
+            elif code == 'GR':
+                g_order_id = self.env['gorder.tacking.line'].search([('product_id', '=', line_id)])
+                if g_order_id:
+                    g_line_id.write({'order_qty': qty})
+                    return g_line_id
+    
+    @api.multi
+    def get_manik_delivery_schidule_detail(self):
+        res_manik_comp = self.env['res.company'].search([('comp_code', '=', 'MK')])
+        manik_products = self.env['product.product'].search([('company_id', 'in', res_manik_comp.ids)], order="name asc")
+        partner_ids = self.env['res.partner'].search([('customer', '=', True)])
+#         order_ids = self.search([('partner_id', 'in', partner_ids.ids)])
+        final_lst = []
+        if manik_products:
+            for mk_prod in manik_products:
+                val = {'name': mk_prod.name or '',
+                       'defaultQty': mk_prod.default_qty or 0.0,
+                       'id': mk_prod.id or False,
+                       'record': []}
+                for partner in partner_ids:
+                    morder_line = self.env['morder.tacking.line'].search([('product_id','=', mk_prod.id),
+                                    ('order_tacking_id.partner_id','=', partner.id)])
+                    if morder_line:
+                        val['record'].append({'id': partner.id or False,
+                                              'name': partner.name or '',
+                                              'qty': morder_line and morder_line[0].order_qty or 0.0})
+                    else:
+                        val['record'].append({'id': partner.id or False,
+                                              'name': partner.name or '',
+                                              'qty': 0})
+                final_lst.append(val)
+        return final_lst
+
+    @api.multi
+    def get_grains_delivery_schidule_detail(self):
+        res_grains_comp = self.env['res.company'].search([('comp_code', '=', 'GR')])
+        grains_products = self.env['product.product'].search([('company_id', 'in', res_grains_comp.ids)], order="name asc")
+        partner_ids = self.env['res.partner'].search([('customer', '=', True)])
+#         order_ids = self.search([('partner_id', 'in', partner_ids.ids)])
+        final_lst = []
+        if grains_products:
+            for gr_prod in grains_products:
+                val = {'name': gr_prod.name or '',
+                       'defaultQty': gr_prod.default_qty or 0.0,
+                       'id': gr_prod.id or False,
+                       'record': []}
+                for partner in partner_ids:
+                    gorder_line = self.env['gorder.tacking.line'].search([('product_id','=', gr_prod.id),
+                                    ('order_tacking_id.partner_id','=', partner.id)])
+                    if gorder_line:
+                        val['record'].append({'id': partner.id or False,
+                                              'name': partner.name or '',
+                                              'qty': gorder_line and gorder_line[0].order_qty or 0.0})
+                    else:
+                        val['record'].append({'id': partner.id or False,
+                                              'name': partner.name or '',
+                                              'qty': 0})
+                final_lst.append(val)
+        return final_lst
+
+    @api.multi
     def get_gr_order_line(self, curr_date):
         partner_ids = self.env['res.partner'].search([('customer', '=', True)])
         order_ids = self.search([('order_date', '=' , curr_date),('partner_id', 'in', partner_ids.ids)])
@@ -112,6 +180,7 @@ class order_tackinig(models.Model):
         order_dict = {}
         product_dict ={}
         total_qty = {}
+        tmp_total_qty = {}
         default_product_list = []
         manik_product_lst = []
         res_comp_ids = self.env['res.company'].search([('comp_code', '=', 'MK')])
@@ -131,12 +200,21 @@ class order_tackinig(models.Model):
                 manikar_qty = 0
                 manikar_val_list = []
                 product_val_lst = []
+                
                 for g_line in order_id.morder_tacking_line_ids:
                     if g_line.product_id.id and order_id.partner_id:
+<<<<<<< HEAD
                         if total_qty.has_key(str(g_line.product_id.name) + '____' + str(g_line.product_id.id)):
                              total_qty[str(g_line.product_id.name) + '____' + str(g_line.product_id.id)] = total_qty[str(g_line.product_id.name) + '____' +  str(g_line.product_id.id)] + g_line.order_qty 
                         else:
                             total_qty[str(g_line.product_id.name) + '____' + str(g_line.product_id.id)  ] = g_line.order_qty 
+=======
+                        if tmp_total_qty.has_key(g_line.product_id.id):
+                             total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
+                        else:
+                            total_qty[g_line.product_id.name] = g_line.order_qty 
+                            tmp_total_qty[g_line.product_id.id] = g_line.order_qty 
+>>>>>>> b20ecaa7ec3cb3eee3c7ddd8b8b8b385764470c8
                     if order_id.partner_id:
                         manikar_qty = manikar_qty + g_line.order_qty
                         product_val_lst.append(g_line.product_id.id)
@@ -539,7 +617,11 @@ class vehicle_allocation(models.Model):
             for fleet_vehicle in fleet_vehicle_ids : 
                 va_driver_list.append({'driver_nm': fleet_vehicle.driver_id.name + '____' + str(fleet_vehicle.driver_id.id), 'driver_id': fleet_vehicle.driver_id.id, 'vehicle_nm': fleet_vehicle.name + '____' + str(fleet_vehicle.id),
                                          'vehicle_id': fleet_vehicle.id, 'order_qty': 0.0 ,'total_qty': 0.0})
+<<<<<<< HEAD
                 vehicle_driver_id_dic[fleet_vehicle.driver_id.name + '____' + str(fleet_vehicle.driver_id.id)] = 0
+=======
+                vehicle_driver_id_dic[fleet_vehicle.driver_id.name] = 0
+>>>>>>> b20ecaa7ec3cb3eee3c7ddd8b8b8b385764470c8
         vehical_all_data = self.env['vehicle.allocation'].search([('driver_id', 'in', partner_ids.ids), ('order_date', '=' , curr_date)])
         if vehical_all_data:
             for veh_data in vehical_all_data:
@@ -547,6 +629,7 @@ class vehicle_allocation(models.Model):
                 for line_data in veh_data.vehicle_allocation_line_ids:
                     if veh_data.driver_id:
                         va_qty = line_data.order_qty
+<<<<<<< HEAD
                         if (veh_data.driver_id.name + '____' + str(veh_data.driver_id.id)) in vehicle_driver_id_dic:
                             total = (vehicle_driver_id_dic[veh_data.driver_id.name + '____' + str(veh_data.driver_id.id)] + va_qty)
                             vehicle_driver_id_dic[veh_data.driver_id.name + '____' + str(veh_data.driver_id.id)] = total
@@ -555,6 +638,16 @@ class vehicle_allocation(models.Model):
                         if (line_data.product_id.name + '____' + str(line_data.product_id.id)) in vehicle_pro_id_dic:
                             total = (vehicle_pro_id_dic[line_data.product_id.name + '____' + str(line_data.product_id.id)] + va_qty)
                             vehicle_pro_id_dic[line_data.product_id.name + '____' + str(line_data.product_id.id)] =  total
+=======
+                        if veh_data.driver_id.name in vehicle_driver_id_dic:
+                            total = (vehicle_driver_id_dic[veh_data.driver_id.name] + va_qty)
+                            vehicle_driver_id_dic[veh_data.driver_id.name] = total
+#                        else:
+#                            vehicle_driver_id_dic[veh_data.driver_id.name] = va_qty
+                        if line_data.product_id.name in vehicle_pro_id_dic:
+                            total = (vehicle_pro_id_dic[line_data.product_id.name] + va_qty)
+                            vehicle_pro_id_dic[line_data.product_id.name] =  total
+>>>>>>> b20ecaa7ec3cb3eee3c7ddd8b8b8b385764470c8
                         driver_lst_dict = {'driver_id': veh_data.driver_id.id,'order_qty': line_data.order_qty,'total_qty':va_qty,
                                            'driver_nm':veh_data.driver_id.name + '____' + str(veh_data.driver_id.id),'vehicle_id': veh_data.vehicle_id.id,
                                            'vehicle_nm':veh_data.vehicle_id.name + '____'+ str(veh_data.vehicle_id.id),}

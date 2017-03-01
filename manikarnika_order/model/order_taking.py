@@ -21,16 +21,16 @@
 ##############################################################################
 from datetime import datetime, date, timedelta
 from openerp import models, fields, api
-from openerp.exceptions import Warning,ValidationError
+from openerp.exceptions import Warning, ValidationError
 
 
 class order_tackinig(models.Model):
-    _name='order.tacking'
+    _name = 'order.tacking'
 
     name = fields.Char('Order Number', size=64, readonly=True,
                    copy=False, index=True)
-    partner_id = fields.Many2one('res.partner','Customer Name')
-    driver_id = fields.Many2one('res.partner','Driver Name')
+    partner_id = fields.Many2one('res.partner', 'Customer Name')
+    driver_id = fields.Many2one('res.partner', 'Driver Name')
     order_date = fields.Date('Order Date',
                              default=date.today().strftime('%Y-%m-%d'))
     morder_tacking_line_ids = fields.One2many('morder.tacking.line',
@@ -58,39 +58,41 @@ class order_tackinig(models.Model):
     @api.multi
     def create_sale_order(self, ord_track_lines, sale_vals):
         company_id = False
-        
         sale_lines_vals_lst = []
-
         sale_obj = self.env['sale.order']
         if ord_track_lines:
             for line in ord_track_lines:
                 prod = line.product_id or False
                 company_id = prod.company_id or False
                 if line.order_qty:
-                    sale_lines_vals_lst.append((0,0,{
+                    sale_lines_vals_lst.append((0, 0, {
                         'product_id': prod and prod.id or False,
                         'name': prod.name or '',
                         'product_uom_qty': line.order_qty or 0.0,
-                        'price_unit': line.order_price or 0.0}))
-
+                        'price_unit': line.order_price or 0.0,
+                        }))
                 sale_vals.update({'order_line': sale_lines_vals_lst,
                           'company_id': company_id and company_id.id or False})
             sale_ord_id = sale_obj.create(sale_vals)
         return sale_ord_id
-
-
-
     
     @api.multi
     def ord_track_confirm_to_complete(self):
         comp_obj = self.env['res.company']
-        comp_MK = comp_obj.search([('comp_code','=','MK')])
-        comp_GR = comp_obj.search([('comp_code','=','GR')])
+        comp_MK = comp_obj.search([('comp_code', '=', 'MK')])
+        comp_GR = comp_obj.search([('comp_code', '=', 'GR')])
+        vehicle = 0
         for rec in self:
+            if rec.driver_id:
+                vehicle_id = self.env['fleet.vehicle'].search([('driver_id', '=', self.driver_id.id)])
+                if vehicle_id:
+                    vehicle = vehicle_id.ids[0]
             sale_vals = {
                  'partner_id': rec.partner_id.id,
                  'date_order': rec.order_date or False,
                  'order_line': [],
+                 'driver_id':rec.driver_id.id,
+                 'vehicle_id':vehicle,
                  'company_id': False
             }
             if rec.morder_tacking_line_ids:
@@ -138,10 +140,10 @@ class order_tackinig(models.Model):
         if self.partner_id:
             self.morder_tacking_line_ids = [(6, 0, [])]
             self.gorder_tacking_line_ids = [(6, 0, [])]
-            comp_MK = comp_obj.search([('comp_code','=','MK')])
-            comp_GR = comp_obj.search([('comp_code','=','GR')])
-            MK_products = prod_obj.search([('company_id','in', comp_MK.ids)])
-            GR_products = prod_obj.search([('company_id','in', comp_GR.ids)])
+            comp_MK = comp_obj.search([('comp_code', '=', 'MK')])
+            comp_GR = comp_obj.search([('comp_code', '=', 'GR')])
+            MK_products = prod_obj.search([('company_id', 'in', comp_MK.ids)])
+            GR_products = prod_obj.search([('company_id', 'in', comp_GR.ids)])
             if MK_products:
                 MK_lst = self.get_order_tarcking_lines(MK_products)
                 self.morder_tacking_line_ids = MK_lst
@@ -152,8 +154,8 @@ class order_tackinig(models.Model):
     @api.model
     def ord_delete(self):
         cur_date = datetime.now().strftime('%Y-%m-%d')
-        morder_line = self.env['morder.tacking.line'].search([('order_date_line','=',cur_date)])
-        gorder_line = self.env['gorder.tacking.line'].search([('order_date_line','=',cur_date)])
+        morder_line = self.env['morder.tacking.line'].search([('order_date_line', '=', cur_date)])
+        gorder_line = self.env['gorder.tacking.line'].search([('order_date_line', '=', cur_date)])
         if morder_line:
             for mline in morder_line:
                 if not mline.order_qty:
@@ -165,8 +167,7 @@ class order_tackinig(models.Model):
         return True
 
 class morder_tacking_line(models.Model):
-    _name='morder.tacking.line'
-
+    _name = 'morder.tacking.line'
     _rec_name = 'product_id'
     
     order_tacking_id = fields.Many2one('order.tacking', string='Order Tacking')
@@ -176,12 +177,12 @@ class morder_tacking_line(models.Model):
     order_price = fields.Float('Order Price')
     order_qty = fields.Float('Order Qty')
     order_date_line = fields.Date('Order Date')
-    company_id = fields.Many2one('res.company','Company')
+    company_id = fields.Many2one('res.company', 'Company')
 
     @api.model
     def default_get(self, fields_list):
-        res = super(morder_tacking_line,self).default_get(fields_list)
-        comp = self.env['res.company'].search([('comp_code','=','MK')])
+        res = super(morder_tacking_line, self).default_get(fields_list)
+        comp = self.env['res.company'].search([('comp_code', '=', 'MK')])
         res.update({'company_id':comp.id})
         return res
     
@@ -206,8 +207,7 @@ class morder_tacking_line(models.Model):
 
 
 class gorder_tacking_line(models.Model):
-    _name='gorder.tacking.line'
-    
+    _name = 'gorder.tacking.line'
     _rec_name = 'product_id'
     
     order_tacking_id = fields.Many2one('order.tacking', string='Order Tacking')
@@ -217,12 +217,12 @@ class gorder_tacking_line(models.Model):
     order_price = fields.Float('Order Price')
     order_qty = fields.Float('Order Qty')
     order_date_line = fields.Date('Order Date')
-    company_id = fields.Many2one('res.company','Company')
+    company_id = fields.Many2one('res.company', 'Company')
     
     @api.model
     def default_get(self, fields_list):
-        res = super(gorder_tacking_line,self).default_get(fields_list)
-        comp = self.env['res.company'].search([('comp_code','=','GR')])
+        res = super(gorder_tacking_line, self).default_get(fields_list)
+        comp = self.env['res.company'].search([('comp_code', '=', 'GR')])
         res.update({'company_id':comp.id})
         return res
     
@@ -237,6 +237,7 @@ class gorder_tacking_line(models.Model):
     
     @api.onchange('order_qty')
     def onchange_order_qty(self):
+        self.default_order_qty=1
         if self.order_qty:
             if self.order_qty > self.qty_aval:
                 raise ValidationError('''You can not take "Order qty" more than 
@@ -264,7 +265,7 @@ class location_location(models.Model):
 
 
 class vehicle_allocation(models.Model):
-    _name='vehicle.allocation'
+    _name = 'vehicle.allocation'
 
     name = fields.Char('Number', size=64, readonly=True,
                    copy=False, index=True)
@@ -291,7 +292,7 @@ class vehicle_allocation(models.Model):
         '''
             Prepare picking and picking line
         '''
-        cr,uid,context = self.env.args
+        cr, uid, context = self.env.args
         comp = self.env['res.users'].browse(uid).company_id
         location_obj = self.env['stock.location']
         loc_id = location_obj.search([('location_id', '!=', False), ('location_id.name', 'ilike', 'WH'),
@@ -300,7 +301,7 @@ class vehicle_allocation(models.Model):
         picking_obj = self.env['stock.picking']
         move_obj = self.env['stock.move']
         picking_type = self.env['stock.picking.type'].search([('code', '=', 'internal'),
-                                                              ('default_location_src_id', '=', loc_id.id)])
+                                        ('default_location_src_id', '=', loc_id.id)])
         picking_vals = {
                         'date': order.order_date,
                         'origin': order.name,
@@ -352,15 +353,15 @@ class vehicle_allocation(models.Model):
     @api.multi
     def ord_track_confirm_to_cancel(self):
         for rec in self:
-            rec.state = 'cancel'    
+            rec.state = 'cancel'
 
 class vehicle_allocation_line(models.Model):
 
     _name='vehicle.allocation.line'
     _rec_name = 'product_id'
 
-    vehicle_allocation_id = fields.Many2one('vehicle.allocation','Vehicle Allocation')
-    product_id = fields.Many2one('product.product','Product')
+    vehicle_allocation_id = fields.Many2one('vehicle.allocation', 'Vehicle Allocation')
+    product_id = fields.Many2one('product.product', 'Product')
     units = fields.Many2one('product.uom', 'Units') 
     order_qty = fields.Float('Order Qty')
     order_carton = fields.Integer('Order Cartons')
@@ -374,16 +375,16 @@ class vehicle_allocation_line(models.Model):
             self.units = self.product_id.uom_id.id
 
 class fleet_vehicle(models.Model):
-    _inherit='fleet.vehicle'
+    _inherit = 'fleet.vehicle'
     
     @api.model
-    def create(self,vals):
+    def create(self, vals):
         loc_obj = self.env['stock.location']
-        parent_id = loc_obj.search([('name','ilike','Virtual Locations')])
-        res = super(fleet_vehicle,self).create(vals)
-        if vals.get('model_id',False):
+        parent_id = loc_obj.search([('name', 'ilike', 'Virtual Locations')])
+        res = super(fleet_vehicle, self).create(vals)
+        if vals.get('model_id', False):
             model = self.env['fleet.vehicle.model'].browse(vals.get('model_id'))
-            loc_vals={
+            loc_vals = {
                       'name':model.name,
                       'location_id':parent_id.id,
                       'usage':'transit',
@@ -395,7 +396,7 @@ class fleet_vehicle(models.Model):
 class stock_location(models.Model):
     _inherit = 'stock.location'
     
-    vehicle_id = fields.Many2one('fleet.vehicle','Vehicle')
+    vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle')
     
     
 class res_users(models.Model):
@@ -404,9 +405,9 @@ class res_users(models.Model):
     is_driver = fields.Boolean('Is Driver')
     
     @api.model
-    def create(self,vals):
-        res = super(res_users,self).create(vals)
-        if vals.get('is_driver',False):
+    def create(self, vals):
+        res = super(res_users, self).create(vals)
+        if vals.get('is_driver', False):
             res.partner_id.write({'driver':True})
         return res
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

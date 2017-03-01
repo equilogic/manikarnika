@@ -37,6 +37,8 @@
              'report/product_summary_report.xml',
              'report/manikarnika_order_report_view.xml',
              'report/vehicle_allocation_report_view.xml',
+             'report/report_outstanding_balance_sheet.xml',
+             'wizard/report_obs_wizard.xml',
              'report/report_view.xml',
             
     ],

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="report_outstanding_balance_sheet_tree">
+			<field name="name">report.outstanding.balance.sheet.tree</field>
+			<field name="model">report.outstanding.balance.sheet</field>
+			<field name="arch" type="xml">
+				<tree string="Outstanding Balance Sheet" create="true" edit="true"
+					editable="true" default_order="customer_name,shop_name,date_invoice,reference">
+					<field name="customer_name" />
+					<field name="shop_name" />
+					<field name="date_invoice" />
+					<field name="reference" />
+					<field name="number" />
+					<field name="amount_total" />
+					<field name="residual" />
+					<field name="till_date" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_outstanding_balance_sheet">
+			<field name="name">Outstanding Balance Sheet</field>
+			<field name="res_model">report.outstanding.balance.sheet</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help">Display the Customer Outstanding Balance Sheet
+			</field>
+		</record>
+
+	</data>
+</openerp>

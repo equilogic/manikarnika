@@ -68,10 +68,10 @@ class manikarnika_order_report(report_sxw.rml_parse):
                     price+=li.order_price
                 if li.order_qty:
                     qty_o+=li.order_qty
-            res.update({'qty_aval':int(qty_h),
-                        'default_order_qty':int(qty_d),
-                        'order_price':price,
-                        'order_qty':int(qty_o),
+            res.update({'qty_aval':int(qty_h) or 0,
+                        'default_order_qty':int(qty_d) or 0,
+                        'order_price':price or 0.0,
+                        'order_qty':int(qty_o) or 0,
                         })
         return res
             
