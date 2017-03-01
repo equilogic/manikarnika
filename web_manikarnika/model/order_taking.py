@@ -660,17 +660,25 @@ class vehicle_allocation(models.Model):
                                 if vehicles_line:
                                     for line in vehicles_line:
                                         if line.product_id.id == int(self._context.keys()[0]):
-                                            line.write({'order_qty': v['order_qty']})
+                                            line.write({'order_qty': v['order_qty'], 
+                                                        'order_carton': v['order_qty'],
+                                                        'units': line.product_id.uom_id and line.product_id.uom_id.id or False })
                                 else:
+                                    product_data = prod_obj.browse(int(self._context.keys()[0]))
                                     vehicle_id.vehicle_allocation_line_ids = [(0, 0,
                                                                       {
                                                                        'product_id': int(self._context.keys()[0]),
-                                                                       'order_qty': v['order_qty']})]
+                                                                       'order_qty': v['order_qty'],
+                                                                       'order_carton': v['order_qty'],
+                                                                       'units': product_data.uom_id and product_data.uom_id.id or False})]
                         else:
                             vehicle_id = self.create({'vehicle_id': int(v['vehicle_id']),
                                                       'driver_id': int(v['driver_id'])})
+                            product_data = prod_obj.browse(int(self._context.keys()[0]))
                             vehicle_id.vehicle_allocation_line_ids = [(0, 0,
                                                                       {
                                                                        'product_id': int(self._context.keys()[0]),
-                                                                       'order_qty': v['order_qty']})]
+                                                                       'units': product_data.uom_id and product_data.uom_id.id or False,
+                                                                       'order_qty': v['order_qty'],
+                                                                       'order_carton': v['order_qty']})]
                 return {}

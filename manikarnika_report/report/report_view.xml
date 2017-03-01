@@ -4,7 +4,7 @@
 		<report 
 			id="morder_tacking_report" 
 			model="order.tacking" 
-			string="Manikarnika Order Report"
+			string="Order Report"
 			report_type="qweb-pdf" 
 			name="manikarnika_report.manikarnika_order_report_main_template"
 			file="manikarnika_report.manikarnika_order_report_main_template" />

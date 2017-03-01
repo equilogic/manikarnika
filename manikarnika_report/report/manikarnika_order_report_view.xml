@@ -87,7 +87,7 @@
 					<div class="page" style="font-family:Helvetica;font-size:12px">
 						<div class="oe_structure" />
 						<div>
-							<h3>Manikarnika Order Report</h3>
+							<h3>Order Report</h3>
 						</div>
 						<div>
 							<table width="100%">
@@ -118,6 +118,7 @@
 							</table>
 						</div>
 						<br />
+						<h3>Manikarnika Order Details</h3>
 						<table width="100%">
 							<thead>
 								<tr
@@ -177,6 +178,68 @@
 								</tfoot>
 							</tbody>
 						</table>
+                        <br />
+                        <h3>Grains Order Details</h3>
+                        <table width="100%">
+                            <thead>
+                                <tr
+                                    style="border-top: 1px solid black;border-bottom: 1px solid black;">
+                                    <th width="25%" class="text-left line">Product</th>
+                                    <th width="15%" class="text-left line">Qty On Hand</th>
+                                    <th width="20%" class="text-left line">Default Order Qty</th>
+                                    <th width="20%" class="text-left line">Order Price</th>
+                                    <th width="10%" class="text-left line">Order Qty</th>
+                                    <th width="10%" class="text-left line">Order Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.gorder_tacking_line_ids" t-as="line">
+                                    <td width="25%" class="text-left line">
+                                        <span t-field="line.product_id" />
+                                    </td>
+                                    <td width="15%" class="text-left line">
+                                        <span t-esc="get_aval_qty(line.qty_aval)" />
+                                    </td>
+                                    <td width="20%" class="text-left line">
+                                        <span t-esc="get_default_qty(line.default_order_qty)" />
+                                    </td>
+                                    <td width="20%" class="text-left line">
+                                        <span t-field="line.order_price" />
+                                    </td>
+                                    <td width="10%" class="text-left line">
+                                        <span t-esc="get_order_qty(line.order_qty)" />
+                                    </td>
+                                    <td width="10%" class="text-left line">
+                                        <span t-field="line.order_date_line" />
+                                    </td>
+                                </tr>
+
+                                <tfoot>
+                                    <tr
+                                        style="border-top: 1px solid black;border-bottom: 1px solid black;">
+                                        <th width="25%" class="text-left line">
+                                            <span>Total</span>
+                                        </th>
+                                        <th width="15%" class="text-left line">
+                                            <span t-esc="get_total(o.morder_tacking_line_ids).get('qty_aval')" />
+                                        </th>
+                                        <th width="20%" class="text-left line">
+                                            <span
+                                                t-esc="get_total(o.morder_tacking_line_ids).get('default_order_qty')" />
+                                        </th>
+                                        <th width="20%" class="text-left line">
+                                            <span t-esc="get_total(o.morder_tacking_line_ids).get('order_price')" />
+                                        </th>
+                                        <th width="10%" class="text-left line">
+                                            <span t-esc="get_total(o.morder_tacking_line_ids).get('order_qty')" />
+                                        </th>
+                                        <th width="10%" class="text-left line">
+                                        </th>
+                                    </tr>
+                                </tfoot>
+                            </tbody>
+                        </table>
+                        						
 					</div>
 				</t>
 			</t>

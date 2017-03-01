@@ -172,10 +172,10 @@ class morder_tacking_line(models.Model):
     
     order_tacking_id = fields.Many2one('order.tacking', string='Order Tacking')
     product_id = fields.Many2one('product.product','Product')
-    qty_aval = fields.Float('Qty On Hand')
-    default_order_qty = fields.Float('Default Order Qty')
+    qty_aval = fields.Integer('Qty On Hand')
+    default_order_qty = fields.Integer('Default Order Qty')
     order_price = fields.Float('Order Price')
-    order_qty = fields.Float('Order Qty')
+    order_qty = fields.Integer('Order Qty')
     order_date_line = fields.Date('Order Date')
     company_id = fields.Many2one('res.company', 'Company')
 
@@ -190,9 +190,9 @@ class morder_tacking_line(models.Model):
     def onchange_product_id(self):
         if self.product_id:
             product = self.product_id
-            self.qty_aval = product.qty_available or 0.0
-            self.default_order_qty = product.default_qty or 0.0
-            self.order_price = product.lst_price or 0.0
+            self.qty_aval = product.qty_available or 0
+            self.default_order_qty = product.default_qty or 0
+            self.order_price = product.lst_price or 0
             self.order_qty = 1
 
     @api.onchange('order_qty')
@@ -212,10 +212,10 @@ class gorder_tacking_line(models.Model):
     
     order_tacking_id = fields.Many2one('order.tacking', string='Order Tacking')
     product_id = fields.Many2one('product.product','Product')
-    qty_aval = fields.Float('Qty On Hand')
-    default_order_qty = fields.Float('Default Order Qty')
+    qty_aval = fields.Integer('Qty On Hand')
+    default_order_qty = fields.Integer('Default Order Qty')
     order_price = fields.Float('Order Price')
-    order_qty = fields.Float('Order Qty')
+    order_qty = fields.Integer('Order Qty')
     order_date_line = fields.Date('Order Date')
     company_id = fields.Many2one('res.company', 'Company')
     
@@ -230,9 +230,9 @@ class gorder_tacking_line(models.Model):
     def onchange_product_id(self):
         if self.product_id:
             product = self.product_id
-            self.qty_aval = product.qty_available or 0.0
-            self.default_order_qty = product.default_qty or 0.0
-            self.order_price = product.lst_price or 0.0
+            self.qty_aval = product.qty_available or 0
+            self.default_order_qty = product.default_qty or 0
+            self.order_price = product.lst_price or 0
             self.order_qty = 1
     
     @api.onchange('order_qty')
@@ -360,13 +360,18 @@ class vehicle_allocation_line(models.Model):
     _name='vehicle.allocation.line'
     _rec_name = 'product_id'
 
+    @api.multi
+    def compute_total_carton(self):
+        for data in self:
+            data.total_carton = data.order_carton + data.extra_carton
+        
     vehicle_allocation_id = fields.Many2one('vehicle.allocation', 'Vehicle Allocation')
     product_id = fields.Many2one('product.product', 'Product')
     units = fields.Many2one('product.uom', 'Units') 
-    order_qty = fields.Float('Order Qty')
+    order_qty = fields.Integer('Order Qty')
     order_carton = fields.Integer('Order Cartons')
     extra_carton = fields.Integer('Extra Cartons')
-    total_carton = fields.Integer('Total Cartons')
+    total_carton = fields.Integer('Total Cartons', compute='compute_total_carton')
     order_date = fields.Date('Order Date', default=date.today().strftime('%Y-%m-%d'))
     
     @api.onchange('product_id')
