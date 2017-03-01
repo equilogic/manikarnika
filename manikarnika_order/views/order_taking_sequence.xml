@@ -26,7 +26,20 @@
             <field name="code">vehicle.allocation</field>
             <field name="prefix">VA</field>
             <field name="padding">5</field>
-        </record>        
+        </record>    
+        
+        <!-- Sequences for Received Remain Qty -->
+        <record model="ir.sequence.type" id="seq_received_remaining_qty">
+            <field name="name">received.remain.qty</field>
+            <field name="code">received.remain.qty</field>
+        </record>
+
+        <record model="ir.sequence" id="seq_received_remaining_qty">
+            <field name="name">received.remain.qty</field>
+            <field name="code">received.remain.qty</field>
+            <field name="prefix">RQ</field>
+            <field name="padding">5</field>
+        </record>   
 
     </data>
 </openerp>

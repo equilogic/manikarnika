@@ -32,8 +32,17 @@ class order_tackinig(models.Model):
 
     @api.multi
     def manik_delivery_order_update_app(self, code, order_id, line_id, qty):
-        print "code, order_id, line_id, qty",code, order_id, line_id, qty
-        return final_lst
+        if order_id and line_id:
+            if code == 'MK':
+                m_line_id = self.env['morder.tacking.line'].search([('product_id', '=', line_id)])
+                if m_line_id:
+                    m_line_id.write({'order_qty': qty})
+                    return m_line_id
+            elif code == 'GR':
+                g_order_id = self.env['gorder.tacking.line'].search([('product_id', '=', line_id)])
+                if g_order_id:
+                    g_line_id.write({'order_qty': qty})
+                    return g_line_id
     
     @api.multi
     def get_manik_delivery_schidule_detail(self):

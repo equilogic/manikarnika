@@ -25,7 +25,8 @@ from openerp import models, fields, api
 class received_remaining_qty(models.Model):
     _name='received.remain.qty'
     
-    number = fields.Char('Number')
+    name = fields.Char('Number', size=64, readonly=True,
+                   copy=False, index=True)
     delivery_date = fields.Date('Delivery Date')
     vehicle_id = fields.Many2one('fleet.vehicle','Vehicle Name')
     driver_id = fields.Many2one('res.partner','Driver Name')
@@ -38,6 +39,12 @@ class received_remaining_qty(models.Model):
                              string="State", default='draft')
     picking_id = fields.Many2one('stock.picking','View Picking')
     
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env['ir.sequence'
+                                    ].next_by_code('received.remain.qty') or '/'
+        return super(received_remaining_qty, self).create(vals)
+        
     @api.multi
     def prepare_picking(self,line):
         
@@ -55,7 +62,7 @@ class received_remaining_qty(models.Model):
                                                               ('default_location_src_id', '=', loc_id.id)])
         picking_vals = {
                         'date': self.delivery_date,
-                        'origin': self.number,
+                        'origin': self.name,
                         'move_type': 'direct',
                         'invoce_state': 'none',
                         'company': comp.id,
@@ -76,7 +83,7 @@ class received_remaining_qty(models.Model):
                 'state': 'draft',
                 'picking_type_id': picking_type and picking_type.id or False,
                 'procurement_id': False,
-                'origin': self.number,
+                'origin': self.name,
                 'product_uom': line_id.product_id.uom_id.id,
                 'warehouse_id': picking_type and picking_type.warehouse_id.id,
                 'invoice_state': 'none',
