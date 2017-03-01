@@ -16,6 +16,7 @@
 				<field name="amt_ut" />
 				<field name="tax" invisible="1"/>
 				<field name="amt_tot"/>
+				<field name="date" invisible="1"/>
 			</tree>
 		</field>
 	</record>

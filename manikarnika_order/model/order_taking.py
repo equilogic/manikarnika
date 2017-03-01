@@ -237,6 +237,7 @@ class gorder_tacking_line(models.Model):
     
     @api.onchange('order_qty')
     def onchange_order_qty(self):
+        self.default_order_qty=1
         if self.order_qty:
             if self.order_qty > self.qty_aval:
                 raise ValidationError('''You can not take "Order qty" more than 

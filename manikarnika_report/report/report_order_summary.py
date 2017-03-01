@@ -22,6 +22,8 @@
 
 from openerp import fields, models, api
 from openerp.tools.sql import drop_view_if_exists
+from openerp import tools
+
 
 class report_order_summary(models.Model):
     _name = "report.order.summary"
@@ -36,5 +38,31 @@ class report_order_summary(models.Model):
     amt_ut = fields.Float('Amt wo tax', readonly=True)
     tax = fields.Float('Tax', readonly=True, invisible="1")
     amt_tot = fields.Float('Total Amount', readonly=True, invisible="1")
+    date = fields.Date('Date')
+   
+    def init(self, cr):
+        tools.drop_view_if_exists(cr,'report_order_summary')
+        cr.execute("""
+            create or replace view report_order_summary as (
+           SELECT
+                ROW_NUMBER()OVER(order by RP.name) as id,
+                RP.name as shop_name,  
+                SOL.name as product_name, 
+                SOL.product_uom_qty as qty ,
+                PU.name as uom,  
+                SOL.price_unit as unit_price ,
+                SO.date_order as  date, 
+                SO.amount_untaxed as  amt_ut, 
+                SO.amount_tax  as tax ,  
+                SO.amount_total as amt_tot
+                FROM
+                SALE_ORDER SO 
+                INNER JOIN SALE_ORDER_LINE SOL ON SO.id = SOL.order_id
+                INNER JOIN PRODUCT_UOM PU ON PU.id = SOL.product_uom
+                INNER JOIN RES_PARTNER RP ON RP.id = SO.partner_shipping_id
+                
+                ORDER BY RP.name , SOL.name
+        )
+    """)
    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
