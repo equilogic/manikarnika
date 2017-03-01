@@ -45,9 +45,9 @@ class order_tackinig(models.Model):
             MK_products = self.env['product.product'].search([('company_id', 'in', res_comp_ids.ids)], order="name asc")
             if MK_products:
                 for MK_prod in MK_products:
-                    total_qty[MK_prod.name] = 0
-                    default_product_list.append({'product_id': MK_prod.id,'product_nm': MK_prod.name,'order_qty': 0.0,'default_qty': MK_prod.default_qty})
-                    manik_product_lst.append({'product_nm': MK_prod.name, 'product_id': MK_prod.id,
+                    total_qty[str(MK_prod.name) + '____' + str(MK_prod.id)] = 0
+                    default_product_list.append({'product_id': MK_prod.id,'product_nm': str(MK_prod.name) + '____' + str(MK_prod.id),'order_qty': 0.0,'default_qty': MK_prod.default_qty})
+                    manik_product_lst.append({'product_nm': str(MK_prod.name) + '____' + str(MK_prod.id), 'product_id': MK_prod.id,
                                             'default_qty': MK_prod.default_qty, 'order_qty': 0.0, 'gr_qty': 0.0})
         if order_ids:
             partner_order_ids = []
@@ -59,17 +59,17 @@ class order_tackinig(models.Model):
                 product_val_lst = []
                 for g_line in order_id.gorder_tacking_line_ids:
                     if g_line.product_id.id and order_id.partner_id:
-                        if total_qty.has_key(g_line.product_id.name):
-                             total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
+                        if total_qty.has_key(str(g_line.product_id.name) + '____' + str(g_line.product_id.id)):
+                             total_qty[str(g_line.product_id.name) + '____' + str(g_line.product_id.id)] = total_qty[str(g_line.product_id.name) + '____' + str(g_line.product_id.id)] + g_line.order_qty 
                         else:
-                            total_qty[g_line.product_id.name] = g_line.order_qty 
+                            total_qty[str(g_line.product_id.name) + '____' + str(g_line.product_id.id)] = g_line.order_qty 
                     if order_id.partner_id:
                         gr_qty = gr_qty + g_line.order_qty
                         product_val_lst.append(g_line.product_id.id)
                         qr_val_list.append({
                                                 'product_id': g_line.product_id and g_line.product_id.id or False,
                                                 'product_nm': g_line.product_id and 
-                                                                g_line.product_id.name or False,
+                                                                str(g_line.product_id.name) + '____' + str(g_line.product_id.id) or False,
                                                 'order_qty': g_line.order_qty or 0.0,
                                                 'default_qty': g_line.default_order_qty or 0.0,
                                         })
@@ -81,16 +81,16 @@ class order_tackinig(models.Model):
 #                if not qr_val_list :
 #                    qr_val_list = order_dict[order_id.partner_id.name][0]['product_lst']
                 val_list = {'customer_id':order_id.partner_id.id,'gr_qty': gr_qty, 'product_lst': qr_val_list, 'product_name': 'zzzzzzzzzzzzzz'}
-                order_dict[order_id.partner_id.name] =   [val_list] 
+                order_dict[ str(order_id.partner_id.name) + '____' + str(order_id.partner_id.id)] =   [val_list] 
             for i in partner_ids:
                 if i.id not in partner_order_ids:
-                    order_dict[i.name] = [{'customer_id': i.id,'gr_qty': 0.0,
+                    order_dict[ str(i.name) + '____' + str(i.id)] = [{'customer_id': i.id,'gr_qty': 0.0,
                                        'product_lst': default_product_list,
-                                       'product_name': 'zzzzzzzzzzzzzz'}]                           
+                                       'product_name': 'zzzzzzzzzzzzzz'}]
             order_list.append(order_dict)
         else:
             for i in partner_ids:
-                order_dict[i.name] = [{'customer_id': i.id,'manik_qty': 0.0,
+                order_dict[ str(i.name) + '____' + str(i.id)] = [{'customer_id': i.id,'manik_qty': 0.0,
                                        'product_lst': default_product_list,
                                        'product_name': 'zzzzzzzzzzzzzz'}]
             order_list.append(order_dict)
@@ -119,9 +119,9 @@ class order_tackinig(models.Model):
             MK_products = self.env['product.product'].search([('company_id', 'in', res_comp_ids.ids)], order="name asc")
             if MK_products:
                 for MK_prod in MK_products:
-                    total_qty[MK_prod.name] = 0
-                    default_product_list.append({'product_id': MK_prod.id,'product_nm': MK_prod.name,'order_qty': 0.0,'default_qty': MK_prod.default_qty})
-                    manik_product_lst.append({'product_nm': MK_prod.name, 'product_id': MK_prod.id,
+                    total_qty[str(MK_prod.name) + '____' + str(MK_prod.id) ] = 0
+                    default_product_list.append({'product_id': MK_prod.id,'product_nm': str(MK_prod.name) + '____' + str(MK_prod.id),'order_qty': 0.0,'default_qty': MK_prod.default_qty})
+                    manik_product_lst.append({'product_nm': str(MK_prod.name) + '____' + str(MK_prod.id), 'product_id': MK_prod.id,
                                             'default_qty': MK_prod.default_qty, 'order_qty': 0.0, 'manik_qty': 0.0})
         if order_ids:
             partner_order_ids = []
@@ -133,35 +133,35 @@ class order_tackinig(models.Model):
                 product_val_lst = []
                 for g_line in order_id.morder_tacking_line_ids:
                     if g_line.product_id.id and order_id.partner_id:
-                        if total_qty.has_key(g_line.product_id.name):
-                             total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
+                        if total_qty.has_key(str(g_line.product_id.name) + '____' + str(g_line.product_id.id)):
+                             total_qty[str(g_line.product_id.name) + '____' + str(g_line.product_id.id)] = total_qty[str(g_line.product_id.name) + '____' +  str(g_line.product_id.id)] + g_line.order_qty 
                         else:
-                            total_qty[g_line.product_id.name] = g_line.order_qty 
+                            total_qty[str(g_line.product_id.name) + '____' + str(g_line.product_id.id)  ] = g_line.order_qty 
                     if order_id.partner_id:
                         manikar_qty = manikar_qty + g_line.order_qty
                         product_val_lst.append(g_line.product_id.id)
                         manikar_val_list.append({
                                                 'product_id': g_line.product_id and g_line.product_id.id or False,
                                                 'product_nm': g_line.product_id and 
-                                                                g_line.product_id.name or False,
+                                                                str(g_line.product_id.name) + '____' + str(g_line.product_id.id) or False,
                                                 'order_qty': g_line.order_qty or 0.0,
                                                 'default_qty': g_line.default_order_qty or 0.0,})
                 for lst in default_product_list:
                     if lst.get('product_id') not in product_val_lst:
                         manikar_val_list.append(lst)
                 val_list = {'customer_id':order_id.partner_id.id,'manik_qty': manikar_qty, 'product_lst':manikar_val_list, 'product_name': 'zzzzzzzzzzzzzz'}
-                order_dict[order_id.partner_id.name] =   [val_list]
+                order_dict[str(order_id.partner_id.name) + '____' + str(order_id.partner_id.id)] =   [val_list]
             for i in partner_ids:
                 if i.id not in partner_order_ids:
-                    order_dict[i.name] = [{'customer_id': i.id,'manik_qty': 0.0,
+                    order_dict[str(i.name) + '____' + str(i.id)] = [{'customer_id': i.id,'manik_qty': 0.0,
                                        'product_lst': default_product_list,
-                                       'product_name': 'zzzzzzzzzzzzzz'}]          
+                                       'product_name': 'zzzzzzzzzzzzzz'}]
             order_list.append(order_dict)
         else:
             for i in partner_ids:
-                order_dict[i.name] = [{'customer_id': i.id,'manik_qty': 0.0,
+                order_dict[str(i.name) + '____' + str(i.id)] = [{'customer_id': i.id,'manik_qty': 0.0,
                                        'product_lst': default_product_list,
-                                       'product_name': 'zzzzzzzzzzzzzz'}]     
+                                       'product_name': 'zzzzzzzzzzzzzz'}]
             order_list.append(order_dict)      
         order_list_new = []
         for ord_list in order_list:
@@ -190,21 +190,21 @@ class order_tackinig(models.Model):
             all_products = self.env['product.product'].search([('company_id', 'in', res_comp_ids.ids)], order="name asc")
             if all_products:
                 for GR_prod in all_products:
-                    total_qty[GR_prod.name] = 0
-                    product_dict[GR_prod.name] = GR_prod.default_qty
+                    total_qty[GR_prod.name + '____' + str(GR_prod.id)] = 0
+                    product_dict[GR_prod.name + '____' + str(GR_prod.id)] = GR_prod.default_qty
                     for i in partner_ids:
-                        if i.name in order_dict:
-                            order_dict[i.name].append({'custome_nm': i.name,
+                        if (i.name + '____'+ str(i.id)) in order_dict:
+                            order_dict[i.name + '____' + str(i.id)].append({'custome_nm': i.name,
                                                                     'id': False,
                                                                     'product_id': GR_prod.id,
-                                                                    'product_name': GR_prod.name or False,
+                                                                    'product_name': GR_prod.name +'____' +str(GR_prod.id) or False,
                                                                     'qty': 0.0,
                                                                     })                         
                         else:
-                            order_dict[i.name] = [{'custome_nm': i.name,
+                            order_dict[i.name + '____' + str(i.id)] = [{'custome_nm': i.name,
                                                                     'id': False,
                                                                     'product_id': GR_prod.id,
-                                                                    'product_name': GR_prod.name or False,
+                                                                    'product_name': GR_prod.name + '____' + str(GR_prod.id) or False,
                                                                     'qty': 0.0,
                                                                     }]    
         if order_ids: 
@@ -215,46 +215,46 @@ class order_tackinig(models.Model):
                     order_partner_ids.append(order_id.partner_id.id)
                 for g_line in order_id.gorder_tacking_line_ids:
                     if g_line.product_id.id and order_id.partner_id:
-                        if total_qty.has_key(g_line.product_id.name):
-                            total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
+                        if total_qty.has_key(g_line.product_id.name + '____' + str(g_line.product_id.id)):
+                            total_qty[g_line.product_id.name + '____' + str(g_line.product_id.id)] = total_qty[g_line.product_id.name + '____'+ str(g_line.product_id.id)] + g_line.order_qty 
                         else:
-                            total_qty[g_line.product_id.name] = g_line.order_qty 
+                            total_qty[g_line.product_id.name + '____' + str(g_line.product_id.id)] = g_line.order_qty 
                     
                     if g_line.product_id.id:
-                        product_dict[g_line.product_id.name] = g_line.default_order_qty
+                        product_dict[g_line.product_id.name + '____' + str(g_line.product_id.id)] = g_line.default_order_qty
                     if order_id.partner_id:
                         grain_qty = grain_qty + g_line.order_qty
                         temp_dict = {'custome_nm': order_id.partner_id.name,
                                                                     'id': False,
                                                                     'product_id': g_line.product_id and g_line.product_id.id or False,
                                                                     'product_name': g_line.product_id and 
-                                                                                    g_line.product_id.name or False,
+                                                                                    g_line.product_id.name + '____' + str(g_line.product_id.id) or False,
                                                                     'qty':  0.0,
-                                                                    }                        
+                                                                    }
                         grain_val_list.append({'custome_nm': order_id.partner_id.name,
                                                                     'id': g_line.id,
                                                                     'product_id': g_line.product_id and g_line.product_id.id or False,
                                                                     'product_name': g_line.product_id and 
-                                                                                    g_line.product_id.name or False,
+                                                                                    g_line.product_id.name + '____' + str(g_line.product_id.id)  or False,
                                                                     'qty': g_line.order_qty or 0.0,
                                                                     })
-                    if temp_dict in order_dict[order_id.partner_id.name]:
-                        order_dict[order_id.partner_id.name].insert(order_dict[order_id.partner_id.name].index(temp_dict), {'custome_nm': order_id.partner_id.name,
+                    if temp_dict in order_dict[order_id.partner_id.name + '____' + str(order_id.partner_id.id)]:
+                        order_dict[order_id.partner_id.name + '____' + str(order_id.partner_id.id)].insert(order_dict[order_id.partner_id.name + '____' + str(order_id.partner_id.id)].index(temp_dict), {'custome_nm': order_id.partner_id.name,
                                                                     'id': g_line.id,
                                                                     'product_id': g_line.product_id and g_line.product_id.id or False,
                                                                     'product_name': g_line.product_id and 
-                                                                                    g_line.product_id.name or False,
+                                                                                    g_line.product_id.name + '____' + str( g_line.product_id.name) or False,
                                                                     'qty': g_line.order_qty,
                                                                     })
-                        order_dict[order_id.partner_id.name].pop( order_dict[order_id.partner_id.name].index(temp_dict))
+                        order_dict[order_id.partner_id.name + '____' + str(order_id.partner_id.id)].pop( order_dict[order_id.partner_id.name + '____' + str(order_id.partner_id.id)].index(temp_dict))
                 val_list = {'customer_id':order_id.partner_id.id,'grain_qty': grain_qty, 'driver_list': [], 
                             'driver_id': order_id.driver_id.id, 'order_id': order_id.id, 'product_name': 'zzzzzzzzzzzzzz'}
-                order_dict[order_id.partner_id.name].append(val_list)          
+                order_dict[order_id.partner_id.name + '____' + str(order_id.partner_id.id)].append(val_list)          
         for i in partner_ids:
             if i.id not in order_partner_ids:
                  val_list = {'customer_id':i.id,'grain_qty': 0, 'driver_list': [], 
                             'driver_id': False, 'order_id': False, 'product_name': 'zzzzzzzzzzzzzz'}
-                 order_dict[i.name].append(val_list)      
+                 order_dict[i.name + '____' + str(i.id)].append(val_list)      
         order_list.append(order_dict)
         order_list_new = []
         for ord_list in order_list:
@@ -281,21 +281,21 @@ class order_tackinig(models.Model):
             all_products = self.env['product.product'].search([('company_id', 'in', res_comp_ids.ids)], order="name asc")
             if all_products:
                 for MK_prod in all_products:
-                    total_qty[MK_prod.name] = 0
-                    product_dict[MK_prod.name] = MK_prod.default_qty 
+                    total_qty[MK_prod.name + "____" + str(MK_prod.id)] = 0
+                    product_dict[MK_prod.name + "____" + str(MK_prod.id)] = MK_prod.default_qty 
                     for i in partner_ids:
-                        if i.name in order_dict:
-                            order_dict[i.name].append({'custome_nm': i.name,
+                        if (i.name + '____' + str(i.id)) in order_dict:
+                            order_dict[i.name + '____' + str(i.id)].append({'custome_nm': i.name,
                                                                     'id': False,
                                                                     'product_id': MK_prod.id,
-                                                                    'product_name': MK_prod.name or False,
+                                                                    'product_name': MK_prod.name + "____" + str(MK_prod.id)or False,
                                                                     'qty': 0.0,
-                                                                    })                         
+                                                                    })
                         else:
-                            order_dict[i.name] = [{'custome_nm': i.name,
+                            order_dict[i.name +'____' + str(i.id)] = [{'custome_nm': i.name,
                                                                     'id': False,
                                                                     'product_id': MK_prod.id,
-                                                                    'product_name': MK_prod.name or False,
+                                                                    'product_name': MK_prod.name + "____" + str(MK_prod.id) or False,
                                                                     'qty': 0.0,
                                                                     }]   
         if order_ids: 
@@ -306,46 +306,46 @@ class order_tackinig(models.Model):
                     order_partner_ids.append(order_id.partner_id.id)
                 for g_line in order_id.morder_tacking_line_ids:
                     if g_line.product_id.id and order_id.partner_id:
-                        if total_qty.has_key(g_line.product_id.name):
-                            total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
+                        if total_qty.has_key(g_line.product_id.name + "____" + str(g_line.product_id.id)):
+                            total_qty[g_line.product_id.name + "____" + str(g_line.product_id.id)] = total_qty[g_line.product_id.name + "____" + str(g_line.product_id.id)] + g_line.order_qty 
                         else:
-                            total_qty[g_line.product_id.name] = g_line.order_qty 
+                            total_qty[g_line.product_id.name + "____" + str(g_line.product_id.id)] = g_line.order_qty 
                     
                     if g_line.product_id.id:
-                        product_dict[g_line.product_id.name] = g_line.default_order_qty
+                        product_dict[g_line.product_id.name + "____" + str(g_line.product_id.id)] = g_line.default_order_qty
                     if order_id.partner_id:
                         grain_qty = grain_qty + g_line.order_qty
                         temp_dict = {'custome_nm': order_id.partner_id.name,
                                                                     'id': False,
                                                                     'product_id': g_line.product_id and g_line.product_id.id or False,
                                                                     'product_name': g_line.product_id and 
-                                                                                    g_line.product_id.name or False,
+                                                                                    g_line.product_id.name + "____" + str(g_line.product_id.id) or False,
                                                                     'qty':  0.0,
                                                                     }
                         grain_val_list.append({'custome_nm': order_id.partner_id.name,
                                                                     'id': g_line.id,
                                                                     'product_id': g_line.product_id and g_line.product_id.id or False,
                                                                     'product_name': g_line.product_id and 
-                                                                                    g_line.product_id.name or False,
+                                                                                    g_line.product_id.name + "____" + str(g_line.product_id.id) or False,
                                                                     'qty': g_line.order_qty,
                                                                     })
-                    if temp_dict in order_dict[order_id.partner_id.name]:
-                        order_dict[order_id.partner_id.name].insert(order_dict[order_id.partner_id.name].index(temp_dict), {'custome_nm': order_id.partner_id.name,
+                    if temp_dict in order_dict[order_id.partner_id.name + '____' + str(order_id.partner_id.id)]:
+                        order_dict[order_id.partner_id.name + '____' + str(order_id.partner_id.id)].insert(order_dict[order_id.partner_id.name + '____' + str(order_id.partner_id.id)].index(temp_dict), {'custome_nm': order_id.partner_id.name,
                                                                     'id': g_line.id,
                                                                     'product_id': g_line.product_id and g_line.product_id.id or False,
                                                                     'product_name': g_line.product_id and 
-                                                                                    g_line.product_id.name or False,
+                                                                                    g_line.product_id.name + "____" + str(g_line.product_id.id) or False,
                                                                     'qty': g_line.order_qty,
                                                                     })
-                        order_dict[order_id.partner_id.name].pop( order_dict[order_id.partner_id.name].index(temp_dict))
+                        order_dict[order_id.partner_id.name + '____'+str(order_id.partner_id.id)].pop( order_dict[order_id.partner_id.name + '____'+str(order_id.partner_id.id)].index(temp_dict))
                 val_list = {'customer_id':order_id.partner_id.id,'manik_qty': grain_qty, 'driver_list': [], 
                             'driver_id': order_id.driver_id.id, 'order_id': order_id.id, 'product_name': 'zzzzzzzzzzzzzz'}
-                order_dict[order_id.partner_id.name].append(val_list)          
+                order_dict[order_id.partner_id.name + '____' + str(order_id.partner_id.id)].append(val_list)          
         for i in partner_ids:
             if i.id not in order_partner_ids:
                  val_list = {'customer_id':i.id,'manik_qty': 0, 'driver_list': [], 
                             'driver_id': False, 'order_id': False, 'product_name': 'zzzzzzzzzzzzzz'}
-                 order_dict[i.name].append(val_list)      
+                 order_dict[i.name + '____' + str(i.id)].append(val_list)      
         order_list.append(order_dict)
         order_list_new = []
         
@@ -529,16 +529,17 @@ class vehicle_allocation(models.Model):
             if all_products:
                 for all_prod in all_products: 
                     va_driver_list_1 = []
-                    vehicle_pro_id_dic[all_prod.name] = 0.0
+                    vehicle_pro_id_dic[all_prod.name + '____' + str(all_prod.id)] = 0.0
                     for fleet_vehicle in fleet_vehicle_ids :
-                        va_driver_list_1.append({'driver_nm': fleet_vehicle.driver_id.name, 'driver_id': fleet_vehicle.driver_id.id, 'vehicle_nm': fleet_vehicle.name,
-                                         'vehicle_id': fleet_vehicle.id, 'order_qty': 0.0 ,'total_qty': 0.0})                        
-                    vehicle_dri_pro_dict[all_prod.name] = [{'product_id': all_prod.id, 
-                                                                             'sr_n': 0,
-                                                                         'driver_lst': va_driver_list_1}]           
-            for fleet_vehicle in fleet_vehicle_ids : 
-                va_driver_list.append({'driver_nm': fleet_vehicle.driver_id.name, 'driver_id': fleet_vehicle.driver_id.id, 'vehicle_nm': fleet_vehicle.name,
+                        va_driver_list_1.append({'driver_nm': fleet_vehicle.driver_id.name + '____' + str(fleet_vehicle.driver_id.id), 'driver_id': fleet_vehicle.driver_id.id, 'vehicle_nm': fleet_vehicle.name + '____'+str(fleet_vehicle.id),
                                          'vehicle_id': fleet_vehicle.id, 'order_qty': 0.0 ,'total_qty': 0.0})
+                    vehicle_dri_pro_dict[all_prod.name + '____' + str(all_prod.id)] = [{'product_id': all_prod.id, 
+                                                                             'sr_n': 0,
+                                                                         'driver_lst': va_driver_list_1}]
+            for fleet_vehicle in fleet_vehicle_ids : 
+                va_driver_list.append({'driver_nm': fleet_vehicle.driver_id.name + '____' + str(fleet_vehicle.driver_id.id), 'driver_id': fleet_vehicle.driver_id.id, 'vehicle_nm': fleet_vehicle.name + '____' + str(fleet_vehicle.id),
+                                         'vehicle_id': fleet_vehicle.id, 'order_qty': 0.0 ,'total_qty': 0.0})
+                vehicle_driver_id_dic[fleet_vehicle.driver_id.name + '____' + str(fleet_vehicle.driver_id.id)] = 0
         vehical_all_data = self.env['vehicle.allocation'].search([('driver_id', 'in', partner_ids.ids), ('order_date', '=' , curr_date)])
         if vehical_all_data:
             for veh_data in vehical_all_data:
@@ -546,19 +547,19 @@ class vehicle_allocation(models.Model):
                 for line_data in veh_data.vehicle_allocation_line_ids:
                     if veh_data.driver_id:
                         va_qty = line_data.order_qty
-                        if veh_data.driver_id.name in vehicle_driver_id_dic:
-                            total = (vehicle_driver_id_dic[veh_data.driver_id.name] + va_qty)
-                            vehicle_driver_id_dic[veh_data.driver_id.name] = total
-                        else:
-                            vehicle_driver_id_dic[veh_data.driver_id.name] = va_qty
-                        if line_data.product_id.name in vehicle_pro_id_dic:
-                            total = (vehicle_pro_id_dic[line_data.product_id.name] + va_qty)
-                            vehicle_pro_id_dic[line_data.product_id.name] =  total
+                        if (veh_data.driver_id.name + '____' + str(veh_data.driver_id.id)) in vehicle_driver_id_dic:
+                            total = (vehicle_driver_id_dic[veh_data.driver_id.name + '____' + str(veh_data.driver_id.id)] + va_qty)
+                            vehicle_driver_id_dic[veh_data.driver_id.name + '____' + str(veh_data.driver_id.id)] = total
+#                        else:
+#                            vehicle_driver_id_dic[veh_data.driver_id.name] = va_qty
+                        if (line_data.product_id.name + '____' + str(line_data.product_id.id)) in vehicle_pro_id_dic:
+                            total = (vehicle_pro_id_dic[line_data.product_id.name + '____' + str(line_data.product_id.id)] + va_qty)
+                            vehicle_pro_id_dic[line_data.product_id.name + '____' + str(line_data.product_id.id)] =  total
                         driver_lst_dict = {'driver_id': veh_data.driver_id.id,'order_qty': line_data.order_qty,'total_qty':va_qty,
-                                           'driver_nm':veh_data.driver_id.name,'vehicle_id': veh_data.vehicle_id.id,
-                                           'vehicle_nm':veh_data.vehicle_id.name,}
-                        if line_data.product_id.name in vehicle_dri_pro_dict:
-                            data_dict = vehicle_dri_pro_dict[line_data.product_id.name][0].get('driver_lst', False)
+                                           'driver_nm':veh_data.driver_id.name + '____' + str(veh_data.driver_id.id),'vehicle_id': veh_data.vehicle_id.id,
+                                           'vehicle_nm':veh_data.vehicle_id.name + '____'+ str(veh_data.vehicle_id.id),}
+                        if (line_data.product_id.name + '____' + str(line_data.product_id.id)) in vehicle_dri_pro_dict:
+                            data_dict = vehicle_dri_pro_dict[line_data.product_id.name + '____' + str(line_data.product_id.id)][0].get('driver_lst', False)
                             if data_dict:
                                 for data_1 in data_dict:
                                     if veh_data.driver_id.id == data_1.get('driver_id', False):

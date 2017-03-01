@@ -1,6 +1,8 @@
 @charset "UTF-8";
 .scr{
+    position: absolute;
     overflow-x: scroll;
+    border-collapse: separate  !important;
 }
 .pro_qty
 {
@@ -11,7 +13,8 @@
     font-size: 20px;
     margin: 4px 0 0 -12px !important;
     color:white  !important;
-    border-color: #4c4c4c;
+    border-color: #728e8a;
+    border:1px solid #728e8a !important;
 }
 
 .pro_nm
@@ -21,7 +24,7 @@
     width: 100px;
     font-size: 17px;
     color:#55556f;
-    border-color: #4c4c4c;
+    border:1px solid #728e8a !important;
 }
 
 .customer_lst
@@ -31,17 +34,20 @@
     text-align: center;
     font-size: 16px;
     color:#55556f;
+    word-break:break-all;
 }
 
 .item_tot
 {
 	background-color: #167F92 !important;
-	font-size: 16px;
+	font-size: 20px;
 	color:white;
-	border-color: #4c4c4c;
+	border-color: #728e8a;
+	border:1px solid #728e8a!important;
 }
 .right_side{
-    border-color: #4c4c4c;
+	border:1px solid #728e8a!important;
+    border-color: #728e8a !important;
 }
 .right_side
 {
@@ -49,13 +55,13 @@
 }
 .orddate{
 	margin-bottom: 20px;
-	border: 1px solid black !important;
+	border: 1px solid #728e8a !important;
 	/*width: 150px !important;*/
 	height: 40px !important;
 }
 .searchbtn{
 	margin-top: 5px !important;
-	border: 1px solid black !important;
+	border: 1px solid #728e8a !important;
 }
 .input_style{
     text-align: center !important;
@@ -69,7 +75,7 @@
     color: white !important;
     font-weight: bold !important;
     margin: 4px 0 0 -12px !important;
-    border-color: #4c4c4c;
+    border-color: #728e8a;
 }
 .customer_lst h4{
     margin-left:5px;
@@ -84,6 +90,8 @@
 }
 .scr td{
     vertical-align: middle !important;
+    border-color:#728e8a;
+    border:1px solid #728e8a;
 }
 .input_td{
  background: Lavender;
@@ -135,37 +143,48 @@
 .customer_label{
      background: #167F92!important;
     color: white;
-    border-color: #4c4c4c;
+    border-color: #728e8a;
     text-align:center;
      font-size: 25px;
     font-weight: bold;
+    border: 1px solid #728e8a !important;
     
 }
 .total{
     background:#167F92 !important;
     color:white;
-    border-color: #4c4c4c;
+    border-color: #728e8a;
 }
 .right_side_total{
     background:#85bfca !important;
     color:white;
-    order-color: #4c4c4c;
+    border-color: #728e8a;
 }
 .bottom_side_total{
     background:#167F92 !important;
     color:white;
-    border-color: #4c4c4c;
+    border-color: #728e8a;
 }
 
 .table_list{
    position: absolute;
-    height: 88%;
-    overflow: auto;
-    width: 96%;
+   height: 88%;
+   overflow: auto;
+   width: 96%;
 }
 .delivery_table_list{
      position: absolute;
     height: 80%;
     overflow: auto;
     width: 96%;
+}
+.h1{
+	background: #167F92;
+	color: white;
+}
+.total_qty{
+	background:#85bfca !important;
+	color:white;text-align: right;
+	border-color: #728e8a;
+	border: 1px solid #728e8a !important;
 }

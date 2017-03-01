@@ -6,7 +6,7 @@
         <table width="100%">
             <tr>
                 <td>
-                    <h1 style="background: #167F92;color: white;">
+                    <h1 class="h1">
                         <center>
                             <button id="left_panel_toggle">Left Panel Hide/Show</button>
                             Manikarnika Order Interface
@@ -22,10 +22,10 @@
             <td width="2%"></td>
             <td width="96%">
                 <div class="table_list">
-                    <table class="scr" width="100%" border="1">
+                    <table class="scr" width="100%" >
                         <thead>
                             <tr>
-                                <td rowspan="2" class="customer_label">
+                                <td class="customer_label" rowspan="2">
                                     Customers
                                 </td>
                                 <t t-foreach="widget.manik_product_lst" t-as="qty">
@@ -33,24 +33,25 @@
                                         <h4><t t-esc="qty['default_qty']"></t></h4>
                                     </td>
                                 </t>
-                                <td rowspan="2" class="pro_nm total">
-                                    <h3>Shop Total</h3>
-                                </td>
-                                <td rowspan="2" colspan="3" width="2%" style="background:#167F92;"></td>
+                                <td colspan="3" style="background:#167F92;"></td>
                             </tr>
                             <tr>
                                 <t t-foreach="widget.manik_product_lst" t-as="pro">
                                     <td class="pro_nm">
-                                        <h4><t t-esc="pro['product_nm']"></t></h4>
+                                        <h4><t t-esc="pro['product_nm'].split('____')[0]"></t></h4>
                                     </td>
                                 </t>
+                                <td class="pro_nm total">
+                                    <h3>Shop Total</h3>
+                                </td>
+                                <td colspan="2" width="2%" style="background:#167F92;"></td>
                             </tr>
                         </thead>
                         <tbody>
                             <t t-foreach="widget.manik_order_dict" t-as="order">
                                 <tr>
                                     <td class="customer_lst">
-                                        <h4><t t-esc="order"/></h4>
+                                        <h4><t t-esc="order.split('____')[0]"/></h4>
                                     </td>
                                     <t t-foreach="widget.manik_order_dict[order]" t-as="column">
                                         <t t-if="column['product_lst']">
@@ -61,12 +62,12 @@
                                             </t>
                                         </t>
                                         <t t-if="column['manik_qty']">
-                                            <td class="right_side" style="background:#85bfca !important;color:white;border-color: #4c4c4c;">
+                                            <td class="right_side total_qty">
                                                 <h4 class="total_style"><t t-esc="column['manik_qty']"/></h4>
                                             </td>
                                         </t>
                                         <t t-if="!column['manik_qty']">
-                                            <td style="background:#85bfca !important;color:white;text-align: right;border-color: #4c4c4c;"><h4 class="total_style">0</h4></td>
+                                            <td class="total_qty"><h4 class="total_style">0</h4></td>
                                         </t>
                                         <td class="input_td">
                                             <button  id="edit"><i class="fa fa-2x fa-pencil-square-o" aria-hidden="true"></i></button>
@@ -81,7 +82,7 @@
                             </t>
                         </tbody>
                         <tfoot>
-                            <tr style="background:#167F92 !important;color:white;">
+                            <tr style="background:#167F92 !important;" >
                                 <td class="item_tot">
                                     <h4>Item Total</h4>
                                 </td>
@@ -90,6 +91,7 @@
                                         <h4 class="total_style"><t t-esc="widget.item_total[val]"/></h4>
                                     </td>
                                 </t>
+                                <td style="background:#167F92;" colspan="3"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -104,7 +106,7 @@
         <table width="100%">
             <tr>
                 <td>
-                    <h1 style="background: #167F92;color: white;">
+                    <h1 class="h1">
                         <center>
                             <button id="left_panel_toggle">Left Panel Hide/Show</button> 
                             Grains Order Interface
@@ -120,7 +122,7 @@
             <td width="2%"></td>
             <td width="96%">
                 <div class="table_list">
-                    <table border="1" class="scr" width="100%">
+                    <table class="scr" width="100%">
                         <thead>
                             <tr>
                                 <td rowspan="2" class="customer_label">
@@ -131,24 +133,25 @@
                                         <h4><t t-esc="qty['default_qty']"></t></h4>
                                     </td>
                                 </t>
-                                <td rowspan="2" class="pro_nm" style="background:#167F92 !important;color:white !important;border-color: #4c4c4c;">
-                                    <h3>Shop Total</h3>
-                                </td>
-                                <td rowspan="2" colspan="3" width="2%" style="background:#167F92;"></td>
+                                <td colspan="3" style="background:#167F92;"></td>
                             </tr>
                             <tr>
                                 <t t-foreach="widget.gr_product_lst" t-as="pro">
                                     <td class="pro_nm">
-                                        <h4><t t-esc="pro['product_nm']"></t></h4>
+                                        <h4><t t-esc="pro['product_nm'].split('____')[0]"></t></h4>
                                     </td>
                                 </t>
+                                <td rowspan="2" class="pro_nm" style="background:#167F92 !important;color:white !important;border-color: #4c4c4c;">
+                                    <h3>Shop Total</h3>
+                                </td>
+                                <td rowspan="2" colspan="2" width="2%" style="background:#167F92;"></td>
                             </tr>
                         </thead>
                         <tbody>
                             <t t-foreach="widget.gr_order_dict" t-as="order">
                                 <tr>
                                     <td class="customer_lst">
-                                        <h4><t t-esc="order"/></h4>
+                                        <h4><t t-esc="order.split('____')[0]"/></h4>
                                     </td>
                                     <t t-foreach="widget.gr_order_dict[order]" t-as="column">
                                         <t t-if="column['product_lst']">
@@ -159,12 +162,12 @@
                                             </t>
                                         </t>
                                         <t t-if="column['gr_qty']">
-                                            <td class="right_side" style="background:#85bfca !important;color:white;border-color: #4c4c4c;">
+                                            <td class="right_side total_qty">
                                                 <h4 class="total_style"><t t-esc="column['gr_qty']"/></h4>
                                             </td>
                                         </t>
                                         <t t-if="!column['gr_qty']">
-                                            <td style="background:#85bfca !important;color:white;text-align: right;border-color: #4c4c4c;"><h4 class="total_style">0</h4></td>
+                                            <td class="total_qty"><h4 class="total_style">0</h4></td>
                                         </t>
                                         <td class="input_td">
                                             <button  id="edit"><i class="fa fa-2x fa-pencil-square-o" aria-hidden="true"></i></button>
@@ -179,7 +182,7 @@
                             </t>
                         </tbody>
                         <tfoot>
-                            <tr style="background:#167F92 !important;color:white;">
+                            <tr style="background:#167F92 !important;">
                                 <td class="item_tot">
                                     <h4>Item Total</h4>
                                 </td>
@@ -188,6 +191,7 @@
                                         <h4 class="total_style"><t t-esc="widget.gr_item_total[val]"/></h4>
                                     </td>
                                 </t>
+                                <td style="background:#167F92;" colspan="3"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -202,7 +206,7 @@
         <table width="100%">
             <tr>
                 <td colspan="3" >
-                    <h1 style="background: #167F92;color: white;">
+                    <h1 class="h1">
                         <center>
                             <button id="left_panel_toggle">Left Panel Hide/Show</button> 
                             Delivery Schedule Manikarnika 
@@ -227,7 +231,7 @@
             <td width="2%"></td>
             <td width="96%" >
                 <div class="delivery_table_list">
-                    <table class="scr" width="100%" border="1">
+                    <table class="scr" width="100%">
                         <thead>
                             <tr>
                                 <td rowspan="2" class="customer_label">
@@ -238,6 +242,14 @@
                                         <h4><t t-esc="widget.product[val]"/></h4>
                                     </td>
                                 </t>
+                                <td style="background:#167F92;" colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <t t-foreach="widget.product" t-as="prod">
+                                    <td class="pro_nm">
+                                        <h4><t t-esc="prod.split('____')[0]"></t></h4>
+                                    </td>
+                                </t>
                                 <td rowspan="2" class="pro_nm" style="display:none;">
                                     <h3>Driver</h3>
                                 </td>
@@ -246,19 +258,12 @@
                                 </td>
                                 <td rowspan="2" colspan="2" width="1%" style="background:#167F92;"></td>
                             </tr>
-                            <tr>
-                            <t t-foreach="widget.product" t-as="prod">
-                                <td class="pro_nm">
-                                    <h4><t t-esc="prod"></t></h4>
-                                </td>
-                            </t>
-                        </tr>
-                    </thead>
+                        </thead>
                     <tbody>
                         <t t-foreach="widget.orders" t-as="order">
                             <tr>
                                 <td class="customer_lst">
-                                    <h4><t t-esc="order"/></h4>
+                                    <h4><t t-esc="order.split('____')[0]"/></h4>
                                 </td>
                                 <t t-foreach="widget.orders[order]" t-as="column">
                                     <t t-if="((!column['manik_qty']) and (!column['driver_list']))">
@@ -286,9 +291,9 @@
                                             </select>
                                         </td>
                                     </t>
-                                    <t t-if="(column['manik_qty'] == 0)" ><td style="background:#85bfca !important;color:white;text-align: right;border-color: #4c4c4c;"><h4 class="total_style">0</h4></td></t>
+                                    <t t-if="(column['manik_qty'] == 0)" ><td class="total_qty"><h4 class="total_style">0</h4></td></t>
                                     <t t-if="column['manik_qty']">
-                                        <td class="right_side" style="background:#85bfca !important;color:white;border-color: #4c4c4c;">
+                                        <td class="right_side total_qty">
                                             <h4 class="total_style"><t t-esc="column['manik_qty']"/></h4>
                                         </td>
                                     </t>
@@ -303,7 +308,7 @@
                         </t>
                     </tbody>
                     <tfoot>
-                        <tr style="background:#167F92 !important;color:white;order-color: #4c4c4c;">
+                        <tr style="background:#167F92 !important;order-color: #4c4c4c;">
                             <td class="item_tot">
                                 <h4>Item Total</h4>
                             </td>
@@ -312,6 +317,7 @@
                                     <h4 class="total_style"><t t-esc="widget.item_dic[val]"/></h4>
                                 </td>
                             </t>
+                            <td style="background:#167F92;" colspan="3"></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -326,7 +332,7 @@
         <table width="100%">
             <tr>
                 <td colspan="3" >
-                    <h1 style="background: #167F92;color: white;">
+                    <h1 class="h1">
                         <center>
                             <button id="left_panel_toggle">Left Panel Hide/Show</button>
                             Delivery Schedule Grains
@@ -351,7 +357,7 @@
             <td width="2%"></td>
             <td width="96%">
                 <div class="delivery_table_list">
-                    <table class="scr" width="100%" border="1">
+                    <table class="scr" width="100%" >
                         <thead>
                             <tr>
                                 <td rowspan="2" class="customer_label">
@@ -362,6 +368,14 @@
                                         <h4><t t-esc="widget.grain_product[val]"/></h4>
                                     </td>
                                 </t>
+                                <td style="background:#167F92;" colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <t t-foreach="widget.grain_product" t-as="g_prod">
+                                    <td class="pro_nm">
+                                        <h4><t t-esc="g_prod.split('____')[0]"></t></h4>
+                                    </td>
+                                </t>
                                 <td rowspan="2" class="pro_nm" style="display:none;">
                                     <h3>Driver</h3>
                                 </td>
@@ -370,19 +384,12 @@
                                 </td>
                                 <td rowspan="2" colspan="2" width="1%" style="background:#167F92;"></td>
                             </tr>
-                            <tr>
-                                <t t-foreach="widget.grain_product" t-as="g_prod">
-                                    <td class="pro_nm">
-                                        <h4><t t-esc="g_prod"></t></h4>
-                                    </td>
-                                </t>
-                            </tr>
                         </thead>
                     <tbody>
                         <t t-foreach="widget.grain_orders" t-as="g_order">
                             <tr>
                                 <td class="customer_lst">
-                                    <h4><t t-esc="g_order"/></h4>
+                                    <h4><t t-esc="g_order.split('____')[0]"/></h4>
                                 </td>
                                 <t t-foreach="widget.grain_orders[g_order]" t-as="g_column">
                                     <t t-if="((!g_column['grain_qty']) and (!g_column['driver_list']))">
@@ -411,9 +418,9 @@
                                             </select>
                                         </td>
                                     </t>
-                                    <t t-if="(g_column['grain_qty'] == 0)" ><td class="right_side" style="background:#85bfca !important;color:white;border-color: #4c4c4c;"><h4 class="total_style">0</h4></td></t>
+                                    <t t-if="(g_column['grain_qty'] == 0)" ><td class="right_side total_qty"><h4 class="total_style">0</h4></td></t>
                                         <t t-if="g_column['grain_qty']">
-                                            <td class="right_side" style="background:#85bfca !important;color:white;border-color: #4c4c4c;">
+                                            <td class="right_side total_qty">
                                                 <h4 class="total_style"><t t-esc="g_column['grain_qty']"/></h4>
                                         </td>
                                     </t>
@@ -430,7 +437,7 @@
                         </t>
                     </tbody>
                 <tfoot>
-                    <tr style="background:#167F92 !important;color:white;">
+                    <tr style="background:#167F92 !important;">
                         <td class="item_tot">
                             <h4>Item Total</h4>
                         </td>
@@ -439,6 +446,7 @@
                                 <h4 class="total_style"><t t-esc="widget.grain_item_dic[val]"/></h4>
                             </td>
                         </t>
+                        <td style="background:#167F92;" colspan="3"></td>
                    </tr>
                </tfoot>
            </table>
@@ -452,7 +460,7 @@
     <t t-name="VehicleTemp">
         <table width="100%">
             <tr>
-                <td><h1 style="background: #167F92;color: white;"><center><button id="left_panel_toggle">Left Panel Hide/Show</button> Vehicle Allocation </center></h1> </td>
+                <td><h1 class="h1"><center><button id="left_panel_toggle">Left Panel Hide/Show</button> Vehicle Allocation </center></h1> </td>
             </tr>
         </table>
         <table width="100%" id="VehicleTempLine"></table>
@@ -462,33 +470,34 @@
             <td width="2%"></td>
             <td width="96%">
                 <div class="table_list">
-                    <table class="scr" width="100%" border="1">
+                    <table class="scr" width="100%">
                         <thead>
                             <tr>
                                 <th rowspan="2" class="customer_label">Products</th>
                                 <t t-foreach="widget.vehicles" t-as="va">
                                     <th class="pro_qty">
-                                        <h4><t t-esc="va['driver_nm']"></t></h4>
+                                        <h4><t t-esc="va['driver_nm'].split('____')[0]"></t></h4>
                                     </th>
+                                </t>
+                                <td style="background:#167F92;" colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <t t-foreach="widget.vehicles" t-as="va">
+                                    <td class="pro_nm">
+                                        <h4><t t-esc="va['vehicle_nm'].split('____')[0]"></t></h4>
+                                    </td>
                                 </t>
                                 <th class="pro_nm total" rowspan="2">
                                     <h3>Total</h3>
                                 </th>
                                 <td rowspan="2" colspan="2" width="2%" style="background:#167F92;"></td>
                             </tr>
-                            <tr>
-                                <t t-foreach="widget.vehicles" t-as="va">
-                                    <td class="pro_nm">
-                                        <h4><t t-esc="va['vehicle_nm']"></t></h4>
-                                    </td>
-                                </t>
-                            </tr>
                         </thead>
                         <tbody>
                             <t t-foreach="widget.vehicle_products" t-as="v_pro">
                                 <tr>
                                     <td class="customer_lst">
-                                        <h4><t t-esc="v_pro"/></h4>
+                                        <h4><t t-esc="v_pro.split('____')[0]"/></h4>
                                   </td>
                                     <t t-foreach="widget.vehicle_products[v_pro]" t-as="column">
                                         <t t-if="column['driver_lst']">
@@ -531,6 +540,7 @@
                                         </t>
                                     </t>
                                  </t>
+                                 <td style="background:#167F92;" colspan="3"></td>
                             </tr>
                         </tfoot>
                     </table>
