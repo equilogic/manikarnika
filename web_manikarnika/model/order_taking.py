@@ -203,18 +203,10 @@ class order_tackinig(models.Model):
                 
                 for g_line in order_id.morder_tacking_line_ids:
                     if g_line.product_id.id and order_id.partner_id:
-<<<<<<< HEAD
                         if total_qty.has_key(str(g_line.product_id.name) + '____' + str(g_line.product_id.id)):
                              total_qty[str(g_line.product_id.name) + '____' + str(g_line.product_id.id)] = total_qty[str(g_line.product_id.name) + '____' +  str(g_line.product_id.id)] + g_line.order_qty 
                         else:
                             total_qty[str(g_line.product_id.name) + '____' + str(g_line.product_id.id)  ] = g_line.order_qty 
-=======
-                        if tmp_total_qty.has_key(g_line.product_id.id):
-                             total_qty[g_line.product_id.name] = total_qty[g_line.product_id.name] + g_line.order_qty 
-                        else:
-                            total_qty[g_line.product_id.name] = g_line.order_qty 
-                            tmp_total_qty[g_line.product_id.id] = g_line.order_qty 
->>>>>>> b20ecaa7ec3cb3eee3c7ddd8b8b8b385764470c8
                     if order_id.partner_id:
                         manikar_qty = manikar_qty + g_line.order_qty
                         product_val_lst.append(g_line.product_id.id)
@@ -617,11 +609,7 @@ class vehicle_allocation(models.Model):
             for fleet_vehicle in fleet_vehicle_ids : 
                 va_driver_list.append({'driver_nm': fleet_vehicle.driver_id.name + '____' + str(fleet_vehicle.driver_id.id), 'driver_id': fleet_vehicle.driver_id.id, 'vehicle_nm': fleet_vehicle.name + '____' + str(fleet_vehicle.id),
                                          'vehicle_id': fleet_vehicle.id, 'order_qty': 0.0 ,'total_qty': 0.0})
-<<<<<<< HEAD
                 vehicle_driver_id_dic[fleet_vehicle.driver_id.name + '____' + str(fleet_vehicle.driver_id.id)] = 0
-=======
-                vehicle_driver_id_dic[fleet_vehicle.driver_id.name] = 0
->>>>>>> b20ecaa7ec3cb3eee3c7ddd8b8b8b385764470c8
         vehical_all_data = self.env['vehicle.allocation'].search([('driver_id', 'in', partner_ids.ids), ('order_date', '=' , curr_date)])
         if vehical_all_data:
             for veh_data in vehical_all_data:
@@ -629,7 +617,6 @@ class vehicle_allocation(models.Model):
                 for line_data in veh_data.vehicle_allocation_line_ids:
                     if veh_data.driver_id:
                         va_qty = line_data.order_qty
-<<<<<<< HEAD
                         if (veh_data.driver_id.name + '____' + str(veh_data.driver_id.id)) in vehicle_driver_id_dic:
                             total = (vehicle_driver_id_dic[veh_data.driver_id.name + '____' + str(veh_data.driver_id.id)] + va_qty)
                             vehicle_driver_id_dic[veh_data.driver_id.name + '____' + str(veh_data.driver_id.id)] = total
@@ -638,16 +625,6 @@ class vehicle_allocation(models.Model):
                         if (line_data.product_id.name + '____' + str(line_data.product_id.id)) in vehicle_pro_id_dic:
                             total = (vehicle_pro_id_dic[line_data.product_id.name + '____' + str(line_data.product_id.id)] + va_qty)
                             vehicle_pro_id_dic[line_data.product_id.name + '____' + str(line_data.product_id.id)] =  total
-=======
-                        if veh_data.driver_id.name in vehicle_driver_id_dic:
-                            total = (vehicle_driver_id_dic[veh_data.driver_id.name] + va_qty)
-                            vehicle_driver_id_dic[veh_data.driver_id.name] = total
-#                        else:
-#                            vehicle_driver_id_dic[veh_data.driver_id.name] = va_qty
-                        if line_data.product_id.name in vehicle_pro_id_dic:
-                            total = (vehicle_pro_id_dic[line_data.product_id.name] + va_qty)
-                            vehicle_pro_id_dic[line_data.product_id.name] =  total
->>>>>>> b20ecaa7ec3cb3eee3c7ddd8b8b8b385764470c8
                         driver_lst_dict = {'driver_id': veh_data.driver_id.id,'order_qty': line_data.order_qty,'total_qty':va_qty,
                                            'driver_nm':veh_data.driver_id.name + '____' + str(veh_data.driver_id.id),'vehicle_id': veh_data.vehicle_id.id,
                                            'vehicle_nm':veh_data.vehicle_id.name + '____'+ str(veh_data.vehicle_id.id),}
