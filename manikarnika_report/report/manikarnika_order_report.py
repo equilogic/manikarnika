@@ -35,6 +35,7 @@ class manikarnika_order_report(report_sxw.rml_parse):
             'get_aval_qty':self.get_aval_qty,
             'get_default_qty':self.get_default_qty,
             'get_order_qty':self.get_order_qty,
+            'get_total_gr': self.get_total_gr,
         })
 
     def get_aval_qty(self,qty):
@@ -75,6 +76,28 @@ class manikarnika_order_report(report_sxw.rml_parse):
                         })
         return res
             
+    def get_total_gr(self,line):
+        qty_h=0
+        qty_d=0
+        price=0.0
+        qty_o=0
+        res={}
+        if line:
+            for li in line:
+                if li.qty_aval:
+                    qty_h+=li.qty_aval
+                if li.default_order_qty:
+                    qty_d+=li.default_order_qty
+                if li.order_price:
+                    price+=li.order_price
+                if li.order_qty:
+                    qty_o+=li.order_qty
+            res.update({'qty_aval':int(qty_h) or 0,
+                        'default_order_qty':int(qty_d) or 0,
+                        'order_price':price or 0.0,
+                        'order_qty':int(qty_o) or 0,
+                        })
+        return res            
         
     
     

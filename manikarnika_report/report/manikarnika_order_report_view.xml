@@ -221,17 +221,17 @@
                                             <span>Total</span>
                                         </th>
                                         <th width="15%" class="text-left line">
-                                            <span t-esc="get_total(o.morder_tacking_line_ids).get('qty_aval')" />
+                                            <span t-esc="get_total_gr(o.gorder_tacking_line_ids).get('qty_aval')" />
                                         </th>
                                         <th width="20%" class="text-left line">
                                             <span
-                                                t-esc="get_total(o.morder_tacking_line_ids).get('default_order_qty')" />
+                                                t-esc="get_total_gr(o.gorder_tacking_line_ids).get('default_order_qty')" />
                                         </th>
                                         <th width="20%" class="text-left line">
-                                            <span t-esc="get_total(o.morder_tacking_line_ids).get('order_price')" />
+                                            <span t-esc="get_total_gr(o.gorder_tacking_line_ids).get('order_price')" />
                                         </th>
                                         <th width="10%" class="text-left line">
-                                            <span t-esc="get_total(o.morder_tacking_line_ids).get('order_qty')" />
+                                            <span t-esc="get_total_gr(o.gorder_tacking_line_ids).get('order_qty')" />
                                         </th>
                                         <th width="10%" class="text-left line">
                                         </th>
