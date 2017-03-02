@@ -14,7 +14,9 @@
                     </group>
                     <group  col="4" >
                         <field name="driver_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}' domain="[('driver','=',True)]"/>
-                        <field name="vehicle_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}' />
+                        <field name="vehicle_id" 
+                        	options='{"no_open": True,"no_create": 1, "no_create_edit": 1}' 
+                        	domain = "[('driver_id','=',driver_id)]"/>
                     </group>
                     <footer>
                         <button name="print_report" type="object" string="Print Report" class="oe_highlight" />

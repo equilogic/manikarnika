@@ -40,7 +40,7 @@ class daily_collection_report(report_sxw.rml_parse):
         })
 
     def get_driver(self, data):
-        user_obj = self.pool.get('res.users') 
+        user_obj = self.pool.get('res.users')
         driver_id = data['form']['driver_id'] and \
                     data['form']['driver_id'][0]
         driver = user_obj.search(
@@ -66,6 +66,7 @@ class daily_collection_report(report_sxw.rml_parse):
             self.cr, self.uid, inv_ids)
         inv_lst = []
         cnt = 1
+        total_credit = 0.0
         for inv in invoice:
             res = {}
             res.update({
@@ -74,21 +75,14 @@ class daily_collection_report(report_sxw.rml_parse):
                 'credit': inv.amount_total,
                 'total_credit': 0.0
             })
+            total_credit += inv.amount_total
             inv_lst.append(res)
             cnt += 1
+        self.total = total_credit
         return inv_lst
 
-    def get_total(self, driver):
-        user = self.pool.get('res.users').search(
-            self.cr, self.uid, [('partner_id', '=', driver.id)])
-        inv_ids = self.pool.get('account.invoice').search(
-            self.cr, self.uid, [('user_id', '=', user)])
-        invoice = self.pool.get('account.invoice').browse(
-            self.cr, self.uid, inv_ids)
-        ttl_credit = 0.0
-        for inv in invoice:
-            ttl_credit += inv.amount_total
-        return ttl_credit
+    def get_total(self):
+        return self.total
 
     def get_day(self):
 #        date_formatted = ''

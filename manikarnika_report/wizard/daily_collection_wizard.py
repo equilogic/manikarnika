@@ -40,20 +40,6 @@ class daily_collection_wiz(models.TransientModel):
     vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle')
 
     @api.multi
-    @api.onchange('driver_id')
-    def onchange_driver_id(self):
-#        if self.driver_id:
-#            domain = [('driver_id', '=', self.driver_id.id)]
-#            vehicle_id = self.env['fleet.vehicle'].search(domain)
-#            print "\n driver_id ::::::::::", self.driver_id
-#            print "\n vehicle_id ::::::::::", vehicle_id, vehicle_id.ids
-#            self.vehicle_id = vehicle_id.ids
-        if self.driver_id:
-            vehicle_id = self.env['fleet.vehicle'].search(
-                [('driver_id', '=', self.driver_id.id)])
-            self.vehicle_id = vehicle_id.ids
-
-    @api.multi
     def print_report(self):
         if self._context is None:
             self._context = {}
