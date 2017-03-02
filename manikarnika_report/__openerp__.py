@@ -33,10 +33,11 @@
     'data': [
              'wizard/customer_order_summury_view.xml',
              'wizard/vehicle_product_summary_report.xml',
+             'wizard/daily_collection_wizard_view.xml',
              'report/report_order_summary.xml',
              'report/product_summary_report.xml',
              'report/manikarnika_order_report_view.xml',
-             'report/vehicle_allocation_report_view.xml',
+             'report/daily_collection_report_view.xml',
              'report/report_outstanding_balance_sheet.xml',
              'wizard/report_obs_wizard.xml',
              'report/report_view.xml',

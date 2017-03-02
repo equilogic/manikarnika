@@ -169,7 +169,7 @@ class order_tackinig(models.Model):
 class morder_tacking_line(models.Model):
     _name = 'morder.tacking.line'
     _rec_name = 'product_id'
-    
+
     order_tacking_id = fields.Many2one('order.tacking', string='Order Tacking')
     product_id = fields.Many2one('product.product','Product')
     qty_aval = fields.Integer('Qty On Hand')

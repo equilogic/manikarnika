@@ -23,7 +23,7 @@
 import report_order_summary
 import product_summary_report
 import manikarnika_order_report
-import vehicle_allocation_report
+import daily_collection_report
 import report_outstanding_balance_sheet
 
 
