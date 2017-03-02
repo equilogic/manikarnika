@@ -24,7 +24,7 @@ from openerp import models, fields, api
 from openerp.exceptions import Warning, ValidationError
 
 
-class order_tackinig(models.Model):
+class order_tacking(models.Model):
     _name = 'order.tacking'
 
     name = fields.Char('Order Number', size=64, readonly=True,

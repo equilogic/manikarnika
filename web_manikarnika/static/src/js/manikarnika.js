@@ -516,8 +516,8 @@ openerp.web_manikarnika = function(instance) {
             self.ord_dataset.write(id, {'driver_id': dri_id});
         },
         grain_button_click: function(ev) {
-            if($("#orderdate").val()){
-                this.start($("#orderdate").val());
+            if($("#datepicker").val()){
+                this.start($("#datepicker").val());
             }
             else{
                 alert("Please select the order date!");

@@ -340,7 +340,7 @@ class order_tackinig(models.Model):
     @api.multi
     def get_morder_tacking_line(self, curr_date):
         partner_ids = self.env['res.partner'].search([('customer', '=', True)])
-        order_ids = self.search([('order_date', '=' , curr_date), ('state', 'in', ('draft','confirm'))])
+        order_ids = self.search([('order_date', '=' , curr_date)])
         order_list = []
         order_dict = {}
         product_dict ={}

@@ -80,6 +80,7 @@
                     <field name="name"/>
                     <field name="partner_id" />
                     <field name="order_date" />
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -92,10 +93,12 @@
                 <search>
                     <field name="partner_id"/>
                     <field name="order_date"/>
+                    <field name="state" />
                     <filter string="Today Order" name="today_order" domain="[('order_date','=', datetime.datetime.now())]"/>
                     <group expand="0" string="Group By">
                         <filter string="Customer" context="{'group_by':'partner_id'}"/>
                         <filter string="Order Date" context="{'group_by':'order_date'}"/>
+                        <filter string="Status" context="{'group_by':'state'}"/>
                     </group>
                 </search>
             </field>
@@ -233,10 +236,12 @@
                     <field name="driver_id"/>
                     <field name="vehicle_id"/>
                     <field name="order_date"/>
+                    <field name="state" />
                     <filter string="Today Allocation" name="today_allocation" domain="[('order_date','=', datetime.datetime.now())]"/>
                     <group expand="0" string="Group By">
                         <filter string="Customer" context="{'group_by':'driver_id'}"/>
                         <filter string="Order Date" context="{'group_by':'order_date'}"/>
+                        <filter string="Status" context="{'group_by':'order_date'}"/>
                     </group>
                 </search>
             </field>
