@@ -9,14 +9,15 @@
 			name="manikarnika_report.manikarnika_order_report_main_template"
 			file="manikarnika_report.manikarnika_order_report_main_template" />
 		
-		<!--  Vehicle Allocation Qweb Report -->
+		<!--  Daily Collection Qweb Report -->
 		<report 
-			id="vehicle_allocation_report_new" 
-			model="vehicle.allocation" 
-			string="Vehicle Allocation Report"
+			id="daily_collection_report" 
+			model="account.invoice" 
+			string="Daily Collection Report"
 			report_type="qweb-pdf" 
-			name="manikarnika_report.vehicle_allocation_report_main_template"
-			file="manikarnika_report.vehicle_allocation_report_main_template" />
+			menu="False"
+			name="manikarnika_report.daily_collection_report_main_template"
+			file="manikarnika_report.daily_collection_report_main_template" />
 			
 		<record id="paperformat_euro_low_margin_manikarnika_order" model="report.paperformat">
 			<field name="name">European A4 low margin Manikarnika Order</field>
@@ -32,7 +33,7 @@
 			<field name="dpi">100</field>
 			<field name="report_ids"
 				eval="[(4, ref('manikarnika_report.morder_tacking_report')),
-					   (4, ref('manikarnika_report.vehicle_allocation_report_new'))
+					   (4, ref('manikarnika_report.daily_collection_report'))
 						]" /> 	
 		</record>
 		

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<!-- Template for Headre and Footer -->
+		<template id="external_layout_vehicle_allocation_report">
+			<!-- Multicompany -->
+			<t t-if="o and 'company_id' in o">
+				<t t-set="company" t-value="o.company_id"></t>
+			</t>
+			<t t-if="not o or not 'company_id' in o">
+				<t t-set="company" t-value="res_company"></t>
+			</t>
+
+			<t
+				t-call="manikarnika_report.external_layout_header_vehicle_allocation_report" />
+			<t t-raw="0" />
+			<t
+				t-call="manikarnika_report.external_layout_footer_vehicle_allocation_report" />
+		</template>
+
+		<!-- Report Header -->
+		<template id="external_layout_header_vehicle_allocation_report">
+			<div class="header">
+				<div class="col-xs-3">
+					<span t-if="get_company() and get_company().logo">
+						<img t-att-src="'data:image/png;base64,%s' % get_company().logo"
+							style="max-height: 65px;" />
+					</span>
+				</div>
+				<div class="col-xs-8 col-xs-offset-1 text-right">
+					<div t-if="get_company()" style="font-size:12px">
+						<div>
+							<h5>
+								<b>
+									<span t-field="get_company().name"></span>
+								</b>
+							</h5>
+						</div>
+						<div>
+							<t t-if="get_company().street">
+								<span t-field="get_company().street" />
+								,
+							</t>
+							<t t-if="get_company().city">
+								<span t-field="get_company().city" />
+								,
+							</t>
+							<span t-field="get_company().country_id" />
+							<span t-field="get_company().zip" />
+						</div>
+						<div>
+							<span>Tel :</span>
+							<span t-field="get_company().phone" />
+
+							<span> Fax :</span>
+							<span t-field="get_company().fax" />
+						</div>
+						<div>
+							<span>CO. REG. NO. </span>
+							<span t-field="get_company().company_registry" />
+						</div>
+						<div>
+							<span class="text-right">GST REG NO. </span>
+							<t t-if="get_company().gst_no">
+								<span t-field="get_company().gst_no" />
+							</t>
+						</div>
+					</div>
+				</div>
+			</div>
+		</template>
+		<template id="external_layout_footer_vehicle_allocation_report">
+			<div class="footer">
+				<table>
+					<tr style="border-top:1px solid black">
+						<td width="50%">
+						</td>
+						<td width="50%">
+						</td>
+					</tr>
+					<tr>
+						<td width="100%" class="text-right">
+							<ul class="list-inline">
+								<li></li>
+								<li>
+									<span class="page" />
+								</li>
+								<li>of</li>
+								<li>
+									<span class="topage" />
+								</li>
+							</ul>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</template>
+
+		<!-- Reports Template -->
+		<template id="daily_collection_report_main_template">
+			<style type="text/css">
+				td.line , span.line ,th.line {
+				font-family:Helvetica;
+				font-size:12px;
+				}
+
+			</style>
+			<t t-call="report.html_container">
+				<t t-call="manikarnika_report.external_layout_vehicle_allocation_report">
+					<div class="page" style="font-family:Helvetica;font-size:12px">
+						<div class="oe_structure" />
+						<div class="text-center">
+							<h3>
+								<b>Daily Collection Report</b>
+							</h3>
+						</div>
+						<div>
+							<table width="100%">
+								<tr>
+									<td width="70%">
+										<div>
+											<b>Date :</b>
+											<span t-esc="get_date()" />
+										</div>
+										<div>
+											<b>Day :</b>
+											<span t-esc="get_day()" />
+										</div>
+									</td>
+									<td width="30%">
+										<div>
+											<b>Seller :</b>
+											<span t-esc="get_driver(data).name" />
+										</div>
+										<div>
+											<b>Vehicle:</b>
+											<span t-esc="get_vehicle(data).name" />
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<br />
+						<table width="100%">
+							<thead>
+								<tr style="border-top:0.5 solid black;">
+									<th colspan="8" class="text-center" width="100%">
+										<b>Collection Details</b>
+									</th>
+								</tr>
+								<tr style="border-top:0.5 solid black;">
+									<th colspan="2" width="40%">
+									</th>
+									<th colspan="6" width="60%" class="text-center">
+										Sales Details
+									</th>
+								</tr>
+								<tr
+									style="border-top: 1px solid black;border-bottom: 1px solid black;">
+									<th width="5%" class="text-left line">Sr</th>
+									<th width="35%" class="text-left line">Customer/Shop</th>
+									<th width="10%" class="text-left line">Boxes</th>
+									<th width="10%" class="text-left line">Cash</th>
+									<th width="10%" class="text-left line">Cheque</th>
+									<th width="10%" class="text-left line">Credit</th>
+									<th width="10%" class="text-left line">Credit Coll</th>
+									<th width="10%" class="text-left line">Remarks</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="get_data(data)" t-as="line">
+									<t t-if="line">
+										<td width="5%" class="text-left line">
+											<t t-if="line['sr']">
+												<span t-esc="line['sr']" />
+											</t>
+										</td>
+										<td width="35%" class="text-left line">
+											<t t-if="line['sr']">
+												<span t-esc="line['customer'].name" />
+											</t>
+										</td>
+										<td width="10%" class="text-left line"></td>
+										<td width="10%" class="text-left line"></td>
+										<td width="10%" class="text-left line"></td>
+										<td width="10%" class="text-left line">
+											<t t-if="line['sr']">
+												<span t-esc="line['credit']" />
+											</t>
+										</td>
+										<td width="10%" class="text-left line"></td>
+										<td width="10%" class="text-left line"></td>
+									</t>
+								</tr>
+								
+									<tr style="border-top:0.5 solid black">
+										<!-- <t t-if="line"> -->
+											<th width="5%" class="text-right line"></th>
+											<th width="35%" class="text-right line">Total</th>
+											<th width="10%" class="text-left line"></th>
+											<th width="10%" class="text-left line"></th>
+											<th width="10%" class="text-left line"></th>
+											<th width="10%" class="text-left line">
+												<span t-esc="get_total()" />
+											</th>
+											<th width="10%" class="text-left line"></th>
+											<th width="10%" class="text-left line"></th>
+									<!-- 	</t> -->
+									</tr>	
+								
+							</tbody>
+						</table>
+					</div>
+				</t>
+			</t>
+		</template>
+
+		<!-- <template id="daily_collection_report_main_template">
+			<t t-call="report.html_container">
+				<t t-foreach="doc_ids" t-as="doc_id">
+					<t
+						t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'manikarnika_report.daily_collection_template')" />
+				</t>
+			</t>
+		</template> -->
+	</data>
+</openerp>

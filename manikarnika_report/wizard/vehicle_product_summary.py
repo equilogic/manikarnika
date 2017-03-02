@@ -20,29 +20,20 @@
 #
 ##############################################################################
 
-import time
 from openerp import fields, models, api
-import pdb
-from datetime import datetime
 from openerp.tools.sql import drop_view_if_exists
 from openerp.tools import misc
+
 
 class vehicle_product_summary_wiz(models.TransientModel):
     _name = 'vehicle.product.summary.wiz'
     _description = 'Vehicle Product summary wizard'
 
-    
-    driver_id = fields.Many2one('res.partner', 'Driver', required=True, readonly=False)
+    driver_id = fields.Many2one('res.partner', 'Driver', required=True,
+                                 readonly=False)
     vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle')
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
-
-    @api.multi
-    @api.onchange('driver_id')
-    def onchange_driver_id(self):
-        if self.driver_id:
-            vehicle_id = self.env['fleet.vehicle'].search([('driver_id','=',self.driver_id.id)])
-            self.vehicle_id = vehicle_id.ids
 
     @api.multi
     def view_report(self):
@@ -51,27 +42,22 @@ class vehicle_product_summary_wiz(models.TransientModel):
          @param self: The object pointer.
          @return : retrun report
         """
-        domain=[]
-        res = self.read(['driver_id', 'vehicle_id',])
+        domain = []
+        res = self.read(['driver_id', 'vehicle_id'])
         res = res and res[0] or {}
-        
+
         cr, uid, context = self.env.args
         context = dict(context)
-        context.update({'shop': res.get('shop_name',False)})
+        context.update({'shop': res.get('shop_name', False)})
 
         self.env.args = cr, uid, misc.frozendict(context)
-        
-        driver_id = res.get('driver_id',False)
-        vehicle_id = res.get('vehicle_id',False)
-        params =(driver_id,vehicle_id)
-        
 
         if self.vehicle_id and self.driver_id:
-            domain = [('driver_id','=',self.driver_id.id),
-                      ('vehicle_id','=',self.vehicle_id.id),
-                      ('date','>=',self.start_date),
-                      ('date','<=',self.end_date)]
-      
+            domain = [('driver_id', '=', self.driver_id.id),
+                      ('vehicle_id', '=', self.vehicle_id.id),
+                      ('date', '>=', self.start_date),
+                      ('date', '<=', self.end_date)]
+
         return {
        'type': 'ir.actions.act_window',
        'name': 'Vehicle Product summary',
@@ -81,7 +67,7 @@ class vehicle_product_summary_wiz(models.TransientModel):
        'view_mode': 'tree',
        'target': 'current',
        'context': context,
-       'domain':domain,
+       'domain': domain,
        }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
