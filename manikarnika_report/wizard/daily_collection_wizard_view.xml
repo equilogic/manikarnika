@@ -30,7 +30,7 @@
 		<!--   Daily Collection wizard action -->
 		
         <record id="daily_collection_wizard_action" model="ir.actions.act_window">
-            <field name="name">Daily Collection Wizard</field>
+            <field name="name">Daily Collection Report</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">daily.collection.wiz</field>
             <field name="view_type">form</field>

@@ -48,7 +48,7 @@ class order_tacking(models.Model):
         if vals.get('name', 'New') == 'New':
             vals['name'] = self.env['ir.sequence'
                                     ].next_by_code('order.tacking') or 'New'
-        return super(order_tackinig, self).create(vals)
+        return super(order_tacking, self).create(vals)
 
     @api.multi
     def ord_track_draft_to_confirm(self):
